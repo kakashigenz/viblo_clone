@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  title: 'Viblo api'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://viblo.test/api'
+paths:
+  /user:
+    get:
+      tags:
+        - User
+      summary: 'Get user'
+      description: 'Returns a user'
+      operationId: 4694dc2dcb94f3b24a682cebe56eb1ca
+      responses:
+        200:
+          description: 'Successful operation'
+tags:
+  -
+    name: User
+    description: User
