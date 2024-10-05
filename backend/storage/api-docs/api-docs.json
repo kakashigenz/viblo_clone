@@ -1,0 +1,69 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Viblo API",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://viblo.test:8080/api"
+        }
+    ],
+    "paths": {
+        "/article": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Get an article",
+                "description": "**Get an article by id**",
+                "operationId": "c4bc5748febfb2ec37eda312bbda4829",
+                "responses": {
+                    "200": {
+                        "description": "Get successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Article"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Article": {
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "point": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "view": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Article",
+            "description": "Article"
+        }
+    ]
+}
