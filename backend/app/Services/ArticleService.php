@@ -32,7 +32,7 @@ class ArticleService
     {
         $slug = Str::slug(data_get($data, 'title'));
         if (Article::query()->where('slug', $slug)->first()) {
-            $slug .= Str::random(8);
+            $slug .= '-' . Str::random(8);
         }
 
         $addition_data = [
@@ -70,7 +70,7 @@ class ArticleService
         $new_slug = Str::slug(data_get($data, 'title'));
         if ($new_slug !== $slug) {
             if (Article::query()->where('slug', $new_slug)->whereNot('id', data_get($article, 'id'))->first()) {
-                $new_slug .= Str::random(8);
+                $new_slug .= '-' . Str::random(8);
             }
         }
 

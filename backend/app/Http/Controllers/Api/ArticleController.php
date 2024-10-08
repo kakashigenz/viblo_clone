@@ -21,12 +21,13 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $data = $request->validate([
-            'page' => 'required|integer',
-            'length' => 'required|integer'
+            'page' => 'integer|gt:0',
+            'size' => 'integer|gt:0'
         ]);
-        $length = data_get($data, 'length');
-        $start = (int)(data_get($data, 'page') - 1) * $length;
-        $res = $this->service->getList($start, $length);
+        $size = data_get($data, 'size', 20);
+        $start = (int)(data_get($data, 'page') - 1) * $size;
+        dd($start);
+        $res = $this->service->getList($start, $size);
         return response()->json($res);
     }
 
