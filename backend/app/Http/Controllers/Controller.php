@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
     title: "Viblo API",
     version: "0.0.1"
 )]
-#[OA\Server("http://viblo.test:8080/api")]
+#[OA\Server("http://api.viblo.test/api")]
 abstract class Controller
 {
     //

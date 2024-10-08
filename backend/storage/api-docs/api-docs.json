@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://viblo.test:8080/api"
+            "url": "http://api.viblo.test/api"
         }
     ],
     "paths": {
