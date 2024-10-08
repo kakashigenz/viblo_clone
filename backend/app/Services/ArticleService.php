@@ -62,7 +62,7 @@ class ArticleService
     /**
      * Update an article
      */
-    public function update(array $data, string $slug): void
+    public function update(array $data, string $slug): bool
     {
         $article = Article::query()->where('slug', $slug)->firstOrFail();
 
@@ -83,13 +83,14 @@ class ArticleService
 
         $data = array_merge($data, $addition_data);
         $article->update($data);
+        return true;
     }
 
     /**
      * Delete an article
      */
-    public function delete(string $slug)
+    public function delete(string $slug): bool
     {
-        Article::query()->where('slug', $slug)->delete();
+        return Article::query()->where('slug', $slug)->firstOrFail()->delete();
     }
 }
