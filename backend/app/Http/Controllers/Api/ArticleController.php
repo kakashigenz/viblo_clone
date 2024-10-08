@@ -25,8 +25,7 @@ class ArticleController extends Controller
             'size' => 'integer|gt:0'
         ]);
         $size = data_get($data, 'size', 20);
-        $start = (int)(data_get($data, 'page') - 1) * $size;
-        dd($start);
+        $start = ((int)data_get($data, 'page', 1) - 1) * $size;
         $res = $this->service->getList($start, $size);
         return response()->json($res);
     }

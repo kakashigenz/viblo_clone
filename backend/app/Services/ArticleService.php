@@ -7,13 +7,12 @@ use Illuminate\Support\Str;
 
 class ArticleService
 {
-    //convert field status in db to string
     /**
      * get list article use pagination
      */
-    public function getList(int $start, int $length): array
+    public function getList(int $start, int $size): array
     {
-        $data = Article::query()->skip($start)->take($length)->get();
+        $data = Article::query()->skip($start)->take($size)->get();
         // convert to text status
         foreach ($data as $item) {
             $item['status'] = Article::STATUS_VALUES[$item['status']];
