@@ -38,10 +38,11 @@ class ArticleController extends Controller
         $data = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
+            'tags' => 'required|array|between:1,5'
         ]);
 
-        $this->service->create($data);
-        return response()->json(['message' => 'success'], 201);
+        $article = $this->service->create($data);
+        return response()->json(['message' => 'success', 'data' => $article], 201);
     }
 
     #[OA\Get(
@@ -74,7 +75,8 @@ class ArticleController extends Controller
     {
         $data = $request->validate([
             'title' => 'required|max:255',
-            'content' => 'required'
+            'content' => 'required',
+            'tags' => 'required|array|between:1,5'
         ]);
 
         $this->service->update($data, $slug);

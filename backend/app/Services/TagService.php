@@ -12,10 +12,7 @@ class TagService
      */
     public function create(array $data): ?Tag
     {
-        //handle case tag is c++
-        $pre_slug = str_replace('+', 'p', data_get($data, 'name'));
-
-        $slug = Str::slug($pre_slug);
+        $slug = $this->generateSlug(data_get($data, 'name'));
         if (Tag::query()->where('slug', $slug)->first()) {
             return null;
         }
@@ -37,6 +34,7 @@ class TagService
         return $res;
     }
 
+    //XXX: no action update because user doesn't use feature
 
     /**
      * get a tag by slug
@@ -47,31 +45,25 @@ class TagService
     }
 
     /**
-     * update a tag
-     */
-    public function update(array $data, string $slug): bool
-    {
-        $pre_slug = str_replace('+', 'p', data_get($data, 'name'));
-
-        $tag = Tag::query()->where('slug', $slug)->firstOrFail();
-
-        $new_slug = Str::slug($pre_slug);
-        if ($new_slug !== $slug) {
-            if (Tag::query()->where('slug', $new_slug)->first()) {
-                return false;
-            }
-        }
-
-        $data['slug'] = $new_slug;
-        $tag->update($data);
-        return true;
-    }
-
-    /**
      * delete a tag by slug
      */
     public function delete(string $slug): bool
     {
         return Tag::query()->where('slug', $slug)->firstOrFail()->delete();
+    }
+
+    /**
+     * find tag by name
+     */
+    public function findTagByName(string $name)
+    {
+        return $this->find($this->generateSlug($name));
+    }
+
+    protected function generateSlug(string $text): string
+    {
+        //handle case tag is c++
+        $pre_slug = str_replace('+', 'p', $text);
+        return Str::slug($pre_slug);
     }
 }

@@ -39,10 +39,10 @@ class TagController extends Controller
         ]);
 
         $tag = $this->service->create($data);
-        if ($tag) {
-            return response()->json(['message' => 'success'], 201);
+        if (!$tag) {
+            return response()->json(['message' => 'Tag has existed'], 400);
         }
-        return response()->json(['message' => 'Tag has existed'], 400);
+        return response()->json(['message' => 'success', 'data' => $tag], 201);
     }
 
     /**
@@ -59,14 +59,7 @@ class TagController extends Controller
      */
     public function update(Request $request, string $slug)
     {
-        $data = $request->validate([
-            'name' => 'required'
-        ]);
-
-        if ($this->service->update($data, $slug)) {
-            return response()->json(['message' => 'success']);
-        }
-        return response()->json(['message' => 'Tag has existed'], 400);
+        //
     }
 
     /**
