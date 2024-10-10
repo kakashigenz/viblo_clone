@@ -27,7 +27,15 @@ class Article extends Model
 
     public const STATUS_VALUES = ['spam', 'draft', 'visible'];
 
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $guarded = ['id', 'created_at', 'updated_at', 'user_id'];
+
+    public function toArray()
+    {
+        $data = parent::toArray();
+
+        $data['status'] = static::STATUS_VALUES[$this->status];
+        return $data;
+    }
 
     public function tags()
     {

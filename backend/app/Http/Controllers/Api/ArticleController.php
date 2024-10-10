@@ -27,7 +27,7 @@ class ArticleController extends Controller
         $size = data_get($data, 'size', 20);
         $start = ((int)data_get($data, 'page', 1) - 1) * $size;
         $res = $this->service->getList($start, $size);
-        return response()->json($res);
+        return $res;
     }
 
     /**
@@ -42,7 +42,7 @@ class ArticleController extends Controller
         ]);
 
         $article = $this->service->create($data);
-        return response()->json(['message' => 'success', 'data' => $article], 201);
+        return response()->json($article, 201);
     }
 
     #[OA\Get(

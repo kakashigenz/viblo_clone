@@ -62,8 +62,8 @@ class TagService
 
     protected function generateSlug(string $text): string
     {
-        //handle case tag is c++
-        $pre_slug = str_replace('+', 'p', $text);
+        //handle case tag is c++,c#
+        $pre_slug = str_replace(['+', '#'], ['p', 'sharp'], $text);
         return Str::slug($pre_slug);
     }
 }

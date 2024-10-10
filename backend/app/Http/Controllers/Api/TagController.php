@@ -26,7 +26,7 @@ class TagController extends Controller
         $size = data_get($data, 'size', 20);
         $start = ((int)data_get($data, 'page', 1) - 1) * $size;
         $res = $this->service->getList($start, $size);
-        return response()->json($res);
+        return $res;
     }
 
     /**
@@ -42,7 +42,7 @@ class TagController extends Controller
         if (!$tag) {
             return response()->json(['message' => 'Tag has existed'], 400);
         }
-        return response()->json(['message' => 'success', 'data' => $tag], 201);
+        return response()->json($tag, 201);
     }
 
     /**

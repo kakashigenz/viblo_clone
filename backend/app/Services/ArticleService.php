@@ -21,10 +21,6 @@ class ArticleService
     public function getList(int $start, int $size): array
     {
         $data = Article::query()->skip($start)->take($size)->get();
-        // convert to text status
-        foreach ($data as $item) {
-            $item['status'] = Article::STATUS_VALUES[$item['status']]; //TODO: refactor code
-        }
         $res = [
             'data' => $data,
             'total' => Article::all()->count()
@@ -45,14 +41,15 @@ class ArticleService
 
         $addition_data = [
             'slug' => $slug,
-            'user_id' => 1, // i will add logic get current user id
             'point' => 0,
             'status' => Article::VISIBLE,
             'view' => 0
         ];
 
         $data = array_merge($data, $addition_data);
-        $article = Article::query()->create($data);
+        $article = new Article($data);
+        $article->user_id = 1;
+        $article->save();
 
         //add tags to article
         $tags = data_get($data, 'tags');
@@ -80,9 +77,6 @@ class ArticleService
     public function find(string $slug): Article
     {
         $item = Article::query()->where('slug', $slug)->firstOrFail();
-        $item['status'] = Article::STATUS_VALUES[$item['status']];
-        //TODO: refactor code
-
         return $item;
     }
 
@@ -103,7 +97,6 @@ class ArticleService
 
         $addition_data = [
             'slug' => $new_slug,
-            'user_id' => 1, // i will add logic get current user id
             'point' => 0,
             'status' => Article::VISIBLE,
             'view' => 0
