@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('user_name')->unique();
-            $table->tinyInteger('gender');
-            $table->timestamp('birthday');
-            $table->string('phone_number', 20);
-            $table->string('address');
+            $table->tinyInteger('gender')->nullable();
+            $table->timestamp('birthday')->nullable();
+            $table->string('phone_number', 20)->nullable();
+            $table->string('address')->nullable();
             $table->tinyInteger('role');
-            $table->tinyInteger('status');
+            $table->boolean('is_banned');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

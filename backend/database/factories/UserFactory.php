@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'phone_number' => fake()->regexify('^036\d{7}$'),
             'address' => fake()->address(),
             'role' => 1,
-            'status' => 1,
+            'is_banned' => false,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
