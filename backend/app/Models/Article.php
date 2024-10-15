@@ -25,7 +25,7 @@ class Article extends Model
     public const DRAFT = 1;
     public const VISIBLE = 2;
 
-    public const STATUS_VALUES = ['spam', 'draft', 'visible'];
+    public const STATUS_STRINGS = ['spam', 'draft', 'visible'];
 
     protected $guarded = ['id', 'created_at', 'updated_at', 'user_id'];
 
@@ -33,7 +33,7 @@ class Article extends Model
     {
         $data = parent::jsonSerialize();
 
-        $data['status'] = static::STATUS_VALUES[$this->status];
+        $data['status'] = static::STATUS_STRINGS[$this->status];
         return $data;
     }
 
