@@ -29,9 +29,9 @@ class Article extends Model
 
     protected $guarded = ['id', 'created_at', 'updated_at', 'user_id'];
 
-    public function toArray()
+    public function jsonSerialize(): mixed
     {
-        $data = parent::toArray();
+        $data = parent::jsonSerialize();
 
         $data['status'] = static::STATUS_VALUES[$this->status];
         return $data;
