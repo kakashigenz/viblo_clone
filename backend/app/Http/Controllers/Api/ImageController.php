@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class ImageController extends Controller
 {
@@ -65,6 +64,7 @@ class ImageController extends Controller
     public function destroy(string $name)
     {
         $this->service->delete($name);
+        // abort(500, 'err');
         return ['message' => 'success'];
     }
 }

@@ -33,41 +33,46 @@ class ArticleService
      */
     public function create(array $data): Article
     {
-        DB::beginTransaction();
-        $slug = Str::slug(data_get($data, 'title'));
-        if (Article::query()->where('slug', $slug)->first()) {
-            $slug .= '-' . Str::random(8);
-        }
-
-        $addition_data = [
-            'slug' => $slug,
-            'point' => 0,
-            'status' => Article::VISIBLE,
-            'view' => 0
-        ];
-
-        $data = array_merge($data, $addition_data);
-        $article = new Article($data);
-        $article->user_id = 1;
-        $article->save();
-
-        //add tags to article
-        $tags = data_get($data, 'tags');
-
-        $tag_ids = []; //array contain the tag ids that be sent
-        foreach ($tags as $tag_name) {
-            $tag = $this->tag_service->create([
-                'name' => $tag_name
-            ]);
-
-            if (!$tag) {
-                $tag = $this->tag_service->findTagByName((string)$tag_name);
+        try {
+            DB::beginTransaction();
+            $slug = Str::slug(data_get($data, 'title'));
+            if (Article::query()->where('slug', $slug)->first()) {
+                $slug .= '-' . Str::random(8);
             }
-            $tag_ids[] = data_get($tag, 'id');
+
+            $addition_data = [
+                'slug' => $slug,
+                'point' => 0,
+                'status' => Article::VISIBLE,
+                'view' => 0
+            ];
+
+            $data = array_merge($data, $addition_data);
+            $article = new Article($data);
+            $article->user_id = 1;
+            $article->save();
+
+            //add tags to article
+            $tags = data_get($data, 'tags');
+
+            $tag_ids = []; //array contain the tag ids that be sent
+            foreach ($tags as $tag_name) {
+                $tag = $this->tag_service->create([
+                    'name' => $tag_name
+                ]);
+
+                if (!$tag) {
+                    $tag = $this->tag_service->findTagByName((string)$tag_name);
+                }
+                $tag_ids[] = data_get($tag, 'id');
+            }
+            $article->tags()->sync($tag_ids);
+            DB::commit();
+            return $article;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-        $article->tags()->sync($tag_ids);
-        DB::commit();
-        return $article;
     }
 
 
@@ -85,43 +90,48 @@ class ArticleService
      */
     public function update(array $data, string $slug): bool
     {
-        DB::beginTransaction();
-        $article = Article::query()->where('slug', $slug)->firstOrFail();
+        try {
+            DB::beginTransaction();
+            $article = Article::query()->where('slug', $slug)->firstOrFail();
 
-        $new_slug = Str::slug(data_get($data, 'title'));
-        if ($new_slug !== $slug) {
-            if (Article::query()->where('slug', $new_slug)->whereNot('id', data_get($article, 'id'))->first()) {
-                $new_slug .= '-' . Str::random(8);
+            $new_slug = Str::slug(data_get($data, 'title'));
+            if ($new_slug !== $slug) {
+                if (Article::query()->where('slug', $new_slug)->whereNot('id', data_get($article, 'id'))->first()) {
+                    $new_slug .= '-' . Str::random(8);
+                }
             }
-        }
 
-        $addition_data = [
-            'slug' => $new_slug,
-            'point' => 0,
-            'status' => Article::VISIBLE,
-            'view' => 0
-        ];
+            $addition_data = [
+                'slug' => $new_slug,
+                'point' => 0,
+                'status' => Article::VISIBLE,
+                'view' => 0
+            ];
 
-        $data = array_merge($data, $addition_data);
-        $article->update($data);
+            $data = array_merge($data, $addition_data);
+            $article->update($data);
 
-        // update tags
-        $tags = data_get($data, 'tags');
-        $tag_ids = [];
+            // update tags
+            $tags = data_get($data, 'tags');
+            $tag_ids = [];
 
-        foreach ($tags as $tag_name) {
-            $tag = $this->tag_service->create([
-                'name' => $tag_name
-            ]);
+            foreach ($tags as $tag_name) {
+                $tag = $this->tag_service->create([
+                    'name' => $tag_name
+                ]);
 
-            if (!$tag) {
-                $tag = $this->tag_service->findTagByName((string)$tag_name);
+                if (!$tag) {
+                    $tag = $this->tag_service->findTagByName((string)$tag_name);
+                }
+                $tag_ids[] = data_get($tag, 'id');
             }
-            $tag_ids[] = data_get($tag, 'id');
+            $article->tags()->sync($tag_ids);
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-        $article->tags()->sync($tag_ids);
-        DB::commit();
-        return true;
     }
 
     /**
