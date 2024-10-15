@@ -5,7 +5,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rule;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -34,6 +36,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::group(['as' => 'user'], function () {
-        Route::get('users/me', [UserController::class, 'show']);
+        Route::get('users/me', [UserController::class, 'getCurrentUser']);
+        Route::get('users/{user_name}', [UserController::class, 'show']);
+        Route::put('users/{user_name}', [UserController::class, 'update']);
     });
 });

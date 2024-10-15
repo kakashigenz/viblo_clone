@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'user_name' => fake()->userName(),
             'gender' => rand(0, 1),
-            'birthday' => fake()->dateTime(),
+            'birthday' => fake()->unixTime(),
             'phone_number' => fake()->regexify('^036\d{7}$'),
             'address' => fake()->address(),
             'role' => 1,

@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class RegisterRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +25,10 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|unique:users,email',
-            'user_name' => 'required|unique:users,user_name',
-            'password' => 'required|regex:/^\w{8,}$/|confirmed',
+            'birthday' => 'date_format:Y-m-d',
+            'gender' => Rule::in(User::GENDER_STRINGS),
+            'phone_number' => 'required|regex:/^0\d{9}$/',
+            'address' => 'required',
         ];
     }
 }
