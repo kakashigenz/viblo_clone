@@ -60,11 +60,12 @@ services:
 
   minio:
     container_name: minio
-    image: mschneider82/alpine-minio
+    image: minio/minio
+    command: server /data --console-address ":9001"
     volumes:
       - ./minio-data:/data
-    environment:
-      - MINIO_CONFIG_accesskey=viblo
-      - MINIO_CONFIG_secretkey=viblo@123
     ports:
       - "9000:9000"
+      - "9001:9001"
+    networks:
+      - my-network
