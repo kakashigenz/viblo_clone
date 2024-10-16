@@ -11,4 +11,9 @@ class ArticlePolicy
     {
         return data_get($user, 'id') === data_get($article, 'user_id');
     }
+
+    public function delete(User $user, Article $article): bool
+    {
+        return data_get($user, 'id') === data_get($article, 'user_id');
+    }
 }

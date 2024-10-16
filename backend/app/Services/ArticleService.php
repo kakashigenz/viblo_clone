@@ -143,7 +143,7 @@ class ArticleService
     public function delete(string $slug): bool
     {
         $article = Article::query()->where('slug', $slug)->firstOrFail();
-        Gate::authorize('update', $article);
+        Gate::authorize('delete', $article);
         return $article->delete();
     }
 }
