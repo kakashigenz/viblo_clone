@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Article;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class ArticleService
@@ -91,8 +92,10 @@ class ArticleService
     public function update(array $data, string $slug): bool
     {
         try {
-            DB::beginTransaction();
             $article = Article::query()->where('slug', $slug)->firstOrFail();
+            Gate::authorize('update', $article);
+
+            DB::beginTransaction();
 
             $new_slug = Str::slug(data_get($data, 'title'));
             if ($new_slug !== $slug) {
@@ -139,6 +142,8 @@ class ArticleService
      */
     public function delete(string $slug): bool
     {
-        return Article::query()->where('slug', $slug)->firstOrFail()->delete();
+        $article = Article::query()->where('slug', $slug)->firstOrFail();
+        Gate::authorize('update', $article);
+        return $article->delete();
     }
 }
