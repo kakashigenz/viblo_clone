@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexRequest;
 use App\Services\TagService;
 use Illuminate\Http\Request;
 
@@ -17,12 +18,9 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $data = $request->validate([
-            'page' => 'integer|gt:0',
-            'size' => 'integer|gt:0'
-        ]);
+        $data = $request->validated();
         $size = data_get($data, 'size', 20);
         $start = ((int)data_get($data, 'page', 1) - 1) * $size;
         $res = $this->service->getList($start, $size);
