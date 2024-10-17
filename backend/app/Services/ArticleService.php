@@ -21,7 +21,7 @@ class ArticleService
      */
     public function getList(int $start, int $size): array
     {
-        $data = Article::query()->skip($start)->take($size)->get();
+        $data = Article::with('tags')->skip($start)->take($size)->get();
         $res = [
             'data' => $data,
             'total' => Article::all()->count()
@@ -82,7 +82,7 @@ class ArticleService
      */
     public function find(string $slug): Article
     {
-        $item = Article::query()->where('slug', $slug)->firstOrFail();
+        $item = Article::with('tags')->where('slug', $slug)->firstOrFail();
         return $item;
     }
 
