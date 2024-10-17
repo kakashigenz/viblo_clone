@@ -7,12 +7,7 @@ use App\Models\User;
 
 class ArticlePolicy
 {
-    public function update(User $user, Article $article): bool
-    {
-        return data_get($user, 'id') === data_get($article, 'user_id');
-    }
-
-    public function delete(User $user, Article $article): bool
+    public function edit(User $user, Article $article): bool
     {
         return data_get($user, 'id') === data_get($article, 'user_id');
     }
