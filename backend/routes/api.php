@@ -2,12 +2,11 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentControler;
 use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\Rule;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -39,5 +38,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('users/me', [UserController::class, 'getCurrentUser']);
         Route::get('users/{user_name}', [UserController::class, 'show']);
         Route::put('users/{user_name}', [UserController::class, 'update']);
+    });
+
+    Route::group(['as' => 'comment'], function () {
+        Route::get('/article/{slug}/comments', [CommentControler::class, 'index']);
+        Route::post('/article/{slug}/comments', [CommentControler::class, 'store']);
+        Route::put('/comments/{id}', [CommentControler::class, 'update']);
+        Route::delete('/comments/{id}', [CommentControler::class, 'destroy']);
     });
 });

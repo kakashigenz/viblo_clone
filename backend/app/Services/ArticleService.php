@@ -80,10 +80,12 @@ class ArticleService
     /**
      * Find an article
      */
-    public function find(string $slug): Article
+    public function find(string $slug, array $relations = []): Article
     {
-        $item = Article::query()->where('slug', $slug)->firstOrFail();
-        return $item;
+        if (empty($relations)) {
+            return Article::query()->where('slug', $slug)->firstOrFail();
+        }
+        return Article::with($relations)->where('slug', $slug)->firstOrFail();
     }
 
     /**
@@ -92,7 +94,7 @@ class ArticleService
     public function update(array $data, string $slug): bool
     {
         try {
-            $article = Article::query()->where('slug', $slug)->firstOrFail();
+            $article = $this->find($slug);
             Gate::authorize('update', $article);
 
             DB::beginTransaction();
@@ -142,7 +144,7 @@ class ArticleService
      */
     public function delete(string $slug): bool
     {
-        $article = Article::query()->where('slug', $slug)->firstOrFail();
+        $article = $this->find($slug);
         Gate::authorize('update', $article);
         return $article->delete();
     }
