@@ -28,9 +28,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::group(['as' => 'image'], function () {
-        Route::post('/images', [ImageController::class, 'store']);
+        Route::post('/images', [ImageController::class, 'createPresignedURL']);
         Route::get('/images', [ImageController::class, 'index']);
-        Route::get('/images/{name}', [ImageController::class, 'show']);
         Route::delete('/images/{name}', [ImageController::class, 'destroy']);
     });
 
@@ -38,12 +37,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('users/me', [UserController::class, 'getCurrentUser']);
         Route::get('users/{user_name}', [UserController::class, 'show']);
         Route::put('users/{user_name}', [UserController::class, 'update']);
-    });
-
-    Route::group(['as' => 'comment'], function () {
-        Route::get('/article/{slug}/comments', [CommentControler::class, 'index']);
-        Route::post('/article/{slug}/comments', [CommentControler::class, 'store']);
-        Route::put('/comments/{id}', [CommentControler::class, 'update']);
-        Route::delete('/comments/{id}', [CommentControler::class, 'destroy']);
     });
 });
