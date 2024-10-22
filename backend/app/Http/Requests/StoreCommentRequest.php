@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexRequest extends FormRequest
+class StoreCommentRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,8 +14,7 @@ class IndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => 'integer|gt:0',
-            'size' => 'integer|gt:0'
+            'content' => 'required'
         ];
     }
 }

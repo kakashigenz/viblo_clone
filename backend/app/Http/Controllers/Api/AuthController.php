@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    protected $service;
+    protected AuthService $service;
 
     public function __construct(AuthService $service)
     {
@@ -23,12 +23,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'success']);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'user_name' => 'required',
-            'password' => 'required'
-        ]);
+        $data = $request->validated();
 
         $token = $this->service->login($data);
         if (!$token) {

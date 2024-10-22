@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class ArticleService
 {
-    protected $tag_service;
+    protected TagService $tag_service;
 
     public function __construct(TagService $tag_service)
     {
@@ -19,20 +19,15 @@ class ArticleService
     /**
      * get list article use pagination
      */
-    public function getList(int $start, int $size): array
+    public function getList(int $size)
     {
-        $data = Article::query()->skip($start)->take($size)->get();
-        $res = [
-            'data' => $data,
-            'total' => Article::all()->count()
-        ];
-        return $res;
+        return Article::with('tags')->paginate($size);
     }
 
     /**
      * Create an article
      */
-    public function create(array $data): Article
+    public function create(array $data, string $user_id): Article
     {
         try {
             DB::beginTransaction();
@@ -50,7 +45,7 @@ class ArticleService
 
             $data = array_merge($data, $addition_data);
             $article = new Article($data);
-            $article->user_id = 1;
+            $article->user_id = $user_id;
             $article->save();
 
             //add tags to article
