@@ -12,26 +12,24 @@ class ImageService
     /**
      * Create image and return path
      */
-    public function create(array $data): string
+    public function createPresignedURL(string $name, string $user_id): string
     {
-        $path = Storage::putFile('', data_get($data, 'image'));
-
-        if (!$path) {
-            abort(500, 'Server Error');
-        }
+        ['url' => $url, 'headers' => $headers] = Storage::temporaryUploadUrl($name, now()->addMinutes(5));
 
         Image::query()->create([
-            'user_id' => Auth::user()->id,
-            'url' => $path
+            'user_id' => $user_id,
+            'path' => '',
+            'name' => $name
         ]);
 
-        return $path;
+        $url = str_replace(env('AWS_ENDPOINT') . '/' . env('AWS_BUCKET'), env('IMAGE_SERVER'), $url);
+        return $url;
     }
 
     /**
      * get list images by user id
      */
-    public function getList()
+    public function getList(): Collection
     {
         return Image::query()->where('user_id', Auth::user()->id)->get();
     }
@@ -39,25 +37,22 @@ class ImageService
     /**
      * get an image
      */
-    public function find(string $name): string
+    public function find(string $name)
     {
-        $host = env('FRONTEND_URL') . '/images';
-        $image = Image::query()->where('user_id', Auth::user()->id)->where('name', $name)->firstOrFail();
-        return $host . sprintf('%s/%s', data_get($image, 'path'), data_get($image, 'name'));
+        //
     }
 
     /**
      * Delete an image
      */
-    public function delete(string $name)
+    public function delete(string $name): bool
     {
-        $host = env('FRONTEND_URL') . '/images';
         $image = Image::query()->where('user_id', Auth::user()->id)->where('name', $name)->firstOrFail();
-        $path = data_get($image, 'path') ? data_get($image, 'path') . '/' : '';
-        $name = data_get($image, 'name');
-        if (Storage::exists($path . $name)) {
-            Storage::delete($path . $name);
+        $location =  data_get($image, 'path') . '/' . data_get($image, 'name');
+        $image->delete();
+        if (Storage::exists($location)) {
+            Storage::delete($location);
         }
-        return $image->delete();
+        return true;
     }
 }
