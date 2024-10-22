@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexRequest;
+use App\Http\Requests\StoreUpdateArticleRequest;
 use App\Services\ArticleService;
-use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class ArticleController extends Controller
 {
-    protected $service;
+    protected ArticleService $service;
 
     public function __construct(ArticleService $service)
     {
@@ -23,23 +23,18 @@ class ArticleController extends Controller
     {
         $data = $request->validated();
         $size = data_get($data, 'size', 20);
-        $start = ((int)data_get($data, 'page', 1) - 1) * $size;
-        $res = $this->service->getList($start, $size);
+        $res = $this->service->getList($size);
         return $res;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUpdateArticleRequest $request)
     {
-        $data = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'tags' => 'required|array|between:1,5'
-        ]);
-
-        $article = $this->service->create($data);
+        $data = $request->validated();
+        $user = $request->user();
+        $article = $this->service->create($data, data_get($user, 'id'));
         return response()->json($article, 201);
     }
 
@@ -69,13 +64,9 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $slug)
+    public function update(StoreUpdateArticleRequest $request, string $slug)
     {
-        $data = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'tags' => 'required|array|between:1,5'
-        ]);
+        $data = $request->validated();
 
         $this->service->update($data, $slug);
         return response()->json(['message' => 'success']);
