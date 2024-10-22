@@ -16,13 +16,10 @@ class User extends Authenticatable
     public const USER_ROLE = 1;
     public const MOD_ROLE = 2;
     public const ADMIN_ROLE = 3;
-    public const ROLE_STRINGS = [1 => 'user', 'mod', 'admin'];
 
     public const FEMALE = 0;
     public const MALE = 1;
     public const OTHER = 2;
-    public const GENDER_STRINGS = ['female', 'male', 'other'];
-    public const GENDER_VALUES = ['female' => self::FEMALE, 'male' => self::MALE, 'other' => self::OTHER];
 
 
     /**
@@ -60,13 +57,5 @@ class User extends Authenticatable
             'is_banned' => 'boolean',
             'birthday' => 'datetime'
         ];
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        $data = parent::jsonSerialize();
-
-        $data['role'] = static::ROLE_STRINGS[$this->role];
-        return $data;
     }
 }
