@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexRequest;
+use App\Http\Requests\StoreUpdateCommentRequest;
 use App\Services\CommentService;
-use Illuminate\Http\Request;
 
-class CommentControler extends Controller
+class CommentController extends Controller
 {
-    protected $service;
+    protected CommentService $service;
 
     public function __construct(CommentService $service)
     {
@@ -23,21 +23,19 @@ class CommentControler extends Controller
     {
         $data = $request->validated();
         $size = data_get($data, 'size', 10);
-        $start = ((int)data_get($data, 'page', 1) - 1) * $size;
-        $res = $this->service->getList($slug, $start, $size);
+        $res = $this->service->getList($slug, $size);
         return $res;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, string $slug)
+    public function store(StoreUpdateCommentRequest $request, string $slug)
     {
-        $data = $request->validate([
-            'content' => 'required',
-        ]);
+        $data = $request->validated();
+        $user = $request->user();
 
-        $comment = $this->service->create($data, $slug);
+        $comment = $this->service->create($data, $slug, data_get($user, 'id'));
         return response()->json($comment, 201);
     }
 
@@ -52,11 +50,9 @@ class CommentControler extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreUpdateCommentRequest $request, string $id)
     {
-        $data = $request->validate([
-            'content' => 'required'
-        ]);
+        $data = $request->validated();
 
         $this->service->update($data, $id);
         return response()->json(['message' => 'success']);
@@ -70,4 +66,6 @@ class CommentControler extends Controller
         $this->service->delete($id);
         return response()->json(['message' => 'success']);
     }
+
+    public function reply() {}
 }

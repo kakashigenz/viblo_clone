@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\CommentControler;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UserController;
@@ -41,9 +41,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::group(['as' => 'comment'], function () {
-        Route::get('/article/{slug}/comments', [CommentControler::class, 'index']);
-        Route::post('/article/{slug}/comments', [CommentControler::class, 'store']);
-        Route::put('/comments/{id}', [CommentControler::class, 'update']);
-        Route::delete('/comments/{id}', [CommentControler::class, 'destroy']);
+        Route::get('/article/{slug}/comments', [CommentController::class, 'index']);
+        Route::post('/article/{slug}/comments', [CommentController::class, 'store']);
+        Route::put('/comments/{id}', [CommentController::class, 'update']);
+        Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+        Route::post('/comments/{comment_id}/replies', [CommentController::class, 'reply']);
     });
 });

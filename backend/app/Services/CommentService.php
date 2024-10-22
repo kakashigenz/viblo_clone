@@ -2,14 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class CommentService
 {
-    protected $article_service;
+    protected ArticleService $article_service;
 
     public function __construct(ArticleService $service)
     {
@@ -19,24 +18,30 @@ class CommentService
     /**
      * get list comment group by article use pagination 
      */
-    public function getList(string $slug, int $start, int $size)
+    public function getList(string $slug, int $size)
     {
         $article = $this->article_service->find($slug);
-        $comments = $article->comments()->skip($start)->take($size)->get();
-        foreach ($comments as $comment) {
-            $comment->user;
-        }
-        return $comments;
+        $comments = Comment::with(['user', 'subComments' => function ($query) {
+            $query->with('user')->limit(2);
+        }])->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->paginate($size);
+
+        return [
+            'data' => $comments->items(),
+            'page' => $comments->currentPage(),
+            'size' => $comments->perPage(),
+            'total' => $comments->total()
+        ];
     }
+
 
     /**
      * create a comment
      */
-    public function create(array $data, string $slug)
+    public function create(array $data, string $slug, string $user_id)
     {
         $article = $this->article_service->find($slug);
         $comment = new Comment($data);
-        $comment->user_id = Auth::user()->id;
+        $comment->user_id = $user_id;
         $comment->point = 0;
         $comment->is_visible = true;
         $article->comments()->save($comment);
@@ -70,5 +75,22 @@ class CommentService
         $comment = $this->find($id);
         Gate::authorize('edit', $comment);
         $comment->delete();
+    }
+
+    /**
+     * reply comment
+     */
+    public function reply(array $data, string $comment_id)
+    {
+        $comment = $this->find($comment_id);
+
+        $sub_comment = new Comment($data);
+        $sub_comment->user_id = Auth::user()->id;
+        $sub_comment->article_id = data_get($comment, 'article_id');
+        $sub_comment->point = 0;
+        $sub_comment->is_visible = true;
+        $comment->subComments()->save($sub_comment);
+
+        return $sub_comment;
     }
 }
