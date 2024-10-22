@@ -75,4 +75,12 @@ class CommentController extends Controller
         $sub_comment = $this->service->reply($data, $comment_id, data_get($user, 'id'));
         return response()->json($sub_comment, 201);
     }
+
+    public function getSubComments(IndexRequest $request, string $comment_id)
+    {
+        $data = $request->validated();
+
+        $size = (int)data_get($data, 'size', 3);
+        return $this->service->getSubComments($comment_id, $size);
+    }
 }

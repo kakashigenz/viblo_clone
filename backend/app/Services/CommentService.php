@@ -94,5 +94,13 @@ class CommentService
         return $sub_comment;
     }
 
-    public function getSubComment() {}
+    public function getSubComments(string $comment_id, int $size)
+    {
+        $comments = Comment::with('user')->where('parent_id', $comment_id)->paginate($size);
+
+        return [
+            'data' => $comments->items(),
+            'hasNext' => $comments->hasMorePages()
+        ];
+    }
 }
