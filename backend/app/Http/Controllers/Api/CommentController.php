@@ -67,5 +67,12 @@ class CommentController extends Controller
         return response()->json(['message' => 'success']);
     }
 
-    public function reply() {}
+    public function reply(StoreUpdateCommentRequest $request, string $comment_id)
+    {
+        $data = $request->validated();
+        $user = $request->user();
+
+        $sub_comment = $this->service->reply($data, $comment_id, data_get($user, 'id'));
+        return response()->json($sub_comment, 201);
+    }
 }

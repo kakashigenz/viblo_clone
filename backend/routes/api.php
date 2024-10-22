@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/article/{slug}/comments', [CommentController::class, 'store']);
         Route::put('/comments/{id}', [CommentController::class, 'update']);
         Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+        Route::get('/comments/{comment_id}/replies', [CommentController::class, 'getSubComment']);
         Route::post('/comments/{comment_id}/replies', [CommentController::class, 'reply']);
     });
 });

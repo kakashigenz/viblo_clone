@@ -80,12 +80,12 @@ class CommentService
     /**
      * reply comment
      */
-    public function reply(array $data, string $comment_id)
+    public function reply(array $data, string $comment_id, string $user_id)
     {
         $comment = $this->find($comment_id);
 
         $sub_comment = new Comment($data);
-        $sub_comment->user_id = Auth::user()->id;
+        $sub_comment->user_id = $user_id;
         $sub_comment->article_id = data_get($comment, 'article_id');
         $sub_comment->point = 0;
         $sub_comment->is_visible = true;
@@ -93,4 +93,6 @@ class CommentService
 
         return $sub_comment;
     }
+
+    public function getSubComment() {}
 }
