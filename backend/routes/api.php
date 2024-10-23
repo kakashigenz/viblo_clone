@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/tags/{slug}', [TagController::class, 'show']);
         Route::delete('/tags/{slug}', [TagController::class, 'destroy']);
         Route::post('tags/{tag_slug}/follow', [FollowingTagController::class, 'follow']);
+        Route::delete('tags/{tag_slug}/unfollow', [FollowingTagController::class, 'unfollow']);
     });
 
     Route::group(['as' => 'image'], function () {

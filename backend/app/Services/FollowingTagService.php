@@ -48,4 +48,20 @@ class FollowingTagService
             'total' => $tags->total()
         ];
     }
+
+    /**
+     * unfollow a tag
+     */
+    public function unfollow(User $follower, string $tag_slug): bool
+    {
+        $tag = $this->tag_service->find($tag_slug);
+
+        if (!$follower->tags()->wherePivot('tag_id', data_get($tag, 'id'))->first()) {
+            return false;
+        }
+
+        $follower->tags()->detach(data_get($tag, 'id'));
+
+        return true;
+    }
 }

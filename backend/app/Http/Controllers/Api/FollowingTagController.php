@@ -28,7 +28,7 @@ class FollowingTagController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Follow a tag
      */
     public function follow(Request $request, string $tag_slug)
     {
@@ -42,27 +42,19 @@ class FollowingTagController extends Controller
         return ['message' => 'success'];
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
+     * Unfollow a tag
      */
-    public function update(Request $request, string $id)
+    public function unfollow(Request $request, string $tag_slug)
     {
-        //
-    }
+        $follower = $request->user();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $status = $this->service->unfollow($follower, $tag_slug);
+
+        if (empty($status)) {
+            abort(400, 'Bad request');
+        }
+        return ['message' => 'success'];
     }
 }
