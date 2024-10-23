@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FollowingUserController;
 use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UserController;
@@ -46,5 +47,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
         Route::get('/comments/{comment_id}/replies', [CommentController::class, 'getSubComments']);
         Route::post('/comments/{comment_id}/replies', [CommentController::class, 'reply']);
+    });
+
+
+    Route::group(['as' => 'followingUser'], function () {
+        Route::get('/followings/{user_id}', [FollowingUserController::class, 'index']);
+        Route::post('/follow/{user_id}', [FollowingUserController::class, 'follow']);
+        Route::post('/unfollow/{user_id}', [FollowingUserController::class, 'unfollow']);
     });
 });

@@ -9,9 +9,9 @@ class UserService
     /**
      * get an user
      */
-    public function find(string $user_name)
+    public function find(string $user_name, array $relations = [])
     {
-        return User::query()->where('user_name', $user_name)->firstOrFail();
+        return User::with($relations)->where('user_name', $user_name)->firstOrFail();
     }
 
     /**
