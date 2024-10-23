@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
     Route::group(['as' => 'followingUser'], function () {
+        Route::get('/followings/{user_id}', [FollowingUserController::class, 'index']);
         Route::post('/follow/{user_id}', [FollowingUserController::class, 'follow']);
     });
 });

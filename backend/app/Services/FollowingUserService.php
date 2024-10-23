@@ -27,4 +27,20 @@ class FollowingUserService
 
         return true;
     }
+
+    /**
+     * get list following
+     */
+    public function getList(string $user_name, int $size): mixed
+    {
+        $follower = $this->user_service->find($user_name);
+
+        $followings = $follower->followings()->paginate();
+        return [
+            'data' => $followings->items(),
+            'page' => $followings->currentPage(),
+            'size' => $followings->perPage(),
+            'total' => $followings->total()
+        ];
+    }
 }
