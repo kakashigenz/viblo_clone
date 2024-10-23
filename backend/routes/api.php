@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('users/me', [UserController::class, 'getCurrentUser']);
         Route::get('users/{user_name}', [UserController::class, 'show']);
         Route::put('users/{user_name}', [UserController::class, 'update']);
+        Route::get('/users/{user_name}/following-tags', [FollowingTagController::class, 'index']);
     });
 
     Route::group(['as' => 'comment'], function () {
@@ -57,6 +58,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/follow/{user_id}', [FollowingUserController::class, 'follow']);
         Route::post('/unfollow/{user_id}', [FollowingUserController::class, 'unfollow']);
     });
-
-    Route::group(['as' => 'followingTag'], function () {});
 });

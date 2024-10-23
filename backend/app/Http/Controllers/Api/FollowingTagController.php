@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexRequest;
 use App\Services\FollowingTagService;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,12 @@ class FollowingTagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request, string $user_name)
     {
-        //
+        $data = $request->validated();
+        $size = (int)data_get($data, 'size', 15);
+        $res = $this->service->getList($user_name, $size);
+        return $res;
     }
 
     /**
