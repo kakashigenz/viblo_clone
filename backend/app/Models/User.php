@@ -58,4 +58,9 @@ class User extends Authenticatable
             'birthday' => 'datetime'
         ];
     }
+
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'following_users', 'follower_id', 'user_id');
+    }
 }
