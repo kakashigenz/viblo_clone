@@ -35,7 +35,7 @@ class FollowingUserService
     {
         $follower = $this->user_service->find($user_name);
 
-        $followings = $follower->followings()->paginate();
+        $followings = $follower->followings()->paginate($size);
         return [
             'data' => $followings->items(),
             'page' => $followings->currentPage(),
