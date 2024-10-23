@@ -38,6 +38,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('users/me', [UserController::class, 'getCurrentUser']);
         Route::get('users/{user_name}', [UserController::class, 'show']);
         Route::put('users/{user_name}', [UserController::class, 'update']);
+        Route::get('users/{user_name}/followings', [FollowingUserController::class, 'index']);
+        Route::post('users/{user_name}/follow', [FollowingUserController::class, 'follow']);
+        Route::delete('users/{user_name}/unfollow', [FollowingUserController::class, 'unfollow']);
     });
 
     Route::group(['as' => 'comment'], function () {
@@ -47,12 +50,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
         Route::get('/comments/{comment_id}/replies', [CommentController::class, 'getSubComments']);
         Route::post('/comments/{comment_id}/replies', [CommentController::class, 'reply']);
-    });
-
-
-    Route::group(['as' => 'followingUser'], function () {
-        Route::get('/followings/{user_id}', [FollowingUserController::class, 'index']);
-        Route::post('/follow/{user_id}', [FollowingUserController::class, 'follow']);
-        Route::post('/unfollow/{user_id}', [FollowingUserController::class, 'unfollow']);
     });
 });
