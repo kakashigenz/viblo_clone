@@ -43,4 +43,19 @@ class FollowingUserService
             'total' => $followings->total()
         ];
     }
+
+    /**
+     * Unfollow an user
+     */
+    public function unfollow(User $follower, string $user_name): bool
+    {
+        $user = $this->user_service->find($user_name);
+
+        if (!$follower->followings()->wherePivot('user_id', data_get($user, 'id'))->first()) {
+            return false;
+        }
+
+        $follower->followings()->detach(data_get($user, 'id'));
+        return true;
+    }
 }

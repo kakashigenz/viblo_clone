@@ -42,4 +42,20 @@ class FollowingUserController extends Controller
 
         return ['message' => 'success'];
     }
+
+    /**
+     * Unfollow an user
+     */
+    public function unfollow(Request $request, string $user_name)
+    {
+        $follower = $request->user();
+
+        $status = $this->service->unfollow($follower, $user_name);
+
+        if (!$status) {
+            abort(400, 'Bad request');
+        }
+
+        return ['message' => 'success'];
+    }
 }
