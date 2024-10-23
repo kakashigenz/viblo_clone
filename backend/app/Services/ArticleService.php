@@ -21,7 +21,13 @@ class ArticleService
      */
     public function getList(int $size)
     {
-        return Article::with('tags')->paginate($size);
+        $articles = Article::with('tags')->paginate($size);
+        return [
+            'data' => $articles->items(),
+            'page' => $articles->currentPage(),
+            'size' => $articles->perPage(),
+            'total' => $articles->total()
+        ];
     }
 
     /**
