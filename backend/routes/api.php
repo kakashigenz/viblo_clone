@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FollowingTagController;
 use App\Http\Controllers\Api\FollowingUserController;
 use App\Http\Controllers\Api\ImageController;
 use App\Http\Controllers\Api\TagController;
@@ -26,6 +27,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/tags', [TagController::class, 'store']);
         Route::get('/tags/{slug}', [TagController::class, 'show']);
         Route::delete('/tags/{slug}', [TagController::class, 'destroy']);
+        Route::post('tags/{tag_slug}/follow', [FollowingTagController::class, 'follow']);
     });
 
     Route::group(['as' => 'image'], function () {
@@ -55,4 +57,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/follow/{user_id}', [FollowingUserController::class, 'follow']);
         Route::post('/unfollow/{user_id}', [FollowingUserController::class, 'unfollow']);
     });
+
+    Route::group(['as' => 'followingTag'], function () {});
 });
