@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BookmarkController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\FollowingTagController;
 use App\Http\Controllers\Api\FollowingUserController;
@@ -20,6 +21,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/articles/{slug}', [ArticleController::class, 'show']);
         Route::put('/articles/{slug}', [ArticleController::class, 'update']);
         Route::delete('/articles/{slug}', [ArticleController::class, 'destroy']);
+        Route::post('/articles/{article_slug}/bookmark', [BookmarkController::class, 'store']);
     });
 
     Route::group(['as' => 'tag'], function () {
