@@ -30,4 +30,21 @@ class BookmarkService
         $user->bookmarks()->attach(data_get($article, 'id'), ['created_at' => now(), 'updated_at' => now()]);
         return true;
     }
+
+    /**
+     * get bookmark list
+     */
+    public function getList(string $user_name, int $size)
+    {
+        $user = $this->user_service->find($user_name);
+
+        $bookmarks = $user->bookmarks()->paginate($size);
+
+        return [
+            'data' => $bookmarks->items(),
+            'page' => $bookmarks->currentPage(),
+            'size' => $bookmarks->perPage(),
+            'total' => $bookmarks->total()
+        ];
+    }
 }

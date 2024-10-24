@@ -17,6 +17,17 @@ class BookmarkController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function index(IndexRequest $request, string $user_name)
+    {
+        $data = $request->validated();
+        $size = (int)data_get($data, 'size', 15);
+        $res = $this->service->getList($user_name, $size);
+        return $res;
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, string $article_slug)

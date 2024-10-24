@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('users/{user_name}/follow', [FollowingUserController::class, 'follow']);
         Route::delete('users/{user_name}/unfollow', [FollowingUserController::class, 'unfollow']);
         Route::get('/users/{user_name}/following-tags', [FollowingTagController::class, 'index']);
+        Route::get('/users/{user_name}/bookmarks', [BookmarkController::class, 'index']);
     });
 
     Route::group(['as' => 'comment'], function () {
