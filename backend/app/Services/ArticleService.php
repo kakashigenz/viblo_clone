@@ -68,7 +68,7 @@ class ArticleService
                 }
                 $tag_ids[] = data_get($tag, 'id');
             }
-            $article->tags()->sync($tag_ids);
+            $article->tags()->attach($tag_ids, ['created_at' => now(), 'updated_at' => now()]);
             DB::commit();
             return $article;
         } catch (\Throwable $th) {
