@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/articles/{slug}', [ArticleController::class, 'update']);
         Route::delete('/articles/{slug}', [ArticleController::class, 'destroy']);
         Route::post('/articles/{article_slug}/bookmark', [BookmarkController::class, 'store']);
+        Route::delete('/articles/{article_slug}/unbookmark', [BookmarkController::class, 'destroy']);
     });
 
     Route::group(['as' => 'tag'], function () {

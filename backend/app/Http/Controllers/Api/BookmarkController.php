@@ -40,4 +40,19 @@ class BookmarkController extends Controller
         }
         return ['message' => 'success'];
     }
+
+
+    /**
+     * Delete a resource in storage.
+     */
+    public function destroy(Request $request, string $article_slug)
+    {
+        $user = $request->user();
+
+        $status = $this->service->unbookmark($user, $article_slug);
+        if (empty($status)) {
+            abort(400, 'Bad request');
+        }
+        return ['message' => 'success'];
+    }
 }

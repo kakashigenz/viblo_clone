@@ -47,4 +47,19 @@ class BookmarkService
             'total' => $bookmarks->total()
         ];
     }
+
+    /**
+     * unbookmark an article
+     */
+    public function unbookmark(User $user, string $article_slug): bool
+    {
+        $article = $this->article_service->find($article_slug);
+
+        if (empty($user->bookmarks()->wherePivot('article_id', data_get($article, 'id'))->first())) {
+            return false;
+        }
+
+        $user->bookmarks()->detach(data_get($article, 'id'));
+        return true;
+    }
 }
