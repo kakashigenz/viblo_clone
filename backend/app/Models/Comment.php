@@ -20,4 +20,9 @@ class Comment extends Model
     {
         return $this->hasMany(Comment::class, 'parent_id', 'id');
     }
+
+    public function votes()
+    {
+        return $this->morphMany(Vote::class, 'voteable');
+    }
 }

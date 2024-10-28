@@ -149,4 +149,12 @@ class ArticleService
         Gate::authorize('update', $article);
         return $article->delete();
     }
+
+    /**
+     * get an article by id
+     */
+    public function findById(string $id)
+    {
+        return Article::query()->findOrFail($id);
+    }
 }
