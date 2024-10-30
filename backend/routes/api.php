@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\FollowingTagController;
 use App\Http\Controllers\Api\FollowingUserController;
 use App\Http\Controllers\Api\ImageController;
+use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VoteController;
@@ -56,6 +57,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/{user_name}/bookmarks', [BookmarkController::class, 'index']);
     });
 
+    //rewite endpoint
     Route::group(['as' => 'comment.', 'prefix' => 'comments'], function () {
         Route::put('/comments/{id}', [CommentController::class, 'update']);
         Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
@@ -63,5 +65,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/comments/{comment_id}/replies', [CommentController::class, 'reply']);
         Route::post('/comments/{comment_id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
         Route::post('/comments/{comment_id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
+    });
+
+    Route::group(['as' => 'search.', 'prefix' => 'search'], function () {
+        Route::get('/article', [SearchController::class, 'searchArticle']);
     });
 });

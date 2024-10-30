@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Laravel\Scout\Searchable;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
@@ -19,7 +22,7 @@ use OpenApi\Attributes as OA;
 )]
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     public const SPAM = 0;
     public const DRAFT = 1;
@@ -41,5 +44,33 @@ class Article extends Model
     public function votes()
     {
         return $this->morphMany(Vote::class, 'voteable');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function searchableAs()
+    {
+        return 'articles_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'title' => $this->title,
+            'content' => $this->content,
+        ];
+    }
+
+    public function shouldBeSearchable()
+    {
+        return $this->status == self::VISIBLE;
+    }
+
+    public function makeSearchableUsing(Collection $models)
+    {
+        return $models->load('user');
     }
 }
