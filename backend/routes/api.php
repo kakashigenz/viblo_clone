@@ -57,11 +57,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::group(['as' => 'comment.', 'prefix' => 'comments'], function () {
-        Route::put('/comments/{id}', [CommentController::class, 'update']);
-        Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
-        Route::get('/comments/{comment_id}/replies', [CommentController::class, 'getSubComments']);
-        Route::post('/comments/{comment_id}/replies', [CommentController::class, 'reply']);
-        Route::post('/comments/{comment_id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
-        Route::post('/comments/{comment_id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
+        Route::put('/{id}', [CommentController::class, 'update']);
+        Route::delete('/{id}', [CommentController::class, 'destroy']);
+        Route::get('/{comment_id}/replies', [CommentController::class, 'getSubComments']);
+        Route::post('/{comment_id}/replies', [CommentController::class, 'reply']);
+        Route::post('/{comment_id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
+        Route::post('/{comment_id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
     });
 });
