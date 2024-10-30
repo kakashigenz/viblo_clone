@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Models\User;
 
 class SearchService
 {
@@ -15,6 +16,17 @@ class SearchService
             'page' => $articles->currentPage(),
             'size' => $articles->perPage(),
             'total' => $articles->total()
+        ];
+    }
+
+    public function searchUser(string $query)
+    {
+        $users = User::search($query)->paginate(20);
+        return [
+            'data' => $users->items(),
+            'page' => $users->currentPage(),
+            'size' => $users->perPage(),
+            'total' => $users->total()
         ];
     }
 }
