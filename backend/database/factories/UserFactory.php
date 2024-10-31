@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -26,11 +27,11 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'user_name' => fake()->userName(),
-            'gender' => rand(0, 1),
+            'gender' => fake()->randomElement([User::MALE, User::FEMALE, User::OTHER]),
             'birthday' => fake()->unixTime(),
-            'phone_number' => fake()->regexify('^036\d{7}$'),
+            'phone_number' => fake()->phoneNumber(),
             'address' => fake()->address(),
-            'role' => 1,
+            'role' => User::USER_ROLE,
             'is_banned' => false,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

@@ -69,3 +69,15 @@ services:
       - "9001:9001"
     networks:
       - my-network
+
+  meilisearch:
+    container_name: meilisearch
+    image: getmeili/meilisearch
+    environment:
+      - MEILI_MASTER_KEY=9d694c59c3c3e5b5ee7588b223b07afa
+    ports:
+      - "7700:7700"
+    networks:
+      - my-network
+    volumes:
+      - ./meili_data:/meili_data

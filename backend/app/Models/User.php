@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Searchable;
 
 
     public const USER_ROLE = 1;
@@ -72,5 +73,23 @@ class User extends Authenticatable
     public function bookmarks()
     {
         return $this->belongsToMany(Article::class, 'bookmarks', 'user_id', 'article_id');
+    }
+
+    public function searchableAs()
+    {
+        return 'users_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'user_name' => $this->user_name,
+            'name' => $this->name
+        ];
+    }
+
+    public function shouldBeSearchable()
+    {
+        return $this->is_banned == false;
     }
 }
