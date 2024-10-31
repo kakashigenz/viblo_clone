@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Models\Tag;
 use App\Models\User;
 
 class SearchService
@@ -27,6 +28,21 @@ class SearchService
             'page' => $users->currentPage(),
             'size' => $users->perPage(),
             'total' => $users->total()
+        ];
+    }
+
+    public function searchMulti(string $query)
+    {
+        $articles = Article::search($query)->paginate(3, '');
+        $users = User::search($query)->paginate(3, '');
+        $tags = Tag::search($query)->paginate(3, '');
+        $res = [
+            'articles' => $articles->items(),
+            'users' => $users->items(),
+            'tags' => $tags->items()
+        ];
+        return [
+            'results' => $res
         ];
     }
 }

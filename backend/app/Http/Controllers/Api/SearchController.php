@@ -28,4 +28,11 @@ class SearchController extends Controller
         $res = $this->service->searchUser($query);
         return $res;
     }
+
+    public function searchMulti(Request $request)
+    {
+        $query = $request->input('q');
+        $res = $this->service->searchMulti($query);
+        return $res;
+    }
 }

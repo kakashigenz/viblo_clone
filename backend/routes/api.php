@@ -70,5 +70,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['as' => 'search.', 'prefix' => 'search'], function () {
         Route::get('/articles', [SearchController::class, 'searchArticle']);
         Route::get('/users', [SearchController::class, 'searchUser']);
+        Route::get('/multi', [SearchController::class, 'searchMulti']);
     });
 });
