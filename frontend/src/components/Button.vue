@@ -23,7 +23,7 @@ const className = ref(
 );
 switch (props.variant) {
   case "primary":
-    className.value = "";
+    className.value = "font-regular rounded-sm bg-blue-500 text-white hover:bg-blue-400 ";
     break;
   case "secondary":
     className.value +=
@@ -35,7 +35,7 @@ switch (props.variant) {
 
 switch (props.size) {
   case "small":
-    className.value += "px-3 py-1 text-sm";
+    className.value += "px-3 py-1 text-sm ";
     break;
   case "medium":
     className.value += "px-[20px] py-[10px] text-sm";
