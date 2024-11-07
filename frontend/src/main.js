@@ -9,6 +9,7 @@ import "easymde/dist/easymde.min.css";
 import "./style.css";
 
 import { definePreset } from "@primevue/themes";
+import router from "./router";
 
 const app = createApp(App);
 
@@ -48,4 +49,5 @@ app.use(PrimeVue, {
     },
   },
 });
+app.use(router);
 app.mount("#app");
