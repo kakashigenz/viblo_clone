@@ -57,6 +57,7 @@ onMounted(() => {
     element: editor.value,
     placeholder: props.placeHolder,
     toolbar: props.toolbar ?? toolbars,
+    spellChecker: false,
   });
 
   MDE.value(props.modelValue);

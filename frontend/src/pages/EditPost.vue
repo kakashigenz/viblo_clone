@@ -67,7 +67,7 @@
           {{ articleStatusDescs[article.status].text }}
         </p>
         <div class="mt-3">
-          <Button size="small" variant="secondary"> Lưu </Button>
+          <Button size="small" variant="secondary" @click="handleSubmit"> Lưu </Button>
         </div>
       </div>
     </Popover>
@@ -82,6 +82,7 @@ import { computed, onMounted, ref } from "vue";
 import { Popover, RadioButton } from "primevue";
 import Button from "@/components/Button.vue";
 import MDEditor from "@/components/MDEditor.vue";
+import apiClient from "@/api";
 
 const STATUS = Object.freeze({
   hidden: 0,
@@ -128,6 +129,8 @@ const searchMessage = computed(() => {
     ? "Số lượng thẻ đã đạt tối đa"
     : "Không có kết quả";
 });
+const api = apiClient();
+
 const search = (event) => {
   if (article.value.tags.length >= 5) {
     suggestions.value = [];
@@ -154,6 +157,16 @@ const toggleSaveMenu = (event) => {
   }
 
   saveMenu.value.toggle(event);
+};
+
+const handleSubmit = async (e) => {
+  try {
+    const { data, status } = await api.article.create(article.value);
+    console.log(data);
+    //TODO: redirect sang trang detail
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 

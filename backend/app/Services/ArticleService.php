@@ -45,7 +45,6 @@ class ArticleService
             $addition_data = [
                 'slug' => $slug,
                 'point' => 0,
-                'status' => Article::VISIBLE,
                 'view' => 0
             ];
 
@@ -110,7 +109,6 @@ class ArticleService
             $addition_data = [
                 'slug' => $new_slug,
                 'point' => 0,
-                'status' => Article::VISIBLE,
                 'view' => 0
             ];
 
