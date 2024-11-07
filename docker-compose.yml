@@ -1,4 +1,4 @@
-# version: "3.0"
+version: "3"
 
 networks:
   my-network:
@@ -9,7 +9,7 @@ services:
     container_name: php
     build:
       dockerfile: Dockerfile
-      context: ./
+      context: ./backend
     networks:
       - my-network
     volumes:
@@ -21,8 +21,6 @@ services:
     networks:
       - my-network
     volumes:
-      - ./backend:/home/site
-      - ./frontend:/home/www
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
     ports:
@@ -81,3 +79,14 @@ services:
       - my-network
     volumes:
       - ./meili_data:/meili_data
+
+  nodejs:
+    container_name: nodejs
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    volumes:
+      - ./frontend:/home/site
+    entrypoint: npm run dev
