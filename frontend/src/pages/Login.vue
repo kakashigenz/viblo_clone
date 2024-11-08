@@ -15,6 +15,13 @@
         <h4 class="font-medium text-lg mb-2">Đăng nhập vào Viblo</h4>
       </div>
       <form @submit="onSubmit" class="p-2 flex flex-col gap-y-4">
+        <Message
+          v-if="errorResponseMessage"
+          severity="error"
+          icon="pi pi-times-circle"
+          class="mb-2"
+          >{{ errorResponseMessage }}</Message
+        >
         <div class="flex flex-col gap-y-2">
           <InputGroup class="">
             <InputGroupAddon>
@@ -50,7 +57,7 @@
             passwordMessage
           }}</Message>
         </div>
-        <Button>Đăng nhập</Button>
+        <Button :loading="loading">Đăng nhập</Button>
       </form>
       <div class="flex justify-between p-2">
         <a href="#" class="text-sm text-blue-500">Quên mật khẩu?</a>
@@ -68,20 +75,47 @@ import Button from "@/components/Button.vue";
 import Message from "primevue/message";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
+import apiClient from "@/api";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
 
 const schema = yup.object({
   user_name: yup.string().required("Tên người dùng/email là bắt buộc"),
   password: yup.string().required("Mật khẩu là bắt buộc"),
 });
-const { errors, handleSubmit } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: schema,
 });
 
 const { value: userNameValue, errorMessage: userNameMessage } = useField("user_name");
 const { value: passwordValue, errorMessage: passwordMessage } = useField("password");
+const api = apiClient();
+const router = useRouter();
+const loading = ref(false);
+const errorResponseMessage = ref("");
 
-const onSubmit = handleSubmit((value) => {
-  console.log(value);
+const onSubmit = handleSubmit(async (value) => {
+  if (loading.value) {
+    return;
+  }
+
+  loading.value = true;
+  try {
+    const { status } = await api.auth.getCSRFToken();
+    if (status == 204) {
+      const { data } = await api.auth.login(value);
+      if (data.message == "success") {
+        router.push({ name: "createArticle" });
+      }
+    }
+  } catch (error) {
+    if (error.status == 401) {
+      errorResponseMessage.value = error?.response?.data?.message;
+    } else {
+      console.log(error);
+    }
+  }
+  loading.value = false;
 });
 </script>
 

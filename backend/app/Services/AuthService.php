@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
@@ -31,5 +32,23 @@ class AuthService
         }
 
         return null;
+    }
+
+    public function spaLogin(array $data)
+    {
+        $credentials = [
+            'password' => data_get($data, 'password')
+        ];
+
+        if (filter_var(data_get($data, 'user_name'), FILTER_VALIDATE_EMAIL)) {
+            $credentials['email'] = data_get($data, 'user_name');
+        } else {
+            $credentials['user_name'] = data_get($data, 'user_name');
+        }
+
+        if (!Auth::attempt($credentials)) {
+            return false;
+        }
+        return true;
     }
 }

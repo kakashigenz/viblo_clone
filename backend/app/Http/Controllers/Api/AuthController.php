@@ -33,4 +33,13 @@ class AuthController extends Controller
         }
         return response()->json(['token' => $token], 200);
     }
+
+    public function spaLogin(LoginRequest $request)
+    {
+        $data = $request->validated();
+        if (!$this->service->spaLogin($data)) {
+            return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
+        }
+        return response()->json(['message' => 'success'], 200);
+    }
 }

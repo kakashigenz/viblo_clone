@@ -4,10 +4,12 @@ const routes = [
   {
     path: "/publish/article",
     component: () => import("@/pages/EditPost.vue"),
+    name: "createArticle",
   },
   {
     path: "/login",
     component: () => import("@/pages/Login.vue"),
+    name: "login",
   },
 ];
 
