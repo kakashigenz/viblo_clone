@@ -24,6 +24,17 @@ const apiClient = () => {
       login(credentials) {
         return api.post("spa-login", credentials);
       },
+      register(data) {
+        return api.post("/register", data);
+      },
+      getUser() {
+        return api.get("users/me");
+      },
+    },
+    verificationEmail: {
+      resendEmail() {
+        return api.post("/email/verification-notification");
+      },
     },
   };
 };

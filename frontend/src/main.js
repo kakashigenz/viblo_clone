@@ -3,6 +3,7 @@ import App from "./App.vue";
 import PrimeVue from "primevue/config";
 import Tooltip from "primevue/tooltip";
 import Aura from "@primevue/themes/aura";
+import ToastService from "primevue/toastservice";
 
 import "primeicons/primeicons.css";
 import "easymde/dist/easymde.min.css";
@@ -49,5 +50,6 @@ app.use(PrimeVue, {
     },
   },
 });
+app.use(ToastService);
 app.use(router);
 app.mount("#app");
