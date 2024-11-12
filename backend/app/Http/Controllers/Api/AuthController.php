@@ -27,11 +27,15 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        $token = $this->service->login($data);
-        if (!$token) {
+        $res = $this->service->login($data);
+        if (!$res) {
             return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
         }
-        return response()->json(['token' => $token], 200);
+        if (!data_get($res, 'verified')) {
+            abort(403, 'Vui lòng xác thực email!');
+        }
+
+        return response()->json($res, 200);
     }
 
     public function spaLogin(LoginRequest $request)
@@ -40,6 +44,12 @@ class AuthController extends Controller
         if (!$this->service->spaLogin($data)) {
             return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
         }
-        return response()->json(['message' => 'success'], 200);
+        if (!$request->user()->hasVerifiedEmail()) {
+            abort(403, 'Vui lòng xác thực email!');
+        }
+        return response()->json([
+            'message' => 'success',
+            'user' => auth()->guard()->user()
+        ], 200);
     }
 }

@@ -16,12 +16,21 @@
       </div>
       <form @submit="onSubmit" class="p-2 flex flex-col gap-y-4">
         <Message
-          v-if="errorResponseMessage"
+          v-if="errorResponse.code"
           severity="error"
           icon="pi pi-times-circle"
           class="mb-2"
-          >{{ errorResponseMessage }}</Message
         >
+          <p>{{ errorResponse.message }}</p>
+          <button
+            v-if="errorResponse.code == 403"
+            type="button"
+            @click="resendEmail"
+            class="text-blue-500"
+          >
+            Gửi email kích hoạt tài khoản
+          </button>
+        </Message>
         <div class="flex flex-col gap-y-2">
           <InputGroup class="">
             <InputGroupAddon>
@@ -53,17 +62,24 @@
               type="password"
             />
           </InputGroup>
-          <Message severity="error" variant="simple" size="small">{{
-            passwordMessage
-          }}</Message>
+          <Message
+            v-if="passwordMessage"
+            severity="error"
+            variant="simple"
+            size="small"
+            >{{ passwordMessage }}</Message
+          >
         </div>
         <Button :loading="loading">Đăng nhập</Button>
       </form>
       <div class="flex justify-between p-2">
         <a href="#" class="text-sm text-blue-500">Quên mật khẩu?</a>
-        <a href="#" class="text-sm text-blue-500">Tạo tài khoản</a>
+        <RouterLink :to="{ name: 'register' }" class="text-sm text-blue-500"
+          >Tạo tài khoản</RouterLink
+        >
       </div>
     </div>
+    <Toast />
   </div>
 </template>
 
@@ -78,6 +94,8 @@ import * as yup from "yup";
 import apiClient from "@/api";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 
 const schema = yup.object({
   user_name: yup.string().required("Tên người dùng/email là bắt buộc"),
@@ -90,9 +108,13 @@ const { handleSubmit } = useForm({
 const { value: userNameValue, errorMessage: userNameMessage } = useField("user_name");
 const { value: passwordValue, errorMessage: passwordMessage } = useField("password");
 const api = apiClient();
+const toast = useToast();
 const router = useRouter();
 const loading = ref(false);
-const errorResponseMessage = ref("");
+const errorResponse = ref({
+  code: undefined,
+  message: "",
+});
 
 const onSubmit = handleSubmit(async (value) => {
   if (loading.value) {
@@ -110,13 +132,29 @@ const onSubmit = handleSubmit(async (value) => {
     }
   } catch (error) {
     if (error.status == 401) {
-      errorResponseMessage.value = error?.response?.data?.message;
+      errorResponse.value.code = error.status;
+      errorResponse.value.message = error?.response?.data?.message;
+    } else if (error.status == 403) {
+      errorResponse.value.code = error.status;
+      errorResponse.value.message = error?.response?.data?.message;
     } else {
       console.log(error);
     }
   }
   loading.value = false;
 });
+
+const resendEmail = async (e) => {
+  const { data } = await api.verificationEmail.resendEmail();
+  if (data.message == "success") {
+    toast.add({
+      severity: "success",
+      summary: "Thông báo",
+      detail: "Gửi thành công",
+      life: 3000,
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
