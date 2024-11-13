@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreatePresignedURLRequest;
+use App\Http\Requests\StoreImageRequest;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
 
@@ -27,7 +27,19 @@ class ImageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function createPresignedURL(CreatePresignedURLRequest $request)
+    public function store(StoreImageRequest $request)
+    {
+        $data = $request->validated();
+        $user = $request->user();
+        $this->service->create($data, data_get($user, 'id'));
+        return ['message' => 'successs'];
+    }
+
+
+    /**
+     * Create presigned url
+     */
+    public function createPresignedURL(StoreImageRequest $request)
     {
         $data = $request->validated();
 

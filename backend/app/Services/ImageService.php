@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 class ImageService
 {
     /**
-     * Create image and return path
+     * Create presigned url
      */
     public function createPresignedURL(string $name): array
     {
@@ -20,6 +20,19 @@ class ImageService
 
         ['url' => $url, 'headers' => $headers] = Storage::temporaryUploadUrl($new_name, now()->addMinutes(5));
         return ['url' => $url, 'name' => $new_name];
+    }
+
+    /**
+     * Create an image
+     */
+    public function create(array $data, string $user_id)
+    {
+        $attribute = [
+            'path' => data_get($data, 'name')
+        ];
+        $image = new Image($attribute);
+        $image->user_id = $user_id;
+        $image->save();
     }
 
     /**
