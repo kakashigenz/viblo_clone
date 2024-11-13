@@ -30,13 +30,10 @@ class ImageController extends Controller
     public function createPresignedURL(CreatePresignedURLRequest $request)
     {
         $data = $request->validated();
-        $user = $request->user();
 
-        $path = $this->service->createPresignedURL(data_get($data, 'file_name'), data_get($user, 'id'));
+        $res = $this->service->createPresignedURL(data_get($data, 'name'));
 
-        return [
-            'path' => $path
-        ];
+        return $res;
     }
 
     /**

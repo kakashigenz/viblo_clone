@@ -23,7 +23,7 @@ class CreatePresignedURLRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:images,name'
+            'name' => 'required'
         ];
     }
 }

@@ -6,24 +6,20 @@ use App\Models\Image;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ImageService
 {
     /**
      * Create image and return path
      */
-    public function createPresignedURL(string $name, string $user_id): string
+    public function createPresignedURL(string $name): array
     {
-        ['url' => $url, 'headers' => $headers] = Storage::temporaryUploadUrl($name, now()->addMinutes(5));
+        $ext = substr($name, strrpos($name, '.'));
+        $new_name = Str::uuid() . $ext;
 
-        Image::query()->create([
-            'user_id' => $user_id,
-            'path' => '',
-            'name' => $name
-        ]);
-
-        $url = str_replace(env('AWS_ENDPOINT') . '/' . env('AWS_BUCKET'), env('IMAGE_SERVER'), $url);
-        return $url;
+        ['url' => $url, 'headers' => $headers] = Storage::temporaryUploadUrl($new_name, now()->addMinutes(5));
+        return ['url' => $url, 'name' => $new_name];
     }
 
     /**
