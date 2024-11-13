@@ -31,11 +31,11 @@ class ImageService
     }
 
     /**
-     * get an image
+     * get an url of image
      */
-    public function find(string $name)
+    public function getUrl(string $name)
     {
-        //
+        return Storage::url($name);
     }
 
     /**

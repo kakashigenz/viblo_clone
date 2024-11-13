@@ -41,7 +41,7 @@ class ImageController extends Controller
      */
     public function show(string $name)
     {
-        //
+        return $this->service->getUrl($name);
     }
 
     /**

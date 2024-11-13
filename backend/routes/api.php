@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::group(['as' => 'image.', 'prefix' => 'images'], function () {
             Route::post('/', [ImageController::class, 'createPresignedURL']);
             Route::get('/', [ImageController::class, 'index']);
+            Route::get('/{name}', [ImageController::class, 'show']);
             Route::delete('/{name}', [ImageController::class, 'destroy']);
         });
 
