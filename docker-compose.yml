@@ -10,7 +10,9 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./backend
-    user: ${UID}:${GID}
+      args:
+        - UID=${UID}
+        - GID=${GID}
     networks:
       - my-network
     volumes:
