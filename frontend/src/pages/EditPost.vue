@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-200 h-screen flex flex-col">
+  <div class="bg-gray-200 min-h-screen flex flex-col">
     <Header />
     <div class="p-3 pb-0 flex flex-col flex-1">
       <InputText
@@ -30,7 +30,7 @@
         <MDEditor
           class="h-full"
           ref="editor"
-          :placeholder="placeholder"
+          :place-holder="placeholder"
           v-model="article.content"
         />
       </div>
@@ -170,4 +170,4 @@ const handleSubmit = async (e) => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped></style>

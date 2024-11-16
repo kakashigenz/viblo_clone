@@ -30,3 +30,29 @@ html {
   word-wrap: break-word;
   flex: 1;
 }
+
+div.EasyMDEContainer .editor-preview img {
+  display: block;
+  width: 825px;
+  margin: 12px auto;
+  max-width: 100%;
+}
+
+.editor-preview-full.editor-preview.editor-preview-active ul {
+  list-style-type: disc;
+  padding-left: 40px;
+}
+
+.editor-preview-full.editor-preview.editor-preview-active ol {
+  list-style-type: decimal;
+  padding-left: 40px;
+}
+
+.editor-preview-full.editor-preview.editor-preview-active blockquote {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 40px;
+  margin-inline-end: 40px;
+  unicode-bidi: isolate;
+}

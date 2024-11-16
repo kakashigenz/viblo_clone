@@ -28,7 +28,25 @@ const apiClient = () => {
         return api.post("/register", data);
       },
       getUser() {
-        return api.get("users/me");
+        return api.get("/users/me");
+      },
+    },
+    images: {
+      createPresignedURL(data) {
+        return api.post("/images/create-presigned-url", data);
+      },
+      getList() {
+        return api.get("images/");
+      },
+      uploadImage(file, url) {
+        return api.put(url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+      },
+      store(data) {
+        return api.post("/images", data);
       },
     },
     verificationEmail: {

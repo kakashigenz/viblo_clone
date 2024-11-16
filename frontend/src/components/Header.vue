@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 w-full grid grid-cols-2 p-4 shadow-md bg-white">
+  <div class="sticky top-0 w-full grid grid-cols-2 p-4 shadow-md bg-white z-[1000]">
     <div class="flex items-center">
       <div class="mr-[64px]">
         <img
@@ -9,9 +9,7 @@
           height="21"
         />
       </div>
-      <ul
-        class="flex items-center gap-x-[40px] font-bold text-gray-400 text-sm"
-      >
+      <ul class="flex items-center gap-x-[40px] font-bold text-gray-400 text-sm">
         <li v-for="(item, index) in dataNaviagtion" :key="index">
           <button class="hover:text-black">{{ item.title }}</button>
         </li>

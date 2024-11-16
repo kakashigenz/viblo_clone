@@ -1,10 +1,38 @@
 <template>
-  <textarea ref="editor"></textarea>
+  <div>
+    <textarea ref="editor"></textarea>
+    <Dialog
+      v-model:visible="visible"
+      modal
+      header="Thêm hình ảnh thu nhỏ"
+      class="w-[720px]"
+    >
+      <div class="bg-white">
+        <Media :handle="props.handleUpload" />
+        <div class="mt-5">
+          <h4 class="mb-4">Ảnh của bạn</h4>
+          <div class="grid grid-cols-6 gap-4">
+            <div v-for="image in images" :key="image.id" class="">
+              <img
+                @click="selectImage($event, image)"
+                :src="image.url"
+                alt=""
+                class="w-full block object-cover hover:cursor-pointer"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  </div>
 </template>
 
 <script setup>
 import EasyMDE from "easymde";
 import { nextTick, onMounted, ref } from "vue";
+import Dialog from "primevue/dialog";
+import Media from "./Media.vue";
+import apiClient from "@/api";
 
 const props = defineProps({
   placeHolder: {
@@ -36,7 +64,12 @@ const toolbars = [
   "horizontal-rule",
   "clean-block",
   "|",
-  "upload-image",
+  {
+    name: "upload-image",
+    action: openSelectBox,
+    className: "fa fa-image",
+    title: "Upload Image",
+  },
   "link",
   "|",
   "preview",
@@ -51,6 +84,9 @@ const toolbars = [
 const editor = ref();
 let MDE = null;
 const emit = defineEmits(["update:modelValue"]);
+const visible = ref(false);
+const images = ref([]);
+const api = apiClient();
 
 onMounted(() => {
   MDE = new EasyMDE({
@@ -58,6 +94,7 @@ onMounted(() => {
     placeholder: props.placeHolder,
     toolbar: props.toolbar ?? toolbars,
     spellChecker: false,
+    maxHeight: "calc(100vh - 340px)",
   });
 
   MDE.value(props.modelValue);
@@ -66,6 +103,18 @@ onMounted(() => {
     emit("update:modelValue", MDE.value());
   });
 });
+
+async function openSelectBox(e) {
+  visible.value = true;
+  const { data } = await api.images.getList();
+  images.value = data;
+}
+
+function selectImage(event, image) {
+  const imageMarkdown = `![Image](${image.url})`;
+  MDE.codemirror.replaceSelection(imageMarkdown);
+  visible.value = false;
+}
 </script>
 
 <style lang="css" scoped></style>
