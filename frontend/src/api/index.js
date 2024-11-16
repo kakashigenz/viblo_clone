@@ -35,8 +35,8 @@ const apiClient = () => {
       createPresignedURL(data) {
         return api.post("/images/create-presigned-url", data);
       },
-      getList() {
-        return api.get("images/");
+      getList(page) {
+        return api.get("images/", { params: { page } });
       },
       uploadImage(file, url) {
         return api.put(url, file, {

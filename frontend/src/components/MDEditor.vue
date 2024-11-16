@@ -21,6 +21,13 @@
               />
             </div>
           </div>
+          <Paginator
+            v-if="images.length < paginator.total"
+            :rows="paginator.size"
+            :totalRecords="paginator.total"
+            template="PrevPageLink PageLinks NextPageLink"
+            @page="changePage"
+          />
         </div>
       </div>
     </Dialog>
@@ -29,8 +36,9 @@
 
 <script setup>
 import EasyMDE from "easymde";
-import { nextTick, onMounted, ref } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import Dialog from "primevue/dialog";
+import Paginator from "primevue/paginator";
 import Media from "./Media.vue";
 import apiClient from "@/api";
 
@@ -87,6 +95,22 @@ const emit = defineEmits(["update:modelValue"]);
 const visible = ref(false);
 const images = ref([]);
 const api = apiClient();
+const paginator = ref({
+  currentPage: 0,
+  total: 0,
+  size: 0,
+});
+
+watch(
+  () => paginator.value.currentPage,
+  async (newValue) => {
+    const { data } = await api.images.getList(newValue);
+    images.value = data.data;
+    paginator.value.total = data.total;
+    paginator.value.size = data.size;
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   MDE = new EasyMDE({
@@ -104,10 +128,12 @@ onMounted(() => {
   });
 });
 
-async function openSelectBox(e) {
+function openSelectBox(e) {
   visible.value = true;
-  const { data } = await api.images.getList();
-  images.value = data;
+}
+
+function changePage(event) {
+  paginator.value.currentPage = event.page + 1;
 }
 
 function selectImage(event, image) {

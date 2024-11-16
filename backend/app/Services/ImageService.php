@@ -38,9 +38,15 @@ class ImageService
     /**
      * get list images by user id
      */
-    public function getList(): Collection
+    public function getList(): array
     {
-        return Image::query()->where('user_id', Auth::user()->id)->get();
+        $images =  Image::query()->where('user_id', Auth::user()->id)->paginate(18);
+        return [
+            'data' => $images->items(),
+            'page' => $images->currentPage(),
+            'size' => $images->perPage(),
+            'total' => $images->total(),
+        ];
     }
 
     /**
