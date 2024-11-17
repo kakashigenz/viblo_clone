@@ -11,6 +11,7 @@ import "./style.css";
 
 import { definePreset } from "@primevue/themes";
 import router from "./router";
+import { createPinia } from "pinia";
 
 const app = createApp(App);
 
@@ -38,6 +39,7 @@ const myPreset = definePreset(Aura, {
     },
   },
 });
+const pinia = createPinia();
 
 app.directive("tooltip", Tooltip);
 app.use(PrimeVue, {
@@ -51,5 +53,6 @@ app.use(PrimeVue, {
   },
 });
 app.use(ToastService);
+app.use(pinia);
 app.use(router);
 app.mount("#app");

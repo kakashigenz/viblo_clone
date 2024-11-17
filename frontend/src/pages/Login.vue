@@ -92,10 +92,11 @@ import Message from "primevue/message";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
 import apiClient from "@/api";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import { useUserStore } from "@/stores/user";
 
 const schema = yup.object({
   user_name: yup.string().required("Tên người dùng/email là bắt buộc"),
@@ -110,11 +111,13 @@ const { value: passwordValue, errorMessage: passwordMessage } = useField("passwo
 const api = apiClient();
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
 const loading = ref(false);
 const errorResponse = ref({
   code: undefined,
   message: "",
 });
+const userStore = useUserStore();
 
 const onSubmit = handleSubmit(async (value) => {
   if (loading.value) {
@@ -123,13 +126,9 @@ const onSubmit = handleSubmit(async (value) => {
 
   loading.value = true;
   try {
-    const { status } = await api.auth.getCSRFToken();
-    if (status == 204) {
-      const { data } = await api.auth.login(value);
-      if (data.message == "success") {
-        router.push({ name: "createArticle" });
-      }
-    }
+    await userStore.login(value);
+    const next = decodeURIComponent(route.query.redirect) || "/";
+    router.push(next);
   } catch (error) {
     if (error.status == 401) {
       errorResponse.value.code = error.status;
