@@ -14,7 +14,6 @@ class Image extends Model
 
     public function jsonSerialize(): mixed
     {
-        $data = $this->toArray();
         return [
             'id' => data_get($this, 'id'),
             'url' => Storage::url(data_get($this, 'path')),

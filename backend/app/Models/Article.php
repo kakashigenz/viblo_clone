@@ -61,6 +61,8 @@ class Article extends Model
         return [
             'title' => $this->title,
             'content' => $this->content,
+            'created_at' => $this->created_at,
+            'user' => $this->user
         ];
     }
 
@@ -72,5 +74,14 @@ class Article extends Model
     public function makeSearchableUsing(Collection $models)
     {
         return $models->load('user');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('draft', function (Builder $builder) {
+            $builder->where('status', static::DRAFT);
+        });
     }
 }

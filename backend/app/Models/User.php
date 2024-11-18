@@ -77,6 +77,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Article::class, 'bookmarks', 'user_id', 'article_id');
     }
 
+    public function articles()
+    {
+        return $this->hasMany(Article::class, 'user_id', 'id');
+    }
+
     public function searchableAs()
     {
         return 'users_index';
@@ -93,5 +98,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function shouldBeSearchable()
     {
         return $this->is_banned == false;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        $user = $this->toArray();
+        $user['avatar'] = data_get($user, 'avatar')
+            ? sprintf("%s/%s/%s", env('AWS_ENDPOINT'), env('AWS_BUCKET'), data_get($user, 'avatar'))
+            : null;
+        return $user;
     }
 }

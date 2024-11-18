@@ -17,6 +17,11 @@ class Tag extends Model
         return $this->belongsToMany(Article::class, 'article_tags', 'tag_id', 'article_id');
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'following_tags', 'tag_id', 'follower_id');
+    }
+
     public function searchableAs()
     {
         return 'tags_index';

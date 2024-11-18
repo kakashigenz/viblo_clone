@@ -54,6 +54,15 @@ const apiClient = () => {
         return api.post("/email/verification-notification");
       },
     },
+    search: {
+      quickSearch(query) {
+        return api.get("/search/multi", {
+          params: {
+            q: query,
+          },
+        });
+      },
+    },
   };
 };
 

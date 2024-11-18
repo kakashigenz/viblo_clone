@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Article;
+use App\Models\Tag;
+use App\Models\User;
 
 return [
 
@@ -139,6 +141,12 @@ return [
             Article::class => [
                 'sortableAttributes' => ['created_at'],
             ],
+            Tag::class => [
+                'sortableAttributes' => [],
+            ],
+            User::class => [
+                'sortableAttributes' => [],
+            ]
         ],
     ],
 

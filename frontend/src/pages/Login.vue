@@ -127,7 +127,7 @@ const onSubmit = handleSubmit(async (value) => {
   loading.value = true;
   try {
     await userStore.login(value);
-    const next = decodeURIComponent(route.query.redirect) || "/";
+    const next = route.query.redirect ? decodeURIComponent(route.query.redirect) : "/";
     router.push(next);
   } catch (error) {
     if (error.status == 401) {

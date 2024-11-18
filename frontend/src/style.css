@@ -56,3 +56,7 @@ div.EasyMDEContainer .editor-preview img {
   margin-inline-end: 40px;
   unicode-bidi: isolate;
 }
+
+strong {
+  color: #0284c7;
+}

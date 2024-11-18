@@ -1,7 +1,5 @@
 <template>
-  <Container>
-    <Header />
-  </Container>
+  <Header container />
 </template>
 
 <script setup>
