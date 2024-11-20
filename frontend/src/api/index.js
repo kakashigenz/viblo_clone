@@ -30,6 +30,9 @@ const apiClient = () => {
       getUser() {
         return api.get("/users/me");
       },
+      logout() {
+        return api.post("logout");
+      },
     },
     images: {
       createPresignedURL(data) {

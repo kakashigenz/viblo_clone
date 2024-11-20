@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -51,5 +53,17 @@ class AuthController extends Controller
             'message' => 'success',
             'user' => auth()->guard()->user()
         ], 200);
+    }
+
+    public function logout(Request $request)
+    {
+        if ($request->bearerToken()) {
+            $request->user()->currentAccessToken()->delete();
+        } else {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+        return ['message' => 'success'];
     }
 }
