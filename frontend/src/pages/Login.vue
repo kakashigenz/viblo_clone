@@ -74,7 +74,7 @@
       </form>
       <div class="flex justify-between p-2">
         <a href="#" class="text-sm text-blue-500">Quên mật khẩu?</a>
-        <RouterLink :to="{ name: 'register' }" class="text-sm text-blue-500"
+        <RouterLink :to="{ name: REGISTER_ROUTE_NAME }" class="text-sm text-blue-500"
           >Tạo tài khoản</RouterLink
         >
       </div>
@@ -97,6 +97,7 @@ import { ref } from "vue";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import { useUserStore } from "@/stores/user";
+import { REGISTER_ROUTE_NAME } from "@/helper/constant";
 
 const schema = yup.object({
   user_name: yup.string().required("Tên người dùng/email là bắt buộc"),

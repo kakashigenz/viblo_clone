@@ -4,7 +4,7 @@
       <div class="grid grid-cols-2">
         <div class="flex items-center">
           <div class="mr-[64px]">
-            <RouterLink :to="{ name: 'homePage' }">
+            <RouterLink :to="{ name: HOME_ROUTE_NAME }">
               <img
                 src="http://images.viblo.test/images/logo_full.svg"
                 alt="Viblo"
@@ -48,7 +48,7 @@
           </div>
           <div v-else>
             <RouterLink
-              :to="{ name: 'login' }"
+              :to="{ name: LOGIN_ROUTE_NAME }"
               class="text-blue-500 flex gap-x-1 items-center text-sm"
             >
               <i class="pi pi-sign-in" style="font-size: 12px"></i>
@@ -97,7 +97,7 @@
     <div v-else class="grid grid-cols-2">
       <div class="flex items-center">
         <div class="mr-[64px]">
-          <RouterLink :to="{ name: 'homePage' }">
+          <RouterLink :to="{ name: HOME_ROUTE_NAME }">
             <img
               src="http://images.viblo.test/images/logo_full.svg"
               alt="Viblo"
@@ -140,7 +140,7 @@
         </div>
         <div v-else>
           <RouterLink
-            :to="{ name: 'login' }"
+            :to="{ name: LOGIN_ROUTE_NAME }"
             class="text-blue-500 flex gap-x-1 items-center text-sm"
           >
             <i class="pi pi-sign-in"></i>
@@ -198,6 +198,11 @@ import Container from "./Container.vue";
 import { useUserStore } from "@/stores/user";
 import SearchBar from "./SearchBar.vue";
 import { useRouter } from "vue-router";
+import {
+  CREATE_ARTICLE_ROUTE_NAME,
+  HOME_ROUTE_NAME,
+  LOGIN_ROUTE_NAME,
+} from "@/helper/constant";
 
 const props = defineProps({
   container: Boolean,
@@ -228,7 +233,7 @@ const dataUserMenu = ref([
     handle: async () => {
       await userStore.logout();
       if (!userStore.user) {
-        router.push({ name: "homePage" });
+        router.push({ name: HOME_ROUTE_NAME });
       }
     },
   },
@@ -251,7 +256,7 @@ const actionMenu = ref([
     requireAuthenticate: true,
   },
   {
-    route: "createArticle",
+    route: CREATE_ARTICLE_ROUTE_NAME,
     title: "Viết",
     icon: "pi-pencil",
     requireAuthenticate: true,
