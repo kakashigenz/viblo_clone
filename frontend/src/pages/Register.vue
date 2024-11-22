@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center h-screen">
     <div class="w-[120px] my-6">
-      <RouterLink :to="{ name: 'login' }">
+      <RouterLink :to="{ name: LOGIN_ROUTE_NAME }">
         <img src="http://images.viblo.test/images/logo_full.svg" alt="" class="w-full" />
       </RouterLink>
     </div>
@@ -129,6 +129,7 @@ import apiClient from "@/api";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import Password from "primevue/password";
+import { LOGIN_ROUTE_NAME } from "@/helper/constant";
 
 const schema = yup.object({
   name: yup.string().required("Tên là bắt buộc"),
