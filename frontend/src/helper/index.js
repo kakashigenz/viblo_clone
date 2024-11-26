@@ -48,3 +48,30 @@ export const markdownIt = () => {
     },
   };
 };
+
+export const getURlAvatar = (user) => {
+  return (
+    user.avatar ?? `https://placehold.co/45x45/green/FFF?text=${user.name.slice(0, 1)}`
+  );
+};
+
+export const getFormatedTime = (timestamp, locate = "vi-VN") => {
+  let value;
+  const diff = (Date.now() - new Date(timestamp).getTime()) / 1000;
+  const minute = Math.floor(diff / 60);
+  const hour = Math.floor(minute / 24);
+  const dtf = new Intl.DateTimeFormat(locate, {
+    dateStyle: "medium",
+    timeStyle: "short",
+    hour12: true,
+  });
+  const rtf = new Intl.RelativeTimeFormat(locate, { numeric: "auto" });
+
+  if (hour > 24) {
+    return dtf.format(new Date(timestamp));
+  }
+  if (minute > 60) {
+    return rtf.format(-hour, "hour");
+  }
+  return rtf.format(-minute, "minute");
+};
