@@ -117,7 +117,7 @@
 
 <script setup>
 import apiClient from "@/api";
-import { debounce } from "@/helper";
+import { debounce, getURlAvatar } from "@/helper";
 import { computed, inject, ref, watch } from "vue";
 const searchKeyword = ref("");
 const isFetching = ref(false);
@@ -169,12 +169,6 @@ const printDate = (timestamp) => {
     timeStyle: "short",
     hour12: true,
   }).format(date);
-};
-
-const getURlAvatar = (user) => {
-  return (
-    user.avatar ?? `https://placehold.co/45x45/green/FFF?text=${user.name.slice(0, 1)}`
-  );
 };
 </script>
 
