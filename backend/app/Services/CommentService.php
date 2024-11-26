@@ -3,24 +3,18 @@
 namespace App\Services;
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class CommentService
 {
-    protected ArticleService $article_service;
-
-    public function __construct(ArticleService $service)
-    {
-        $this->article_service = $service;
-    }
-
     /**
-     * get list comment group by article use pagination 
+     * get list comment group by article use pagination
      */
     public function getList(string $slug, int $size)
     {
-        $article = $this->article_service->find($slug);
+        $article = User::query()->where('slug', $slug)->firstOrFail();
         $comments = Comment::with(['user', 'subComments' => function ($query) {
             $query->with('user')->limit(2);
         }])->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->paginate($size);
@@ -39,7 +33,7 @@ class CommentService
      */
     public function create(array $data, string $slug, string $user_id)
     {
-        $article = $this->article_service->find($slug);
+        $article = User::query()->where('slug', $slug)->firstOrFail();
         $comment = new Comment($data);
         $comment->user_id = $user_id;
         $comment->point = 0;
