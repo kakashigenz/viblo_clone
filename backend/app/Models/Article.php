@@ -51,6 +51,11 @@ class Article extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function bookmarks()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks', 'article_id', 'user_id');
+    }
+
     public function searchableAs()
     {
         return 'articles_index';
@@ -80,8 +85,8 @@ class Article extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('draft', function (Builder $builder) {
-            $builder->where('status', static::DRAFT);
+        static::addGlobalScope('public', function (Builder $builder) {
+            $builder->where('status', static::VISIBLE);
         });
     }
 }

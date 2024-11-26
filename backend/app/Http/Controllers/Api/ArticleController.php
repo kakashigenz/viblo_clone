@@ -22,7 +22,7 @@ class ArticleController extends Controller
     public function index(IndexRequest $request)
     {
         $data = $request->validated();
-        $size = data_get($data, 'size', 20);
+        $size = data_get($data, 'size', 35);
         $res = $this->service->getList($size);
         return $res;
     }
