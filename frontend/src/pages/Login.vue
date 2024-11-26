@@ -6,11 +6,7 @@
     >
       <div class="flex flex-col gap-y-6 justify-center items-center mt-[32px]">
         <div class="w-[120px]">
-          <img
-            src="http://images.viblo.test/images/logo_full.svg"
-            alt=""
-            class="w-full"
-          />
+          <img src="/images/logo_full.svg" alt="" class="w-full" />
         </div>
         <h4 class="font-medium text-lg mb-2">Đăng nhập vào Viblo</h4>
       </div>

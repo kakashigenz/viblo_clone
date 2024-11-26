@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center h-screen">
     <div class="w-[120px] my-6">
       <RouterLink :to="{ name: LOGIN_ROUTE_NAME }">
-        <img src="http://images.viblo.test/images/logo_full.svg" alt="" class="w-full" />
+        <img src="/images/logo_full.svg" alt="" class="w-full" />
       </RouterLink>
     </div>
     <div
