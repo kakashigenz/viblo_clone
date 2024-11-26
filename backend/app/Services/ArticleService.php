@@ -6,6 +6,7 @@ use App\Models\Article;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use Parsedown;
 
 class ArticleService
 {
@@ -21,9 +22,30 @@ class ArticleService
      */
     public function getList(int $size)
     {
-        $articles = Article::with('tags')->paginate($size);
+        $articles = Article::with(['tags', 'user'])->withCount(['bookmarks', 'comments', 'votes'])->paginate($size);
+        $char_limit = 160;
+
+        $article_content = array_map(function ($article) use ($char_limit) {
+            $parsed_content = Parsedown::instance()->text(data_get($article, 'content'));
+            $len_origin = strlen(data_get($article, 'content'));
+
+            $matches = [];
+            $truncated_content = '';
+            preg_match_all("/<p\b>.*?<\/p\b>/", $parsed_content, $matches, PREG_OFFSET_CAPTURE);
+
+            foreach ($matches[0] as $match) {
+                $truncated_content .= preg_replace("/<(?:\/?)(p|strong|em|h[1-6])\b[^>]*>/", '', $match[0]);
+            }
+
+            $article['content'] = mb_substr($truncated_content, 0, $char_limit);
+            if ($char_limit < $len_origin) {
+                $article['content'] .= '...';
+            }
+            return $article;
+        }, $articles->items());
+
         return [
-            'data' => $articles->items(),
+            'data' => $article_content,
             'page' => $articles->currentPage(),
             'size' => $articles->perPage(),
             'total' => $articles->total()

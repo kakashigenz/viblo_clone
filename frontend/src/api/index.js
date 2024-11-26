@@ -14,6 +14,9 @@ const apiClient = () => {
       create(article) {
         return api.post("/articles", article);
       },
+      getList(page) {
+        return api.get("/articles", { params: { page } });
+      },
     },
     auth: {
       getCSRFToken() {

@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.2",
         "darkaonline/l5-swagger": "^8.6",
+        "erusev/parsedown": "^1.7",
         "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
