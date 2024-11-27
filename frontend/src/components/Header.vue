@@ -1,5 +1,8 @@
 <template>
-  <header class="sticky top-0 w-full p-4 shadow-md bg-white z-[1000]">
+  <header
+    class="sticky top-0 w-full p-4 shadow-md bg-white"
+    :class="props.container ? 'z-[1000]' : ''"
+  >
     <Container v-if="props.container">
       <div class="grid grid-cols-2">
         <div class="flex items-center">
@@ -89,16 +92,11 @@
         </div>
       </div>
     </Container>
-    <div v-else class="grid grid-cols-2">
+    <div v-else class="grid grid-cols-2 z-0">
       <div class="flex items-center">
         <div class="mr-[64px]">
           <RouterLink :to="{ name: HOME_ROUTE_NAME }">
-            <img
-              src="http://images.viblo.test/images/logo_full.svg"
-              alt="Viblo"
-              width="62"
-              height="21"
-            />
+            <img src="/images/logo_full.svg" alt="Viblo" width="62" height="21" />
           </RouterLink>
         </div>
         <ul class="flex items-center gap-x-[40px] font-bold text-gray-400 text-sm">
