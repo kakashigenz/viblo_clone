@@ -36,7 +36,7 @@
         />
       </div>
       <div class="col-span-3">
-        <SideBar>
+        <SideBar class="overflow-y-auto">
           <div class="mt-1">
             <header class="flex">
               <a href="#">

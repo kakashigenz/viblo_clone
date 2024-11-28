@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="sticky top-[94px] max-h-[calc(100vh-88px)] overflow-y-auto"
-    style="scrollbar-width: thin"
-  >
+  <div class="sticky top-[94px] max-h-[calc(100vh-88px)]" style="scrollbar-width: thin">
     <slot />
   </div>
 </template>
