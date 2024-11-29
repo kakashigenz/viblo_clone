@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/spa-login', [AuthController::class, 'spaLogin']);
+Route::post('/check-authorization', [AuthController::class, 'checkAuthorization']);
 
 Route::get('/email/verify/{id}/{hash}', [VerificationEmailController::class, 'verify'])
     ->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
