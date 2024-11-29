@@ -1,5 +1,5 @@
 <template>
-  <button :class="className" :disabled="props.loading">
+  <button :class="className" :disabled="props.isDisable">
     <slot />
   </button>
 </template>
@@ -16,17 +16,17 @@ const props = defineProps({
     type: String,
     default: "medium",
   },
-  loading: {
+  isDisable: {
     type: Boolean,
   },
 });
 
-const className = ref("flex items-center gap-x-3 text-black border transition-all ");
+const className = ref("flex items-center gap-x-3 text-black border transition-all");
 
 switch (props.variant) {
   case "primary":
     className.value =
-      "font-regular rounded-sm bg-blue-500 text-white hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-blue-400";
+      "font-regular rounded-sm bg-blue-500 text-white hover:bg-blue-400 disabled:cursor-not-allowed disabled:bg-blue-400 ";
     break;
   case "secondary":
     className.value +=

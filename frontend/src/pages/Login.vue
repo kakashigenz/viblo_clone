@@ -66,7 +66,7 @@
             >{{ passwordMessage }}</Message
           >
         </div>
-        <Button :loading="loading">Đăng nhập</Button>
+        <Button :is-disable="loading">Đăng nhập</Button>
       </form>
       <div class="flex justify-between p-2">
         <a href="#" class="text-sm text-blue-500">Quên mật khẩu?</a>

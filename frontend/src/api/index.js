@@ -17,6 +17,9 @@ const apiClient = () => {
       getList(page) {
         return api.get("/articles", { params: { page } });
       },
+      getObject(slug) {
+        return api.get(`/articles/${slug}`);
+      },
     },
     auth: {
       getCSRFToken() {

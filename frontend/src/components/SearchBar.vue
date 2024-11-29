@@ -30,7 +30,7 @@
     <!-- drop down -->
     <div
       v-if="isOpenDropdown"
-      class="absolute top-full w-full border border-gray-200 bg-white p-2 max-h-[calc(100vh-80px)] overflow-auto"
+      class="dropdown-search absolute top-full w-full border border-gray-200 bg-white p-2 max-h-[calc(100vh-80px)] overflow-auto"
     >
       <div v-if="hasResults">
         <div v-if="results?.articles.length" class="mb-2 last:mb-0">
@@ -124,7 +124,6 @@ const isFetching = ref(false);
 const isOpenDropdown = ref(false);
 const api = apiClient();
 const results = ref();
-const md = inject("md");
 
 const search = debounce(async (keyword) => {
   if (!keyword) {

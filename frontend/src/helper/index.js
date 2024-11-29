@@ -1,5 +1,7 @@
+import { Marked } from "marked";
+import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
-import MarkdownIt from "markdown-it";
+import { gfmHeadingId } from "marked-gfm-heading-id";
 
 export const debounce = (callback, delay = 0) => {
   let prevId = undefined;
@@ -12,37 +14,38 @@ export const debounce = (callback, delay = 0) => {
   };
 };
 
-export const markdownIt = () => {
+export const escapeHtml = (text) => {
+  const map = {
+    "&": "&amp;",
+    '"': "&quot;",
+    "'": "&#39;",
+    "<": "&lt;",
+    ">": "&gt;",
+  };
+  return text.replace(/[&"'<>]/g, (char) => map[char] || char);
+};
+
+export const marked = () => {
   let md = null;
   return {
     getInstance() {
       if (!md) {
-        md = MarkdownIt({
-          highlight: function (code, lang) {
-            if (lang && hljs.getLanguage(lang)) {
-              try {
-                const highlighted = hljs.highlight(code, { language: lang }).value;
-                return `
-                    <div class="code-block relative">
-                      <pre><code class="hljs ${lang}">${highlighted}</code></pre>
-                      <button class="copy-btn absolute top-1 right-1" 
-                      onclick="navigator.clipboard.writeText('${code.replace(
-                        /'/g,
-                        "\\'"
-                      )}')">
-                        Copy
-                      </button>
-                    </div>
-                  `;
-              } catch (error) {
-                console.log(error);
-              }
-            }
-            return (
-              '<pre><code class="hljs">' + md.utils.escapeHtml(str) + "</code></pre>"
-            );
-          },
-        });
+        md = new Marked(
+          markedHighlight({
+            emptyLangClass: "hljs",
+            langPrefix: "hljs language-",
+            highlight(code, lang, info) {
+              const language = hljs.getLanguage(lang) ? lang : "plaintext";
+              const content = hljs.highlight(code, { language }).value;
+              return `${content}<button class="bg-black bg-opacity-40 hover:bg-opacity-30 text-gray-200 rounded-md flex justify-center items-center absolute right-4 top-4">
+                <i class="pi pi-clipboard copy-code-btn p-1" data-code="${escapeHtml(
+                  code
+                )}" style="font-size:16px"></i>
+              </button>`;
+            },
+          })
+        );
+        md.use(gfmHeadingId());
       }
       return md;
     },

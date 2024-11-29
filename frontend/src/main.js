@@ -6,13 +6,15 @@ import Aura from "@primevue/themes/aura";
 import ToastService from "primevue/toastservice";
 
 import "primeicons/primeicons.css";
+import "highlight.js/styles/github.css";
+import "@/assets/styles/tocbot.css";
 import "easymde/dist/easymde.min.css";
 import "./style.css";
 
 import { definePreset } from "@primevue/themes";
 import router from "./router";
 import { createPinia } from "pinia";
-import { markdownIt } from "./helper";
+import { marked } from "./helper";
 
 const app = createApp(App);
 
@@ -41,7 +43,7 @@ const myPreset = definePreset(Aura, {
   },
 });
 const pinia = createPinia();
-const md = markdownIt();
+const md = marked();
 
 app.directive("tooltip", Tooltip);
 app.use(PrimeVue, {

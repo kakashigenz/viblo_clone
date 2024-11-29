@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -104,7 +105,23 @@ class ArticleService
      */
     public function find(string $slug): Article
     {
-        $article = Article::with(['user'])->withCount(['bookmarks', 'comments', 'votes'])->where('slug', $slug)->firstOrFail();
+        $article = Article::with(['tags'])->withCount(['bookmarks', 'comments', 'votes'])->where('slug', $slug)->firstOrFail();
+        $user = User::query()->where('id', data_get($article, 'user_id'))
+            ->select([
+                'id',
+                'name',
+                'user_name',
+                'avatar',
+                'is_banned',
+            ])->withCount(['followings', 'articles'])
+            ->first();
+
+        $current_user = auth()->guard()->user();
+        $follower = $user->followers->first(function ($key, $value) use ($current_user) {
+            data_get($value, 'id') === data_get($current_user, 'id');
+        });
+        $user['is_following'] = !empty($follower);
+        $article['user'] = $user;
         return $article;
     }
 

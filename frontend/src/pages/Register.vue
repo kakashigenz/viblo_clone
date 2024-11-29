@@ -102,7 +102,7 @@
             >{{ passwordConfirmationMessage }}</Message
           >
         </div>
-        <Button :loading="loading">Đăng ký</Button>
+        <Button :is-disable="loading">Đăng ký</Button>
       </form>
       <div v-else>
         <Message severity="success" class="p-3"

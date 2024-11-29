@@ -16,23 +16,27 @@
               getFormatedTime(article.created_at)
             }}</span>
           </div>
-          <div class="flex items-center gap-x-2 mb-2">
+          <div class="flex items-center gap-x-2 mb-2 flex-wrap">
             <h4>
-              <a href="#" class="text-lg hover:text-sky-500 transition-all">
+              <RouterLink
+                :to="{ name: DETAIL_ARTICLE_ROUTE_NAME, params: { slug: article.slug } }"
+                class="text-lg hover:text-sky-500 transition-all"
+              >
                 {{ article.title }}
-              </a>
+              </RouterLink>
             </h4>
-            <a href="#" class="flex gap-x-1 flex-wrap">
-              <Chip
-                v-for="tag in article.tags"
-                :key="tag.id"
-                :label="tag.name"
-                class="text-xs"
-                :dt="{
-                  background: '{gray.200}',
-                }"
-              />
-            </a>
+            <div class="flex gap-x-1">
+              <a href="#" v-for="tag in article.tags">
+                <Chip
+                  :key="tag.id"
+                  :label="tag.name"
+                  class="text-xs"
+                  :dt="{
+                    background: '{gray.200}',
+                  }"
+                />
+              </a>
+            </div>
           </div>
           <p class="mb-2 text-sm" v-if="watchMode == WATCH_DETAIL">
             {{ article.content }}
@@ -78,7 +82,7 @@
 
 <script setup>
 import { getFormatedTime, getURlAvatar } from "@/helper";
-import { WATCH_DETAIL } from "@/helper/constant";
+import { DETAIL_ARTICLE_ROUTE_NAME, WATCH_DETAIL } from "@/helper/constant";
 import { Chip, Skeleton } from "primevue";
 
 const props = defineProps({

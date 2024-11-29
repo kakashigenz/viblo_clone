@@ -60,14 +60,21 @@ div.EasyMDEContainer .editor-preview img {
   color: #0284c7;
 }
 
-code.hljs {
+code {
   font-size: 15px;
+  background-color: #f1f2f3;
+  padding: 4px 8px;
+}
+
+code.hljs {
   position: relative;
+  font-size: 15px;
   background-color: #f1f2f3;
 }
 
 .editor-preview-active h1,
 .editor-preview-side h1,
+.preview-comment h1,
 .md-contents h1 {
   font-size: 1.95em;
 }
@@ -98,24 +105,32 @@ code.hljs {
 .md-contents h2,
 .md-contents h3,
 .md-contents h4,
-.md-contents h5 {
+.md-contents h5,
+.preview-comment h1,
+.preview-comment h2,
+.preview-comment h3,
+.preview-comment h4,
+.preview-comment h5 {
   font-weight: 700;
   color: #000;
 }
 
 .editor-preview-active h2,
 .editor-preview-side h2,
+.preview-comment h2,
 .md-contents h2 {
   font-size: 1.75em;
 }
 
 .editor-preview-active h3,
 .editor-preview-side h3,
+.preview-comment h3,
 .md-contents h3 {
   font-size: 1.45em;
 }
 
 .md-contents ul,
+.preview-comment ul,
 .editor-preview.editor-preview-active ul {
   display: block;
   list-style-type: disc;
@@ -131,7 +146,8 @@ code.hljs {
 
 .editor-preview-active li,
 .editor-preview-side li,
-.md-contents li {
+.md-contents li,
+.preview-comment li {
   margin-bottom: 0.5em;
 }
 
@@ -153,4 +169,30 @@ code.hljs {
 
 .is-active-link::before {
   background-color: #0284c7;
+}
+
+.preview-comment h1,
+.preview-comment h2,
+.preview-comment h3 {
+  margin: 0.2em 0 0.2em;
+}
+
+.editor-preview-active table td,
+.editor-preview-active table th,
+.editor-preview-side table td,
+.editor-preview-side table th,
+.md-contents table td,
+.md-contents table th,
+.preview-comment table td,
+.preview-comment table th {
+  border: 1px solid #d6d6d7;
+  padding: 0.75rem;
+  vertical-align: top;
+}
+
+.editor-preview-active a,
+.editor-preview-side a,
+.md-contents a,
+.preview-comment a {
+  color: #0284c7;
 }

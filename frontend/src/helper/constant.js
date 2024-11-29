@@ -7,3 +7,4 @@ export const BOOKMARKS_ROUTE_NAME = "bookmarks";
 export const HOME_ROUTE_NAME = "home";
 export const WATCH_SHORT = 1;
 export const WATCH_DETAIL = 2;
+export const DETAIL_ARTICLE_ROUTE_NAME = "detailArticle";
