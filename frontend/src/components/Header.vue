@@ -41,12 +41,19 @@
               </li>
             </template>
           </ul>
-          <div v-if="userStore.isAuthenticated" class="cursor-pointer" @click="toggle">
+          <div
+            v-if="userStore.isAuthenticated"
+            class="cursor-pointer flex items-center"
+            @click="toggle"
+          >
             <Avatar :image="getURLAvatar(userStore.user)" class="" shape="circle" />
           </div>
           <div v-else>
             <RouterLink
-              :to="{ name: LOGIN_ROUTE_NAME }"
+              :to="{
+                name: LOGIN_ROUTE_NAME,
+                query: { redirect: encodeURIComponent(route.fullPath) },
+              }"
               class="text-blue-500 flex gap-x-1 items-center text-sm"
             >
               <i class="pi pi-sign-in" style="font-size: 12px"></i>
@@ -128,12 +135,19 @@
             </li>
           </template>
         </ul>
-        <div v-if="userStore.isAuthenticated" class="cursor-pointer" @click="toggle">
+        <div
+          v-if="userStore.isAuthenticated"
+          class="cursor-pointer flex items-center"
+          @click="toggle"
+        >
           <Avatar :image="getURLAvatar(userStore.user)" class="" shape="circle" />
         </div>
         <div v-else>
           <RouterLink
-            :to="{ name: LOGIN_ROUTE_NAME }"
+            :to="{
+              name: LOGIN_ROUTE_NAME,
+              query: { redirect: encodeURIComponent(route.fullPath) },
+            }"
             class="text-blue-500 flex gap-x-1 items-center text-sm"
           >
             <i class="pi pi-sign-in"></i>
@@ -190,7 +204,7 @@ import { ref } from "vue";
 import Container from "./Container.vue";
 import { useUserStore } from "@/stores/user";
 import SearchBar from "./SearchBar.vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import {
   CREATE_ARTICLE_ROUTE_NAME,
   HOME_ROUTE_NAME,
@@ -204,6 +218,7 @@ const props = defineProps({
 const userStore = useUserStore();
 
 const router = useRouter();
+const route = useRoute();
 const popover = ref();
 const toggle = (event) => {
   popover.value.toggle(event);
