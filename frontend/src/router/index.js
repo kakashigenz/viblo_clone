@@ -1,3 +1,4 @@
+import apiClient from "@/api";
 import {
   BOOKMARKS_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
@@ -15,6 +16,11 @@ const routes = [
     path: "/publish/article",
     component: () => import("@/pages/EditPost.vue"),
     name: CREATE_ARTICLE_ROUTE_NAME,
+  },
+  {
+    path: "/publish/:slug",
+    component: () => import("@/pages/DetailArticle.vue"),
+    name: DETAIL_ARTICLE_ROUTE_NAME,
   },
   {
     path: "/login",
@@ -53,20 +59,28 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from) => {
-  const exceptRoute = [
-    LOGIN_ROUTE_NAME,
-    REGISTER_ROUTE_NAME,
-    NEWEST_ROUTE_NAME,
-    FOLLOWINGS_ROUTE_NAME,
-    BOOKMARKS_ROUTE_NAME,
-  ];
-  const userStore = useUserStore();
-  if (!userStore.isAuthenticated && !exceptRoute.includes(to.name)) {
-    return {
-      name: LOGIN_ROUTE_NAME,
-      query: { redirect: encodeURIComponent(to.fullPath) },
-    };
+router.beforeEach(async (to, from) => {
+  try {
+    const api = apiClient();
+    const exceptRoute = [
+      LOGIN_ROUTE_NAME,
+      REGISTER_ROUTE_NAME,
+      NEWEST_ROUTE_NAME,
+      FOLLOWINGS_ROUTE_NAME,
+      BOOKMARKS_ROUTE_NAME,
+    ];
+    const userStore = useUserStore();
+    const { data } = await api.auth.isAuthorized();
+    userStore.user = data;
+
+    if (!userStore.isAuthenticated && !exceptRoute.includes(to.name)) {
+      return {
+        name: LOGIN_ROUTE_NAME,
+        query: { redirect: encodeURIComponent(to.fullPath) },
+      };
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 

@@ -25,7 +25,7 @@ const apiClient = () => {
         });
       },
       login(credentials) {
-        return api.post("spa-login", credentials);
+        return api.post("/spa-login", credentials);
       },
       register(data) {
         return api.post("/register", data);
@@ -34,7 +34,10 @@ const apiClient = () => {
         return api.get("/users/me");
       },
       logout() {
-        return api.post("logout");
+        return api.post("/logout");
+      },
+      isAuthorized() {
+        return api.post("/check-authorization");
       },
     },
     images: {

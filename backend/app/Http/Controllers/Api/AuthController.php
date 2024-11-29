@@ -66,4 +66,13 @@ class AuthController extends Controller
         }
         return ['message' => 'success'];
     }
+
+    public function checkAuthorization(Request $request)
+    {
+        $user = $request->user();
+        if ($user) {
+            return $user;
+        }
+        abort(401, 'Unauthorized');
+    }
 }
