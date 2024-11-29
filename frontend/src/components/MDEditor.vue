@@ -7,29 +7,7 @@
       header="Thêm hình ảnh thu nhỏ"
       class="w-[720px]"
     >
-      <div class="bg-white">
-        <Media :handle="props.handleUpload" />
-        <div class="mt-5">
-          <h4 class="mb-4">Ảnh của bạn</h4>
-          <div class="grid grid-cols-6 gap-4">
-            <div v-for="image in images" :key="image.id" class="">
-              <img
-                @click="selectImage($event, image)"
-                :src="image.url"
-                alt=""
-                class="w-full block object-cover hover:cursor-pointer"
-              />
-            </div>
-          </div>
-          <Paginator
-            v-if="images.length < paginator.total"
-            :rows="paginator.size"
-            :totalRecords="paginator.total"
-            template="PrevPageLink PageLinks NextPageLink"
-            @page="changePage"
-          />
-        </div>
-      </div>
+      <MediaBox @select="selectImage" />
     </Dialog>
   </div>
 </template>
@@ -40,7 +18,7 @@ import { nextTick, onMounted, ref, watch } from "vue";
 import Dialog from "primevue/dialog";
 import Paginator from "primevue/paginator";
 import Media from "./Media.vue";
-import apiClient from "@/api";
+import MediaBox from "./MediaBox.vue";
 
 const props = defineProps({
   placeHolder: {
@@ -93,24 +71,6 @@ const editor = ref();
 let MDE = null;
 const emit = defineEmits(["update:modelValue"]);
 const visible = ref(false);
-const images = ref([]);
-const api = apiClient();
-const paginator = ref({
-  currentPage: 0,
-  total: 0,
-  size: 0,
-});
-
-watch(
-  () => paginator.value.currentPage,
-  async (newValue) => {
-    const { data } = await api.images.getList(newValue);
-    images.value = data.data;
-    paginator.value.total = data.total;
-    paginator.value.size = data.size;
-  },
-  { immediate: true }
-);
 
 onMounted(() => {
   MDE = new EasyMDE({
@@ -130,10 +90,6 @@ onMounted(() => {
 
 function openSelectBox(e) {
   visible.value = true;
-}
-
-function changePage(event) {
-  paginator.value.currentPage = event.page + 1;
 }
 
 function selectImage(event, image) {

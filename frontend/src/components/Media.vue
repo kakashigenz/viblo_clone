@@ -60,6 +60,7 @@ import { ref } from "vue";
 const api = apiClient();
 const toast = useToast();
 const isLoading = ref(false);
+const emit = defineEmits(["uploadSuccess"]);
 
 const handleUpload = async ({ files }) => {
   const promises = files.map((item) => {
@@ -92,6 +93,7 @@ const handleUpload = async ({ files }) => {
       detail: "Tải file thành công",
       life: 3000,
     });
+    emit("uploadSuccess");
   } catch (error) {
     toast.add({
       severity: "error",
