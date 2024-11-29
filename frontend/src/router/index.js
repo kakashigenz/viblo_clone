@@ -2,6 +2,7 @@ import apiClient from "@/api";
 import {
   BOOKMARKS_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
+  DETAIL_ARTICLE_ROUTE_NAME,
   FOLLOWINGS_ROUTE_NAME,
   HOME_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
@@ -18,7 +19,7 @@ const routes = [
     name: CREATE_ARTICLE_ROUTE_NAME,
   },
   {
-    path: "/publish/:slug",
+    path: "/article/:slug",
     component: () => import("@/pages/DetailArticle.vue"),
     name: DETAIL_ARTICLE_ROUTE_NAME,
   },
@@ -68,6 +69,7 @@ router.beforeEach(async (to, from) => {
       NEWEST_ROUTE_NAME,
       FOLLOWINGS_ROUTE_NAME,
       BOOKMARKS_ROUTE_NAME,
+      DETAIL_ARTICLE_ROUTE_NAME,
     ];
     const userStore = useUserStore();
     const { data } = await api.auth.isAuthorized();
