@@ -17,8 +17,9 @@ class VoteService
         $this->comment_service = $comment_service;
     }
 
-    public function upvote(string $user_id, string $id, int $type): int
+    public function upvote(string $user_id, string $id, int $type): array
     {
+        $value = 0;
         switch ($type) {
             case Vote::TYPE_ARTICLE:
                 $article = $this->article_service->findById($id);
@@ -29,7 +30,8 @@ class VoteService
                     $article->point -= 1;
                     $article->save();
                     $vote->delete();
-                    return Vote::UNVOTE;
+                    $value = $article->point;
+                    return ['vote_type' => Vote::UNVOTE, 'value' => $value];
                 } else if ($vote && data_get($vote, 'type') === Vote::DOWNVOTE) {
                     $article->point += 1;
                     $article->save();
@@ -45,6 +47,7 @@ class VoteService
                     $article->point += 1;
                     $article->save();
                 });
+                $value = $article->point;
                 break;
 
             case Vote::TYPE_COMMENT:
@@ -56,7 +59,8 @@ class VoteService
                     $comment->point -= 1;
                     $comment->save();
                     $vote->delete();
-                    return Vote::UNVOTE;
+                    $value = $comment->point;
+                    return ['vote_type' => Vote::UNVOTE, 'value' => $value];
                 } else if ($vote && data_get($vote, 'type') === Vote::DOWNVOTE) {
                     $comment->point += 1;
                     $comment->save();
@@ -72,17 +76,19 @@ class VoteService
                     $comment->point += 1;
                     $comment->save();
                 });
+                $value = $comment->point;
                 break;
 
             default:
                 # code...
                 break;
         }
-        return Vote::UPVOTE;
+        return ['vote_type' => Vote::UPVOTE, 'value' => $value];
     }
 
-    public function downvote(string $user_id, string $id, int $type): int
+    public function downvote(string $user_id, string $id, int $type): array
     {
+        $value = 0;
         switch ($type) {
             case Vote::TYPE_ARTICLE:
                 $article = $this->article_service->findById($id);
@@ -96,7 +102,8 @@ class VoteService
                     $article->point += 1;
                     $article->save();
                     $vote->delete();
-                    return Vote::UNVOTE;
+                    $value = $article->point;
+                    return ['vote_type' => Vote::UNVOTE, 'value' => $value];
                 }
 
                 //downvote
@@ -108,6 +115,7 @@ class VoteService
                     $article->point -= 1;
                     $article->save();
                 });
+                $value = $article->point;
                 break;
 
             case Vote::TYPE_COMMENT:
@@ -122,7 +130,8 @@ class VoteService
                     $comment->point += 1;
                     $comment->save();
                     $vote->delete();
-                    return Vote::UNVOTE;
+                    $value = $comment->point;
+                    return ['vote_type' => Vote::UNVOTE, 'value' => $value];
                 }
 
                 //downvote
@@ -134,13 +143,14 @@ class VoteService
                     $comment->point -= 1;
                     $comment->save();
                 });
+                $value = $comment->point;
                 break;
 
             default:
                 # code...
                 break;
         }
-        return Vote::DOWNVOTE;
+        return ['vote_type' => Vote::DOWNVOTE, 'value' => $value];
     }
 
     protected function unvote() {}

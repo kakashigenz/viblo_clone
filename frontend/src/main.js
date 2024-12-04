@@ -4,6 +4,7 @@ import PrimeVue from "primevue/config";
 import Tooltip from "primevue/tooltip";
 import Aura from "@primevue/themes/aura";
 import ToastService from "primevue/toastservice";
+import ConfirmationService from "primevue/confirmationservice";
 
 import "primeicons/primeicons.css";
 import "highlight.js/styles/github.css";
@@ -57,6 +58,7 @@ app.use(PrimeVue, {
   },
 });
 app.use(ToastService);
+app.use(ConfirmationService);
 app.use(pinia);
 app.use(router);
 app.provide("md", md.getInstance());

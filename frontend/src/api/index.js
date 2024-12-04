@@ -20,6 +20,12 @@ const apiClient = () => {
       getObject(slug) {
         return api.get(`/articles/${slug}`);
       },
+      upvote(id) {
+        return api.post(`/articles/${id}/upvote`);
+      },
+      downvote(id) {
+        return api.post(`/articles/${id}/downvote`);
+      },
     },
     auth: {
       getCSRFToken() {
@@ -75,6 +81,37 @@ const apiClient = () => {
         });
       },
     },
+    comment: {
+      getList(slug, page = 1) {
+        return api.get(`/articles/${slug}/comments`, { params: { page } });
+      },
+      store(slug, content) {
+        return api.post(`/articles/${slug}/comments`, { content });
+      },
+      reply(parrentId, content) {
+        return api.post(`/comments/${parrentId}/replies`, { content });
+      },
+      getReplies(parrentId, page = 1) {
+        return api.get(`/comments/${parrentId}/replies`, {
+          params: {
+            page,
+          },
+        });
+      },
+      update(id, content) {
+        return api.put(`/comments/${id}`, { content });
+      },
+      upvote(id) {
+        return api.post(`/comments/${id}/upvote`);
+      },
+      downvote(id) {
+        return api.post(`/comments/${id}/downvote`);
+      },
+      delete(id) {
+        return api.delete(`/comments/${id}`);
+      },
+    },
+    vote: {},
   };
 };
 

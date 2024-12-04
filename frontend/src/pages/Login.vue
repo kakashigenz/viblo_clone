@@ -75,7 +75,6 @@
         >
       </div>
     </div>
-    <Toast />
   </div>
 </template>
 
@@ -90,7 +89,6 @@ import * as yup from "yup";
 import apiClient from "@/api";
 import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
-import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import { useUserStore } from "@/stores/user";
 import { REGISTER_ROUTE_NAME } from "@/helper/constant";

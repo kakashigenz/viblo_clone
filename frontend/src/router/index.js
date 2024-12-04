@@ -61,6 +61,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
+  if (to.hash) {
+    return false;
+  }
   try {
     const api = apiClient();
     const exceptRoute = [

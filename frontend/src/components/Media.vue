@@ -1,6 +1,5 @@
 <template>
   <div class="w-full">
-    <Toast />
     <FileUpload
       customUpload
       @uploader="handleUpload($event)"
@@ -50,7 +49,6 @@
 </template>
 
 <script setup>
-import Toast from "primevue/toast";
 import FileUpload from "primevue/fileupload";
 import { useToast } from "primevue/usetoast";
 import { Button } from "primevue";

@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Article;
 use App\Models\Comment;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class CommentService
@@ -14,11 +13,14 @@ class CommentService
      */
     public function getList(string $slug, int $size)
     {
-        $article = User::query()->where('slug', $slug)->firstOrFail();
-        $comments = Comment::with(['user', 'subComments' => function ($query) {
-            $query->with('user')->limit(2);
-        }])->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->paginate($size);
+        $article = Article::query()->where('slug', $slug)->firstOrFail();
+        $comments = Comment::with(['user'])->withCount('subComments')->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->orderByDesc('point')->paginate($size);
 
+        $current_user = auth()->guard('sanctum')->user();
+        foreach ($comments as $comment) {
+            $vote_type = data_get($comment->votes()->where('user_id', data_get($current_user, 'id'))->first(), 'type');
+            $comment['vote_type'] = $vote_type;
+        }
         return [
             'data' => $comments->items(),
             'page' => $comments->currentPage(),
@@ -33,13 +35,13 @@ class CommentService
      */
     public function create(array $data, string $slug, string $user_id)
     {
-        $article = User::query()->where('slug', $slug)->firstOrFail();
+        $article = Article::query()->where('slug', $slug)->firstOrFail();
         $comment = new Comment($data);
         $comment->user_id = $user_id;
         $comment->point = 0;
         $comment->is_visible = true;
         $article->comments()->save($comment);
-        return $comment;
+        return $comment->load('user');
     }
 
     /**
@@ -55,7 +57,7 @@ class CommentService
      */
     public function update(array $data, string $id)
     {
-        $comment = $this->find($id);
+        $comment = Comment::query()->findOrFail($id);
         Gate::authorize('edit', $comment);
         $comment->fill($data);
         $comment->save();
@@ -66,7 +68,7 @@ class CommentService
      */
     public function delete(string $id)
     {
-        $comment = $this->find($id);
+        $comment = Comment::query()->findOrFail($id);
         Gate::authorize('edit', $comment);
         $comment->delete();
     }
@@ -76,7 +78,7 @@ class CommentService
      */
     public function reply(array $data, string $comment_id, string $user_id)
     {
-        $comment = $this->find($comment_id);
+        $comment = Comment::query()->findOrFail($comment_id);
 
         $sub_comment = new Comment($data);
         $sub_comment->user_id = $user_id;
@@ -85,7 +87,7 @@ class CommentService
         $sub_comment->is_visible = true;
         $comment->subComments()->save($sub_comment);
 
-        return $sub_comment;
+        return $sub_comment->load('user');
     }
 
     public function getSubComments(string $comment_id, int $size)

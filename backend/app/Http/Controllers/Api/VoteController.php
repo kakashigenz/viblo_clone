@@ -30,14 +30,14 @@ class VoteController extends Controller
     public function upvote(Request $request, string $id)
     {
         $user = $request->user();
-        $status = null;
+        $res = null;
         if ($request->routeIs('article.upvote')) {
-            $status = $this->service->upvote(data_get($user, 'id'), $id, Vote::TYPE_ARTICLE);
+            $res = $this->service->upvote(data_get($user, 'id'), $id, Vote::TYPE_ARTICLE);
         } else if ($request->routeIs('comment.upvote')) {
-            $status = $this->service->upvote(data_get($user, 'id'), $id, Vote::TYPE_COMMENT);
+            $res = $this->service->upvote(data_get($user, 'id'), $id, Vote::TYPE_COMMENT);
         }
 
-        return ['message' => 'success', 'statusVote' => $status];
+        return array_merge(['message' => 'success'], $res);
     }
 
     /**
@@ -46,13 +46,13 @@ class VoteController extends Controller
     public function downvote(Request $request, string $id)
     {
         $user = $request->user();
-        $status = null;
+        $res = null;
         if ($request->routeIs('article.downvote')) {
-            $status = $this->service->downvote(data_get($user, 'id'), $id, Vote::TYPE_ARTICLE);
+            $res = $this->service->downvote(data_get($user, 'id'), $id, Vote::TYPE_ARTICLE);
         } else if ($request->routeIs('comment.downvote')) {
-            $status = $this->service->downvote(data_get($user, 'id'), $id, Vote::TYPE_COMMENT);
+            $res = $this->service->downvote(data_get($user, 'id'), $id, Vote::TYPE_COMMENT);
         }
 
-        return ['message' => 'success', 'statusVote' => $status];
+        return array_merge(['message' => 'success'], $res);
     }
 }

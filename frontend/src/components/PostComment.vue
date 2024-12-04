@@ -39,7 +39,7 @@
               <textarea
                 ref="textArea"
                 class="block w-full border-gray-300 outline-none border rounded-sm px-4 py-3"
-                v-model.lazy="commentValue"
+                v-model="commentValue"
                 rows="4"
                 style="resize: none"
               ></textarea>
@@ -47,8 +47,15 @@
                 <i class="pi pi-image"></i>
               </button>
             </div>
-            <div class="flex justify-end">
-              <Button :is-disable="!commentValue" variant="primary" class="py-2 px-5 mt-2"
+            <div class="flex gap-x-4 justify-end mt-2">
+              <button v-if="props.cancel" @click="cancelEdit" class="text-sm px-2 py-1">
+                Hủy
+              </button>
+              <Button
+                @click="postComment"
+                :is-disable="!commentValue || isSending"
+                variant="primary"
+                class="py-2 px-5"
                 >Bình luận</Button
               >
             </div>
@@ -86,17 +93,44 @@ import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import { useUserStore } from "@/stores/user";
 import { getURlAvatar } from "@/helper";
-import { LOGIN_ROUTE_NAME } from "@/helper/constant";
+import { CREATED_STATUS, LOGIN_ROUTE_NAME, UPDATED_STATUS } from "@/helper/constant";
 import { Dialog } from "primevue";
 import Button from "./Button.vue";
 import { computed, inject, onMounted, ref } from "vue";
 import MediaBox from "./MediaBox.vue";
+import apiClient from "@/api";
+import { useRoute } from "vue-router";
 
+const props = defineProps({
+  parentCommentId: {
+    type: Number,
+    default: 0,
+  },
+  commentId: {
+    type: Number,
+  },
+  value: {
+    type: String,
+  },
+  cancel: {
+    type: Boolean,
+  },
+});
 const userStore = useUserStore();
-const commentValue = ref("");
+const commentValue = ref(props.value || "");
 const visible = ref(false);
 const textArea = ref();
+const isSending = ref(false);
 const md = inject("md");
+const api = apiClient();
+const emit = defineEmits(["success", "cancel"]);
+const route = useRoute();
+
+onMounted(() => {
+  if (props.parentCommentId) {
+    textArea.value.focus();
+  }
+});
 
 const previewMarkdown = computed(() => {
   return md.parse(commentValue.value);
@@ -114,6 +148,37 @@ const selectImage = (event, image) => {
     " " +
     commentValue.value.slice(end);
   visible.value = false;
+};
+
+const postComment = async (event) => {
+  isSending.value = true;
+  let res = undefined;
+  let handledContent = commentValue.value.replace(/@(\w+)/g, `[@$1](#)`);
+  try {
+    if (!props.commentId) {
+      if (props.parentCommentId == 0) {
+        res = await api.comment.store(route.params.slug, handledContent);
+      } else {
+        res = await api.comment.reply(props.parentCommentId, handledContent);
+      }
+      if (res.status == 201) {
+        commentValue.value = "";
+        emit("success", res.data, CREATED_STATUS);
+      }
+    } else {
+      res = await api.comment.update(props.commentId, handledContent);
+      if (res.status == 200) {
+        emit("success", { content: handledContent }, UPDATED_STATUS);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  isSending.value = false;
+};
+
+const cancelEdit = (event) => {
+  emit("cancel");
 };
 </script>
 

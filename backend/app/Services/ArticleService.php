@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -105,7 +106,8 @@ class ArticleService
      */
     public function find(string $slug): Article
     {
-        $article = Article::with(['tags'])->withCount(['bookmarks', 'comments', 'votes'])->where('slug', $slug)->firstOrFail();
+        $article = Article::with(['tags'])->withCount(['bookmarks', 'comments'])->where('slug', $slug)->firstOrFail();
+
         $user = User::query()->where('id', data_get($article, 'user_id'))
             ->select([
                 'id',
@@ -116,12 +118,13 @@ class ArticleService
             ])->withCount(['followings', 'articles'])
             ->first();
 
-        $current_user = auth()->guard()->user();
-        $follower = $user->followers->first(function ($key, $value) use ($current_user) {
-            data_get($value, 'id') === data_get($current_user, 'id');
-        });
-        $user['is_following'] = !empty($follower);
+        $current_user = auth()->guard('sanctum')->user();
+        $is_following = !empty($user->followers()->where('follower_id', data_get($current_user, 'id'))->first());
+
+        $vote_type = data_get($article->votes()->where('user_id', data_get($current_user, 'id'))->first(), 'type');
+        $user['is_following'] = $is_following;
         $article['user'] = $user;
+        $article['vote_type'] = $vote_type;
         return $article;
     }
 

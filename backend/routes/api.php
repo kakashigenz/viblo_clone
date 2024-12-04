@@ -34,9 +34,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::post('/', [ArticleController::class, 'store']);
             Route::post('/{article_slug}/bookmark', [BookmarkController::class, 'store']);
             Route::delete('/{article_slug}/unbookmark', [BookmarkController::class, 'destroy']);
-            Route::post('/{article_slug}/upvote', [VoteController::class, 'upvote'])->name('upvote');
-            Route::post('/{article_slug}/downvote', [VoteController::class, 'downvote'])->name('downvote');
-            Route::get('/{slug}/comments', [CommentController::class, 'index']);
+            Route::post('/{id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
+            Route::post('/{id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
             Route::post('/{slug}/comments', [CommentController::class, 'store']);
             Route::put('/{slug}', [ArticleController::class, 'update']);
             Route::delete('/{slug}', [ArticleController::class, 'destroy']);
@@ -73,7 +72,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::group(['as' => 'comment.', 'prefix' => 'comments'], function () {
             Route::put('/{id}', [CommentController::class, 'update']);
             Route::delete('/{id}', [CommentController::class, 'destroy']);
-            Route::get('/{comment_id}/replies', [CommentController::class, 'getSubComments']);
             Route::post('/{comment_id}/replies', [CommentController::class, 'reply']);
             Route::post('/{comment_id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
             Route::post('/{comment_id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
@@ -84,6 +82,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
     Route::get('/', [ArticleController::class, 'index']);
     Route::get('/{slug}', [ArticleController::class, 'show']);
+    Route::get('/{slug}/comments', [CommentController::class, 'index']);
+});
+Route::group(['prefix' => 'comments'], function () {
+    Route::get('/{comment_id}/replies', [CommentController::class, 'getSubComments']);
 });
 
 

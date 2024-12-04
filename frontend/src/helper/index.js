@@ -62,7 +62,7 @@ export const getFormatedTime = (timestamp, locate = "vi-VN") => {
   let value;
   const diff = (Date.now() - new Date(timestamp).getTime()) / 1000;
   const minute = Math.floor(diff / 60);
-  const hour = Math.floor(minute / 24);
+  const hour = Math.floor(minute / 60);
   const dtf = new Intl.DateTimeFormat(locate, {
     dateStyle: "medium",
     timeStyle: "short",

@@ -3,7 +3,7 @@
   <Banner />
   <Container>
     <div v-if="article">
-      <div ref="main" class="grid grid-cols-12 py-[32px]">
+      <div ref="main" class="grid grid-cols-12 mt-10 py-[32px]">
         <div class="col-span-1 pr-[8px]">
           <SideBar class="mt-[84px]">
             <div class="flex flex-col items-center">
@@ -15,12 +15,20 @@
                   size="large"
                 />
               </a>
-              <button class="flex items-end text-gray-500">
-                <i class="pi pi-sort-up-fill" style="font-size: 28px"></i>
+              <button @click="upvote" class="flex items-end text-gray-500">
+                <i
+                  class="pi pi-sort-up-fill"
+                  :class="article.vote_type == UPVOTE_TYPE ? 'text-sky-600' : ''"
+                  style="font-size: 28px"
+                ></i>
               </button>
-              <span class="text-xl text-gray-500">{{ article.votes_count }}</span>
-              <button class="mb-4 text-gray-500">
-                <i class="pi pi-sort-down-fill" style="font-size: 28px"></i>
+              <span class="text-xl text-gray-500">{{ article.point }}</span>
+              <button @click="downvote" class="mb-4 text-gray-500">
+                <i
+                  class="pi pi-sort-down-fill"
+                  :class="article.vote_type == DOWNVOTE_TYPE ? 'text-sky-600' : ''"
+                  style="font-size: 28px"
+                ></i>
               </button>
               <button
                 class="w-[40px] h-[40px] border-2 border-gray-400 rounded-full flex items-center justify-center"
@@ -87,7 +95,7 @@
               v-html="markdownContent"
             ></div>
           </div>
-          <div class="mt-[32px] flex gap-x-2">
+          <div class="mt-[32px] flex gap-x-2 flex-wrap">
             <a href="#" v-for="tag in article.tags">
               <Chip
                 :key="tag.id"
@@ -114,7 +122,6 @@
       </div>
       <div>
         <h6 class="text-lg font-bold mb-6">Bình luận</h6>
-        <PostComment />
         <CommentList class="my-5" />
       </div>
     </div>
@@ -186,15 +193,14 @@ import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import SideBar from "@/components/SideBar.vue";
 import { getFormatedTime, getURlAvatar } from "@/helper";
-import { Chip, Skeleton } from "primevue";
-
+import { Chip, Skeleton, useToast } from "primevue";
 import Avatar from "primevue/avatar";
-import { inject, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { inject, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import tocbot from "tocbot";
-import Comment from "@/components/Comment.vue";
 import CommentList from "@/components/CommentList.vue";
-import PostComment from "@/components/PostComment.vue";
+import { DOWNVOTE_TYPE, UPVOTE_TYPE } from "@/helper/constant";
+import { useUserStore } from "@/stores/user";
 
 const showSidebarAvatar = ref(false);
 const main = ref();
@@ -204,6 +210,8 @@ const api = apiClient();
 const route = useRoute();
 const md = inject("md");
 const markdownContent = ref("");
+const userStore = useUserStore();
+const toast = useToast();
 
 const handleScroll = (e) => {
   const top = main.value?.getBoundingClientRect().top;
@@ -231,6 +239,7 @@ onMounted(async () => {
         headingSelector: "h1,h2,h3",
         headingsOffset: 86,
         hasInnerContainers: true,
+        scrollSmoothOffset: -86,
       });
     });
   } catch (error) {
@@ -249,9 +258,10 @@ const copyCode = (event) => {
       const code = event.target.dataset.code;
 
       const textarea = document.createElement("textarea");
-      textarea.value = code; // Gán nội dung code
-      document.body.appendChild(textarea); // Tạm thời thêm vào DOM
-      textarea.select(); // Chọn nội dung
+      textarea.value = code;
+      textarea.style.display = "none";
+      document.body.appendChild(textarea);
+      textarea.select();
       document.execCommand("copy");
       event.target.classList.remove("pi-clipboard");
       event.target.classList.add("pi-check");
@@ -262,6 +272,42 @@ const copyCode = (event) => {
     } catch (error) {
       throw error;
     }
+  }
+};
+
+const upvote = async () => {
+  if (!userStore.isAuthenticated) {
+    toast.add({
+      severity: "error",
+      summary: "Vui lòng đăng nhập để thực hiện",
+      life: 3000,
+    });
+    return;
+  }
+  try {
+    const { data } = await api.article.upvote(article.value.id);
+    article.value.vote_type = data.vote_type;
+    article.value.point = data.value;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const downvote = async () => {
+  if (!userStore.isAuthenticated) {
+    toast.add({
+      severity: "error",
+      summary: "Vui lòng đăng nhập để thực hiện",
+      life: 3000,
+    });
+    return;
+  }
+  try {
+    const { data } = await api.article.downvote(article.value.id);
+    article.value.vote_type = data.vote_type;
+    article.value.point = data.value;
+  } catch (error) {
+    console.log(error);
   }
 };
 </script>
