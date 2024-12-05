@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Events\PostComment;
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 
 class CommentService
@@ -33,14 +35,16 @@ class CommentService
     /**
      * create a comment
      */
-    public function create(array $data, string $slug, string $user_id)
+    public function create(array $data, string $slug, User $user)
     {
         $article = Article::query()->where('slug', $slug)->firstOrFail();
         $comment = new Comment($data);
-        $comment->user_id = $user_id;
+        $comment->user_id = data_get($user, 'id');
         $comment->point = 0;
         $comment->is_visible = true;
         $article->comments()->save($comment);
+        $comment['user'] = $user->only(['avatar', 'id', 'name', 'user_name']);
+        broadcast(new PostComment($comment, $slug))->toOthers();
         return $comment->load('user');
     }
 
@@ -61,6 +65,8 @@ class CommentService
         Gate::authorize('edit', $comment);
         $comment->fill($data);
         $comment->save();
+        $article = Article::query()->where('id', data_get($comment, 'article_id'))->first();
+        broadcast(new PostComment($comment->load('user'), data_get($article, 'slug')))->toOthers();
     }
 
     /**
@@ -92,7 +98,7 @@ class CommentService
 
     public function getSubComments(string $comment_id, int $size)
     {
-        $comments = Comment::with('user')->where('parent_id', $comment_id)->paginate($size);
+        $comments = Comment::with('user')->where('parent_id', $comment_id)->orderByDesc('point')->paginate($size);
 
         return [
             'data' => $comments->items(),

@@ -1,12 +1,13 @@
 import axios from "axios";
 
-const apiClient = () => {
+const apiClient = (customHeader) => {
   axios.defaults.withCredentials = true;
   axios.defaults.withXSRFToken = true;
   const api = axios.create({
     baseURL: "http://api.viblo.test/api",
     headers: {
       "Content-Type": "application/json",
+      ...customHeader,
     },
   });
   return {

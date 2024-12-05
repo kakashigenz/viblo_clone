@@ -16,6 +16,11 @@ class Comment extends Model
         return $this->belongsTo(User::class, 'user_id', 'id')->select(['avatar', 'id', 'user_name', 'name']);
     }
 
+    public function article()
+    {
+        return $this->belongsTo(Article::class, 'article_id', 'id');
+    }
+
     public function subComments()
     {
         return $this->hasMany(Comment::class, 'parent_id', 'id');

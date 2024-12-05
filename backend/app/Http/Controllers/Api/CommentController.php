@@ -35,7 +35,7 @@ class CommentController extends Controller
         $data = $request->validated();
         $user = $request->user();
 
-        $comment = $this->service->create($data, $slug, data_get($user, 'id'));
+        $comment = $this->service->create($data, $slug, $user);
         return response()->json($comment, 201);
     }
 

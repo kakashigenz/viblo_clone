@@ -122,7 +122,9 @@ const visible = ref(false);
 const textArea = ref();
 const isSending = ref(false);
 const md = inject("md");
-const api = apiClient();
+const api = apiClient({
+  "X-Socket-ID": window.Echo.socketId(),
+});
 const emit = defineEmits(["success", "cancel"]);
 const route = useRoute();
 

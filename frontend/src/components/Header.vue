@@ -36,7 +36,16 @@
                   <i :class="`pi ${action.icon}`"></i>
                 </RouterLink>
                 <button v-else class="flex items-center">
-                  <i :class="`pi ${action.icon}`"></i>
+                  <OverlayBadge
+                    v-if="action.badgeValue"
+                    :value="action.badgeValue"
+                    size="small"
+                    severity="danger"
+                    class="flex items-center"
+                  >
+                    <i :class="`pi ${action.icon}`"></i>
+                  </OverlayBadge>
+                  <i v-else :class="`pi ${action.icon}`"></i>
                 </button>
               </li>
             </template>
@@ -210,6 +219,7 @@ import {
   HOME_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
 } from "@/helper/constant";
+import { OverlayBadge } from "primevue";
 
 const props = defineProps({
   container: Boolean,
@@ -262,6 +272,7 @@ const actionMenu = ref([
   {
     icon: "pi-bell",
     requireAuthenticate: true,
+    badgeValue: 2,
   },
   {
     route: CREATE_ARTICLE_ROUTE_NAME,
