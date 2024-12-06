@@ -52,7 +52,7 @@ export const marked = () => {
   };
 };
 
-export const getURlAvatar = (user) => {
+export const getURLAvatar = (user) => {
   return (
     user.avatar ?? `https://placehold.co/45x45/green/FFF?text=${user.name.slice(0, 1)}`
   );

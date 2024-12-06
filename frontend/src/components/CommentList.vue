@@ -43,11 +43,18 @@ const api = apiClient();
 onMounted(async () => {
   const { slug } = route.params;
   window.Echo.channel(`comment.${slug}`).listen("PostComment", (data) => {
-    for (const i in comments.value) {
-      const comment = comments.value[i];
-      if (comment.id == data.comment?.id) {
-        comments.value[i] = data.comment;
-      }
+    switch (data.type) {
+      case "create":
+        comments.value.push(data.comment);
+      case "edit":
+        comments.value.forEach((comment, i) => {
+          if (comment.id == data.comment?.id) {
+            comments.value[i] = data.comment;
+          }
+        });
+        break;
+      default:
+        break;
     }
   });
   const { data: commentData } = await api.comment.getList(route.params.slug);

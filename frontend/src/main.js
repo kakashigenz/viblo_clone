@@ -57,6 +57,7 @@ app.use(PrimeVue, {
     },
   },
 });
+
 app.use(ToastService);
 app.use(ConfirmationService);
 app.use(pinia);
@@ -64,10 +65,20 @@ app.use(router);
 app.provide("md", md.getInstance());
 app.mount("#app");
 
+window.api = axios.create({
+  baseURL: "http://api.viblo.test/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+window.api.defaults.withCredentials = true;
+window.api.defaults.withXSRFToken = true;
+
 //laravel-echo
 import Echo from "laravel-echo";
 
 import Pusher from "pusher-js";
+import axios from "axios";
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
@@ -78,4 +89,7 @@ window.Echo = new Echo({
   wssPort: import.meta.env.VITE_REVERB_PORT,
   forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
   enabledTransports: ["ws", "wss"],
+});
+window.Echo.connector.pusher.connection.bind("connected", () => {
+  window.api.defaults.headers.common["X-Socket-Id"] = window.Echo.socketId();
 });

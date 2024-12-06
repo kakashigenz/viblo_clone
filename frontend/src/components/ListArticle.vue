@@ -4,7 +4,7 @@
       <div class="flex gap-x-4 border-b border-gray-300 p-2">
         <a href="#" class="">
           <img
-            :src="getURlAvatar(article.user)"
+            :src="getURLAvatar(article.user)"
             alt=""
             class="block w-[37px] h-[37px] rounded-full object-cover"
           />
@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { getFormatedTime, getURlAvatar } from "@/helper";
+import { getFormatedTime, getURLAvatar } from "@/helper";
 import { DETAIL_ARTICLE_ROUTE_NAME, WATCH_DETAIL } from "@/helper/constant";
 import { Chip, Skeleton } from "primevue";
 

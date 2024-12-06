@@ -4,7 +4,7 @@
       <div class="flex">
         <div class="mr-3">
           <img
-            :src="getURlAvatar(props.data.user)"
+            :src="getURLAvatar(props.data.user)"
             alt=""
             class="w-[37px] h-[37px] rounded-full object-cover"
           />
@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import { getFormatedTime, getURlAvatar } from "@/helper";
+import { getFormatedTime, getURLAvatar } from "@/helper";
 import { inject, ref, watch } from "vue";
 import PostComment from "./PostComment.vue";
 import { useUserStore } from "@/stores/user";

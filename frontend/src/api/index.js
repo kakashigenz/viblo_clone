@@ -1,81 +1,70 @@
-import axios from "axios";
-
-const apiClient = (customHeader) => {
-  axios.defaults.withCredentials = true;
-  axios.defaults.withXSRFToken = true;
-  const api = axios.create({
-    baseURL: "http://api.viblo.test/api",
-    headers: {
-      "Content-Type": "application/json",
-      ...customHeader,
-    },
-  });
+const apiClient = () => {
   return {
     article: {
       create(article) {
-        return api.post("/articles", article);
+        return window.api.post("/articles", article);
       },
       getList(page) {
-        return api.get("/articles", { params: { page } });
+        return window.api.get("/articles", { params: { page } });
       },
       getObject(slug) {
-        return api.get(`/articles/${slug}`);
+        return window.api.get(`/articles/${slug}`);
       },
       upvote(id) {
-        return api.post(`/articles/${id}/upvote`);
+        return window.api.post(`/articles/${id}/upvote`);
       },
       downvote(id) {
-        return api.post(`/articles/${id}/downvote`);
+        return window.api.post(`/articles/${id}/downvote`);
       },
     },
     auth: {
       getCSRFToken() {
-        return api.get("sanctum/csrf-cookie", {
+        return window.api.get("sanctum/csrf-cookie", {
           baseURL: "http://api.viblo.test",
         });
       },
       login(credentials) {
-        return api.post("/spa-login", credentials);
+        return window.api.post("/spa-login", credentials);
       },
       register(data) {
-        return api.post("/register", data);
+        return window.api.post("/register", data);
       },
       getUser() {
-        return api.get("/users/me");
+        return window.api.get("/users/me");
       },
       logout() {
-        return api.post("/logout");
+        return window.api.post("/logout");
       },
       isAuthorized() {
-        return api.post("/check-authorization");
+        return window.api.post("/check-authorization");
       },
     },
     images: {
       createPresignedURL(data) {
-        return api.post("/images/create-presigned-url", data);
+        return window.api.post("/images/create-presigned-url", data);
       },
       getList(page) {
-        return api.get("images/", { params: { page } });
+        return window.api.get("images/", { params: { page } });
       },
       uploadImage(file, url) {
-        return api.put(url, file, {
+        return window.api.put(url, file, {
           headers: {
             "Content-Type": file.type,
           },
         });
       },
       store(data) {
-        return api.post("/images", data);
+        return window.api.post("/images", data);
       },
     },
     verificationEmail: {
       resendEmail() {
-        return api.post("/email/verification-notification");
+        return window.api.post("/email/verification-notification");
       },
     },
     search: {
       quickSearch(query) {
-        return api.get("/search/multi", {
+        return window.api.get("/search/multi", {
           params: {
             q: query,
           },
@@ -84,32 +73,32 @@ const apiClient = (customHeader) => {
     },
     comment: {
       getList(slug, page = 1) {
-        return api.get(`/articles/${slug}/comments`, { params: { page } });
+        return window.api.get(`/articles/${slug}/comments`, { params: { page } });
       },
       store(slug, content) {
-        return api.post(`/articles/${slug}/comments`, { content });
+        return window.api.post(`/articles/${slug}/comments`, { content });
       },
       reply(parrentId, content) {
-        return api.post(`/comments/${parrentId}/replies`, { content });
+        return window.api.post(`/comments/${parrentId}/replies`, { content });
       },
       getReplies(parrentId, page = 1) {
-        return api.get(`/comments/${parrentId}/replies`, {
+        return window.api.get(`/comments/${parrentId}/replies`, {
           params: {
             page,
           },
         });
       },
       update(id, content) {
-        return api.put(`/comments/${id}`, { content });
+        return window.api.put(`/comments/${id}`, { content });
       },
       upvote(id) {
-        return api.post(`/comments/${id}/upvote`);
+        return window.api.post(`/comments/${id}/upvote`);
       },
       downvote(id) {
-        return api.post(`/comments/${id}/downvote`);
+        return window.api.post(`/comments/${id}/downvote`);
       },
       delete(id) {
-        return api.delete(`/comments/${id}`);
+        return window.api.delete(`/comments/${id}`);
       },
     },
     vote: {},

@@ -43,8 +43,8 @@ class CommentService
         $comment->point = 0;
         $comment->is_visible = true;
         $article->comments()->save($comment);
-        $comment['user'] = $user->only(['avatar', 'id', 'name', 'user_name']);
-        broadcast(new PostComment($comment, $slug))->toOthers();
+        $author = User::query()->find(data_get($article, 'user_id'));
+        broadcast(new PostComment($comment->load('user'), $slug, 'create'))->toOthers();
         return $comment->load('user');
     }
 
@@ -66,7 +66,7 @@ class CommentService
         $comment->fill($data);
         $comment->save();
         $article = Article::query()->where('id', data_get($comment, 'article_id'))->first();
-        broadcast(new PostComment($comment->load('user'), data_get($article, 'slug')))->toOthers();
+        broadcast(new PostComment($comment->load('user'), data_get($article, 'slug'), 'edit'))->toOthers();
     }
 
     /**

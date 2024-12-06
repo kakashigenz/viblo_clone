@@ -29,7 +29,7 @@
         <div class="flex gap-x-2">
           <div class="">
             <img
-              :src="getURlAvatar(userStore.user)"
+              :src="getURLAvatar(userStore.user)"
               class="w-[37px] h-[37px] rounded-full object-cover"
               alt=""
             />
@@ -92,7 +92,7 @@ import Tab from "primevue/tab";
 import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import { useUserStore } from "@/stores/user";
-import { getURlAvatar } from "@/helper";
+import { getURLAvatar } from "@/helper";
 import { CREATED_STATUS, LOGIN_ROUTE_NAME, UPDATED_STATUS } from "@/helper/constant";
 import { Dialog } from "primevue";
 import Button from "./Button.vue";
@@ -122,9 +122,7 @@ const visible = ref(false);
 const textArea = ref();
 const isSending = ref(false);
 const md = inject("md");
-const api = apiClient({
-  "X-Socket-ID": window.Echo.socketId(),
-});
+const api = apiClient();
 const emit = defineEmits(["success", "cancel"]);
 const route = useRoute();
 

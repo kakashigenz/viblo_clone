@@ -10,7 +10,7 @@
               <a href="#" class="mb-2">
                 <Avatar
                   v-if="showSidebarAvatar"
-                  :image="getURlAvatar(article?.user)"
+                  :image="getURLAvatar(article?.user)"
                   shape="circle"
                   size="large"
                 />
@@ -42,7 +42,7 @@
           <div class="flex">
             <div class="w-1/2 flex">
               <div class="mr-3">
-                <Avatar :image="getURlAvatar(article.user)" shape="circle" size="large" />
+                <Avatar :image="getURLAvatar(article.user)" shape="circle" size="large" />
               </div>
               <div>
                 <div class="flex items-center gap-x-2">
@@ -192,7 +192,7 @@ import Container from "@/components/Container.vue";
 import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import SideBar from "@/components/SideBar.vue";
-import { getFormatedTime, getURlAvatar } from "@/helper";
+import { getFormatedTime, getURLAvatar } from "@/helper";
 import { Chip, Skeleton, useToast } from "primevue";
 import Avatar from "primevue/avatar";
 import { inject, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";

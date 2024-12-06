@@ -62,7 +62,7 @@
             >
               <div class="mr-4">
                 <img
-                  :src="getURlAvatar(user)"
+                  :src="getURLAvatar(user)"
                   alt="avatar"
                   class="w-[36px] h-[36px] rounded-full object-cover"
                 />
@@ -117,7 +117,7 @@
 
 <script setup>
 import apiClient from "@/api";
-import { debounce, getURlAvatar } from "@/helper";
+import { debounce, getURLAvatar } from "@/helper";
 import { computed, inject, ref, watch } from "vue";
 const searchKeyword = ref("");
 const isFetching = ref(false);
