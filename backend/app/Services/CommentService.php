@@ -6,6 +6,8 @@ use App\Events\PostComment;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\User;
+use App\Models\Vote;
+use App\Notifications\CommentPosted;
 use Illuminate\Support\Facades\Gate;
 
 class CommentService
@@ -19,8 +21,11 @@ class CommentService
         $comments = Comment::with(['user'])->withCount('subComments')->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->orderByDesc('point')->paginate($size);
 
         $current_user = auth()->guard('sanctum')->user();
+
+        $votes = Vote::query()->where('user_id', data_get($current_user, 'id'))->where('voteable_type', Comment::class)->get()->groupBy('voteable_id');
         foreach ($comments as $comment) {
-            $vote_type = data_get($comment->votes()->where('user_id', data_get($current_user, 'id'))->first(), 'type');
+            $vote = data_get($votes, sprintf("%s", data_get($comment, 'id')));
+            $vote_type = data_get(data_get($vote, '0'), 'type');
             $comment['vote_type'] = $vote_type;
         }
         return [
@@ -45,6 +50,7 @@ class CommentService
         $article->comments()->save($comment);
         $author = User::query()->find(data_get($article, 'user_id'));
         broadcast(new PostComment($comment->load('user'), $slug, 'create'))->toOthers();
+        $author->notify(new CommentPosted($user, 'đã bình luận bài viết của bạn'));
         return $comment->load('user');
     }
 
