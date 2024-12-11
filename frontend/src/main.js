@@ -89,6 +89,23 @@ window.Echo = new Echo({
   wssPort: import.meta.env.VITE_REVERB_PORT,
   forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
   enabledTransports: ["ws", "wss"],
+  authorizer: (channel, options) => {
+    return {
+      authorize: (socketId, callback) => {
+        window.api
+          .post("/broadcasting/auth", {
+            socket_id: socketId,
+            channel_name: channel.name,
+          })
+          .then((response) => {
+            callback(false, response.data);
+          })
+          .catch((error) => {
+            callback(true, error);
+          });
+      },
+    };
+  },
 });
 window.Echo.connector.pusher.connection.bind("connected", () => {
   window.api.defaults.headers.common["X-Socket-Id"] = window.Echo.socketId();

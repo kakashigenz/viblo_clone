@@ -105,12 +105,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->is_banned == false;
     }
 
-    public function jsonSerialize(): mixed
+    public function getAvatar($avatar)
     {
-        $user = $this->toArray();
-        $user['avatar'] = data_get($user, 'avatar')
-            ? sprintf("%s/%s/%s", env('AWS_ENDPOINT'), env('AWS_BUCKET'), data_get($user, 'avatar'))
+        return $avatar
+            ? sprintf("%s/%s/%s", env('AWS_ENDPOINT'), env('AWS_BUCKET'), $avatar)
             : null;
-        return $user;
     }
 }

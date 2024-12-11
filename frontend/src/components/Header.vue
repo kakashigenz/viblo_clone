@@ -1,6 +1,6 @@
 <template>
   <header
-    class="sticky top-0 w-full p-4 shadow-md bg-white"
+    class="sticky top-0 w-full px-4 py-3 shadow-md bg-white"
     :class="props.container ? 'z-[1000]' : ''"
   >
     <Container v-if="props.container">
@@ -19,40 +19,84 @@
         </div>
         <div class="flex justify-end items-center">
           <SearchBar class="mr-8 flex-1" />
-          <ul class="flex items-center">
-            <template v-for="(action, index) in actionMenu" :key="index">
-              <li
-                v-if="
-                  (action.requireAuthenticate && userStore.isAuthenticated) ||
-                  !action.requireAuthenticate
-                "
-                class="mr-4"
-              >
-                <RouterLink
-                  v-if="action.route"
-                  :to="{ name: action.route }"
+          <ul v-if="userStore.isAuthenticated" class="flex items-center">
+            <li class="mr-4">
+              <button @click="toggleNotification" class="flex items-center px-3">
+                <OverlayBadge
+                  v-if="unreadCount"
+                  size="small"
+                  severity="danger"
                   class="flex items-center"
+                  :value="unreadCount"
                 >
-                  <i :class="`pi ${action.icon}`"></i>
-                </RouterLink>
-                <button v-else class="flex items-center">
-                  <OverlayBadge
-                    v-if="action.badgeValue"
-                    :value="action.badgeValue"
-                    size="small"
-                    severity="danger"
-                    class="flex items-center"
-                  >
-                    <i :class="`pi ${action.icon}`"></i>
-                  </OverlayBadge>
-                  <i v-else :class="`pi ${action.icon}`"></i>
-                </button>
-              </li>
-            </template>
+                  <i :class="`pi pi-bell`"></i>
+                </OverlayBadge>
+                <i v-else :class="`pi pi-bell`"></i>
+              </button>
+              <Popover ref="notification">
+                <div class="w-[380px]">
+                  <div class="border-b border-gray-300 py-1 flex justify-between">
+                    <h5 class="">Thông báo</h5>
+                    <button @click="markAllRead" class="text-xs hover:underline">
+                      Đánh dấu tất cả đã đọc
+                    </button>
+                  </div>
+                  <ul class="max-h-[360px] overflow-y-auto" style="scrollbar-width: thin">
+                    <li
+                      v-for="notification in notifications"
+                      :key="notification.id"
+                      class="border-b border-gray-300 last:border-b-0"
+                    >
+                      <a
+                        href="#"
+                        @click="markAsRead(notification.id)"
+                        class="flex items-center gap-x-4 py-2 px-1"
+                        :class="notification.read_at ? '' : 'bg-gray-200'"
+                      >
+                        <img
+                          :src="
+                            getURLAvatar({
+                              avatar: notification.avatar,
+                              name: notification.name,
+                            })
+                          "
+                          alt="Avatar"
+                          class="w-10 h-10 object-cover rounded-full"
+                        />
+                        <div>
+                          <p class="text-sm line-clamp-3 mb-1 flex gap-x-2 items-center">
+                            <span class="text-sky-600 font-bold">{{
+                              notification.name
+                            }}</span>
+                            <span>{{ notification.notification }}</span>
+                          </p>
+                          <p class="text-xs">
+                            {{ getFormatedTime(notification.created_at) }}
+                          </p>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                  <div class="flex justify-center border-t pt-2 border-gray-300">
+                    <button v-if="paginator.hasNext" @click="loadMoreNotification">
+                      Xem thêm
+                    </button>
+                  </div>
+                </div>
+              </Popover>
+            </li>
+            <li class="mr-4">
+              <RouterLink
+                :to="{ name: CREATE_ARTICLE_ROUTE_NAME }"
+                class="flex items-center"
+              >
+                <i :class="`pi pi-pencil`"></i>
+              </RouterLink>
+            </li>
           </ul>
           <div
             v-if="userStore.isAuthenticated"
-            class="cursor-pointer flex items-center"
+            class="cursor-pointer flex items-center px-1"
             @click="toggle"
           >
             <Avatar :image="getURLAvatar(userStore.user)" class="" shape="circle" />
@@ -69,7 +113,7 @@
               <span class="underline">Đăng nhập/Đăng ký</span>
             </RouterLink>
           </div>
-          <Popover v-if="userStore.isAuthenticated" ref="popover">
+          <Popover v-if="userStore.isAuthenticated" ref="userMenu">
             <div>
               <div class="flex gap-x-4 mb-2">
                 <div>
@@ -121,28 +165,28 @@
           </li>
         </ul>
       </div>
-      <div class="flex justify-end items-center gap-x-[18px]">
-        <ul class="flex items-center gap-x-[18px]">
-          <template v-for="(action, index) in actionMenu" :key="index">
-            <li
-              v-if="
-                (action.requireAuthenticate && userStore.isAuthenticated) ||
-                !action.requireAuthenticate
-              "
-              class="mr-4"
-            >
-              <RouterLink
-                v-if="action.route"
-                :to="{ name: action.route }"
+      <div class="flex justify-end items-center">
+        <ul v-if="userStore.isAuthenticated" class="flex items-center">
+          <li class="mr-4">
+            <button class="flex items-center">
+              <OverlayBadge
+                size="small"
+                severity="danger"
                 class="flex items-center"
+                value="2"
               >
-                <i :class="`pi ${action.icon}`"></i>
-              </RouterLink>
-              <button v-else class="flex items-center">
-                <i :class="`pi ${action.icon}`"></i>
-              </button>
-            </li>
-          </template>
+                <i :class="`pi pi-bell`"></i>
+              </OverlayBadge>
+            </button>
+          </li>
+          <li class="mr-4">
+            <RouterLink
+              :to="{ name: CREATE_ARTICLE_ROUTE_NAME }"
+              class="flex items-center"
+            >
+              <i :class="`pi pi-pencil`"></i>
+            </RouterLink>
+          </li>
         </ul>
         <div
           v-if="userStore.isAuthenticated"
@@ -163,7 +207,7 @@
             <span class="underline">Đăng nhập/Đăng ký</span>
           </RouterLink>
         </div>
-        <Popover v-if="userStore.isAuthenticated" ref="popover">
+        <Popover v-if="userStore.isAuthenticated" ref="userMenu">
           <ul>
             <li class="flex gap-x-4 mb-2">
               <div>
@@ -209,30 +253,67 @@
 <script setup>
 import Avatar from "primevue/avatar";
 import Popover from "primevue/popover";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Container from "./Container.vue";
 import { useUserStore } from "@/stores/user";
 import SearchBar from "./SearchBar.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
+  ARTICLE_MANAGEMENT_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
   HOME_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
 } from "@/helper/constant";
-import { OverlayBadge } from "primevue";
+import { OverlayBadge, useToast } from "primevue";
+import { getFormatedTime, getURLAvatar } from "@/helper";
+import apiClient from "@/api";
 
 const props = defineProps({
   container: Boolean,
 });
 
 const userStore = useUserStore();
-
 const router = useRouter();
 const route = useRoute();
-const popover = ref();
+const userMenu = ref();
+const notification = ref();
+const api = apiClient();
 const toggle = (event) => {
-  popover.value.toggle(event);
+  userMenu.value.toggle(event);
 };
+const notifications = ref([]);
+const paginator = ref({
+  page: 1,
+  hasNext: false,
+});
+const unreadCount = ref(0);
+const toast = useToast();
+
+onMounted(async () => {
+  if (userStore.isAuthenticated) {
+    window.Echo.private(`App.Models.User.${userStore.user.id}`).notification(
+      (notification) => {
+        toast.add({
+          severity: "info",
+          summary: "Thông báo",
+          detail: "Bạn có thông báo mới",
+          life: 2000,
+        });
+        notifications.value.unshift(notification);
+        unreadCount.value++;
+      }
+    );
+  }
+  try {
+    const { data } = await api.notification.getList(paginator.value.page);
+    notifications.value = data.data;
+    paginator.value.hasNext = data.has_next;
+    unreadCount.value = data.unread_count;
+    paginator.value.page++;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const dataUserMenu = ref([
   {
@@ -242,8 +323,10 @@ const dataUserMenu = ref([
   },
   {
     icon: "pi-file-edit",
-    title: "Quản lý nội dung",
-    handle: () => {},
+    title: "Quản lý tài khoản",
+    handle: () => {
+      router.push({ name: ARTICLE_MANAGEMENT_ROUTE_NAME, params: { status: "draft" } });
+    },
   },
   {
     icon: "pi-sign-out",
@@ -268,24 +351,49 @@ const dataNaviagtion = ref([
   },
 ]);
 
-const actionMenu = ref([
-  {
-    icon: "pi-bell",
-    requireAuthenticate: true,
-    badgeValue: 2,
-  },
-  {
-    route: CREATE_ARTICLE_ROUTE_NAME,
-    title: "Viết",
-    icon: "pi-pencil",
-    requireAuthenticate: true,
-  },
-]);
+const toggleNotification = (event) => {
+  notification.value.toggle(event);
+};
 
-const getURLAvatar = (user) => {
-  return (
-    user.avatar ?? `https://placehold.co/45x45/green/FFF?text=${user.name.slice(0, 1)}`
-  );
+const markAllRead = async () => {
+  try {
+    const { data, status } = await api.notification.markAllRead();
+    if (status == 200 && data.message == "success") {
+      notifications.value.forEach((item) => {
+        item.read_at = true;
+      });
+      unreadCount.value = 0;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const markAsRead = async (id) => {
+  try {
+    const { data, status } = await api.notification.markAasRead(id);
+    if (status == 200 && data.message == "success") {
+      const index = notifications.value.findIndex((item) => item.id == id);
+      notifications.value[index].read_at = true;
+      unreadCount.value--;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadMoreNotification = async () => {
+  if (paginator.value.hasNext) {
+    try {
+      const { data } = await api.notification.getList(paginator.value.page);
+      notifications.value = [...notifications.value, ...data.data];
+      paginator.value.hasNext = data.has_next;
+      unreadCount.value = data.unread_count;
+      paginator.value.page++;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 </script>
 

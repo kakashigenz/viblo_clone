@@ -31,6 +31,7 @@ export const useUserStore = defineStore("user", {
       try {
         const { data } = await api.auth.logout();
         if (data.message == "success") {
+          window.Echo.leaveChannel(`private-App.Models.User.${this.user.id}`);
           this.user = null;
         }
       } catch (error) {

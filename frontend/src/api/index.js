@@ -101,7 +101,17 @@ const apiClient = () => {
         return window.api.delete(`/comments/${id}`);
       },
     },
-    vote: {},
+    notification: {
+      getList(page) {
+        return window.api.get("/notifications", { params: { page } });
+      },
+      markAllRead() {
+        return window.api.put("/notifications/mark-all-read");
+      },
+      markAasRead(id) {
+        return window.api.put(`/notifications/${id}/mark-as-read`);
+      },
+    },
   };
 };
 

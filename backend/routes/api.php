@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\FollowingTagController;
 use App\Http\Controllers\Api\FollowingUserController;
 use App\Http\Controllers\Api\ImageController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\UserController;
@@ -75,6 +76,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::post('/{comment_id}/replies', [CommentController::class, 'reply']);
             Route::post('/{comment_id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
             Route::post('/{comment_id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
+        });
+
+        Route::group(['as' => 'notification.', 'prefix' => 'notifications'], function () {
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::put('/mark-all-read', [NotificationController::class, 'markAllRead']);
+            Route::put('/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
         });
     });
 });

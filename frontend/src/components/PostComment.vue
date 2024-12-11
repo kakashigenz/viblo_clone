@@ -76,7 +76,10 @@
     </TabPanels>
   </Tabs>
   <RouterLink
-    :to="{ name: LOGIN_ROUTE_NAME }"
+    :to="{
+      name: LOGIN_ROUTE_NAME,
+      query: { redirect: encodeURIComponent(route.fullPath) },
+    }"
     v-else
     class="flex justify-center items-center border border-gray-200 rounded-lg py-6 gap-1 mb-8 text-gray-400"
   >

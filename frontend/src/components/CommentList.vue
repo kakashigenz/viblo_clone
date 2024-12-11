@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import Comment from "./Comment.vue";
 import { useRoute } from "vue-router";
 import apiClient from "@/api";
@@ -91,6 +91,11 @@ const addComment = (comment) => {
 const handleDeletedComment = (index) => {
   comments.value.splice(index, 1);
 };
+
+onBeforeUnmount(() => {
+  const { slug } = route.params;
+  window.Echo.leaveChannel(`comment.${slug}`);
+});
 </script>
 
 <style lang="scss" scoped></style>
