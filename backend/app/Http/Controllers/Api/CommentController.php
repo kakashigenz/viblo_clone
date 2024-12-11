@@ -72,7 +72,7 @@ class CommentController extends Controller
         $data = $request->validated();
         $user = $request->user();
 
-        $sub_comment = $this->service->reply($data, $comment_id, data_get($user, 'id'));
+        $sub_comment = $this->service->reply($data, $comment_id, $user);
         return response()->json($sub_comment, 201);
     }
 

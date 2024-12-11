@@ -88,17 +88,33 @@ class CommentService
     /**
      * reply comment
      */
-    public function reply(array $data, string $comment_id, string $user_id)
+    public function reply(array $data, string $comment_id, User $user)
     {
         $comment = Comment::query()->findOrFail($comment_id);
+        $author = $comment->user;
+
+        $matches = [];
+        preg_match_all("/@(\w+)/", data_get($data, 'content'), $matches);
+        $receivers = User::query()->whereIn('user_name', $matches[1])->get();
 
         $sub_comment = new Comment($data);
-        $sub_comment->user_id = $user_id;
+        $sub_comment->user_id = data_get($user, 'id');
         $sub_comment->article_id = data_get($comment, 'article_id');
         $sub_comment->point = 0;
         $sub_comment->is_visible = true;
         $comment->subComments()->save($sub_comment);
 
+        if ($receivers->isEmpty()) {
+            if (data_get($user, 'id') !== data_get($author, 'id')) {
+                $author->notify(new CommentPosted($user, 'đã bình luận trả lời bình luận của bạn'));
+            }
+        } else {
+            foreach ($receivers as $receiver) {
+                if (data_get($user, 'id') !== data_get($receiver, 'id')) {
+                    $receiver->notify(new CommentPosted($user, 'đã nhắc đến bạn'));
+                }
+            }
+        }
         return $sub_comment->load('user');
     }
 

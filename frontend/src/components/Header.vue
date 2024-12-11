@@ -259,7 +259,6 @@ import { useUserStore } from "@/stores/user";
 import SearchBar from "./SearchBar.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
-  ARTICLE_MANAGEMENT_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
   HOME_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
