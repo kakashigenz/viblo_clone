@@ -168,16 +168,69 @@
       <div class="flex justify-end items-center">
         <ul v-if="userStore.isAuthenticated" class="flex items-center">
           <li class="mr-4">
-            <button class="flex items-center">
+            <button @click="toggleNotification" class="flex items-center px-3">
               <OverlayBadge
+                v-if="unreadCount"
                 size="small"
                 severity="danger"
                 class="flex items-center"
-                value="2"
+                :value="unreadCount"
               >
                 <i :class="`pi pi-bell`"></i>
               </OverlayBadge>
+              <i v-else :class="`pi pi-bell`"></i>
             </button>
+            <Popover ref="notification">
+              <div class="w-[380px]">
+                <div class="border-b border-gray-300 py-1 flex justify-between">
+                  <h5 class="">Thông báo</h5>
+                  <button @click="markAllRead" class="text-xs hover:underline">
+                    Đánh dấu tất cả đã đọc
+                  </button>
+                </div>
+                <ul class="max-h-[360px] overflow-y-auto" style="scrollbar-width: thin">
+                  <li
+                    v-for="notification in notifications"
+                    :key="notification.id"
+                    class="border-b border-gray-300 last:border-b-0"
+                  >
+                    <a
+                      href="#"
+                      @click="markAsRead(notification.id)"
+                      class="flex items-center gap-x-4 py-2 px-1"
+                      :class="notification.read_at ? '' : 'bg-gray-200'"
+                    >
+                      <img
+                        :src="
+                          getURLAvatar({
+                            avatar: notification.avatar,
+                            name: notification.name,
+                          })
+                        "
+                        alt="Avatar"
+                        class="w-10 h-10 object-cover rounded-full"
+                      />
+                      <div>
+                        <p class="text-sm line-clamp-3 mb-1 flex gap-x-2 items-center">
+                          <span class="text-sky-600 font-bold">{{
+                            notification.name
+                          }}</span>
+                          <span>{{ notification.notification }}</span>
+                        </p>
+                        <p class="text-xs">
+                          {{ getFormatedTime(notification.created_at) }}
+                        </p>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+                <div class="flex justify-center border-t pt-2 border-gray-300">
+                  <button v-if="paginator.hasNext" @click="loadMoreNotification">
+                    Xem thêm
+                  </button>
+                </div>
+              </div>
+            </Popover>
           </li>
           <li class="mr-4">
             <RouterLink
