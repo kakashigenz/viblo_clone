@@ -377,7 +377,7 @@ const dataUserMenu = ref([
     icon: "pi-file-edit",
     title: "Quản lý tài khoản",
     handle: () => {
-      router.push({ name: ARTICLE_MANAGEMENT_ROUTE_NAME, params: { status: "draft" } });
+      router.push({ name: ARTICLE_MANAGEMENT_ROUTE_NAME, params: { status: "drafts" } });
     },
   },
   {

@@ -1,12 +1,16 @@
 import apiClient from "@/api";
 import {
+  ARTICLE_MANAGEMENT_ROUTE_NAME,
   BOOKMARKS_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
   DETAIL_ARTICLE_ROUTE_NAME,
   FOLLOWINGS_ROUTE_NAME,
   HOME_ROUTE_NAME,
+  IMAGE_MANAGEMENT_ROUTE_NAME,
+  INFO_MANAGEMENT_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
   NEWEST_ROUTE_NAME,
+  PASSWORD_MANAGEMENT_ROUTE_NAME,
   REGISTER_ROUTE_NAME,
 } from "@/helper/constant";
 import { useUserStore } from "@/stores/user";
@@ -32,6 +36,33 @@ const routes = [
     path: "/register",
     component: () => import("@/pages/Register.vue"),
     name: REGISTER_ROUTE_NAME,
+  },
+  {
+    path: "/management",
+    component: () => import("@/pages/Management.vue"),
+    children: [
+      {
+        path: "articles/:status",
+        component: () => import("@/pages/ArticleList.vue"),
+        name: ARTICLE_MANAGEMENT_ROUTE_NAME,
+      },
+      {
+        path: "images",
+        component: () => import("@/pages/ImageList.vue"),
+        name: IMAGE_MANAGEMENT_ROUTE_NAME,
+      },
+      {
+        path: "info",
+        component: () => import("@/pages/AccountInfo.vue"),
+        name: INFO_MANAGEMENT_ROUTE_NAME,
+      },
+      {
+        path: "password",
+        component: () => import("@/pages/ChangePassword.vue"),
+        name: PASSWORD_MANAGEMENT_ROUTE_NAME,
+      },
+    ],
+    redirect: { name: ARTICLE_MANAGEMENT_ROUTE_NAME, params: { status: "drafts" } },
   },
   {
     path: "/newest",
@@ -64,28 +95,29 @@ router.beforeEach(async (to, from) => {
   if (to.hash) {
     return false;
   }
+  const userStore = useUserStore();
   try {
     const api = apiClient();
-    const exceptRoute = [
-      LOGIN_ROUTE_NAME,
-      REGISTER_ROUTE_NAME,
-      NEWEST_ROUTE_NAME,
-      FOLLOWINGS_ROUTE_NAME,
-      BOOKMARKS_ROUTE_NAME,
-      DETAIL_ARTICLE_ROUTE_NAME,
-    ];
-    const userStore = useUserStore();
     const { data } = await api.auth.isAuthorized();
     userStore.user = data;
-
-    if (!userStore.isAuthenticated && !exceptRoute.includes(to.name)) {
-      return {
-        name: LOGIN_ROUTE_NAME,
-        query: { redirect: encodeURIComponent(to.fullPath) },
-      };
-    }
   } catch (error) {
     console.log(error);
+  }
+
+  const exceptRoute = [
+    LOGIN_ROUTE_NAME,
+    REGISTER_ROUTE_NAME,
+    NEWEST_ROUTE_NAME,
+    FOLLOWINGS_ROUTE_NAME,
+    BOOKMARKS_ROUTE_NAME,
+    DETAIL_ARTICLE_ROUTE_NAME,
+  ];
+
+  if (!userStore.isAuthenticated && !exceptRoute.includes(to.name)) {
+    return {
+      name: LOGIN_ROUTE_NAME,
+      query: { redirect: encodeURIComponent(to.fullPath) },
+    };
   }
 });
 

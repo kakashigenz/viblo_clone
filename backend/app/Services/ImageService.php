@@ -62,8 +62,8 @@ class ImageService
      */
     public function delete(string $name): bool
     {
-        $image = Image::query()->where('user_id', Auth::user()->id)->where('name', $name)->firstOrFail();
-        $location =  data_get($image, 'path') . '/' . data_get($image, 'name');
+        $location = "{$name}";
+        $image = Image::query()->where('user_id', Auth::user()->id)->where('path', $location)->firstOrFail();
         $image->delete();
         if (Storage::exists($location)) {
             Storage::delete($location);
