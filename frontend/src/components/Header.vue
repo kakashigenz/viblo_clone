@@ -130,11 +130,12 @@
                     <span class="text-gray-400"> {{ `@${userStore.user?.name}` }} </span>
                   </div>
                   <div>
-                    <button
+                    <RouterLink
+                      :to="{ name: INFO_MANAGEMENT_ROUTE_NAME }"
                       class="px-3 py-[6px] bg-sky-600 text-white font-medium rounded-md text-sm hover:bg-opacity-70"
                     >
                       Sửa
-                    </button>
+                    </RouterLink>
                   </div>
                 </div>
               </div>
@@ -279,11 +280,12 @@
                   </span>
                 </div>
                 <div>
-                  <button
+                  <RouterLink
+                    :to="{ name: INFO_MANAGEMENT_ROUTE_NAME }"
                     class="px-3 py-[6px] bg-sky-600 text-white font-medium rounded-md text-sm hover:bg-opacity-70"
                   >
                     Sửa
-                  </button>
+                  </RouterLink>
                 </div>
               </div>
             </li>
@@ -312,8 +314,10 @@ import { useUserStore } from "@/stores/user";
 import SearchBar from "./SearchBar.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
+  ARTICLE_MANAGEMENT_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
   HOME_ROUTE_NAME,
+  INFO_MANAGEMENT_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
 } from "@/helper/constant";
 import { OverlayBadge, useToast } from "primevue";

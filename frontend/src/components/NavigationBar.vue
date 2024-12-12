@@ -18,13 +18,13 @@
         </li>
       </ul>
       <div>
-        <a
-          href="#"
+        <RouterLink
+          :to="{ name: CREATE_ARTICLE_ROUTE_NAME }"
           class="bg-sky-600 text-white rounded-sm px-4 py-1 flex items-center gap-x-2"
         >
           <i class="pi pi-pencil" style="font-size: 14px"></i>
           <span> Viết bài </span>
-        </a>
+        </RouterLink>
       </div>
     </Container>
   </div>
@@ -33,6 +33,7 @@
 <script setup>
 import {
   BOOKMARKS_ROUTE_NAME,
+  CREATE_ARTICLE_ROUTE_NAME,
   FOLLOWINGS_ROUTE_NAME,
   NEWEST_ROUTE_NAME,
 } from "@/helper/constant";
