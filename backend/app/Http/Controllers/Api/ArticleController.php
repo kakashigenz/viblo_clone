@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexRequest;
 use App\Http\Requests\StoreUpdateArticleRequest;
+use App\Models\Article;
 use App\Services\ArticleService;
 use OpenApi\Attributes as OA;
 
@@ -79,5 +80,17 @@ class ArticleController extends Controller
     {
         $this->service->delete($slug);
         return response()->json(['message' => 'success']);
+    }
+
+    public function getMyArticles(IndexRequest $request)
+    {
+        $res = [];
+        $user = $request->user();
+        if ($request->routeIs('article.draft')) {
+            $res = $this->service->getMyArticles(Article::DRAFT, $user);
+        } else if ($request->routeIs('article.public')) {
+            $res = $this->service->getMyArticles(Article::VISIBLE, $user);
+        }
+        return $res;
     }
 }

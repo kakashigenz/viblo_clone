@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => 'verified'], function () {
         Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
             Route::post('/', [ArticleController::class, 'store']);
+            Route::get('/drafts', [ArticleController::class, 'getMyArticles'])->name('draft');
+            Route::get('/public', [ArticleController::class, 'getMyArticles'])->name('public');
             Route::post('/{article_slug}/bookmark', [BookmarkController::class, 'store']);
             Route::delete('/{article_slug}/unbookmark', [BookmarkController::class, 'destroy']);
             Route::post('/{id}/upvote', [VoteController::class, 'upvote'])->name('upvote');

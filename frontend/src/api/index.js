@@ -4,8 +4,14 @@ const apiClient = () => {
       create(article) {
         return window.api.post("/articles", article);
       },
-      getList(page) {
+      getList(page = 1) {
         return window.api.get("/articles", { params: { page } });
+      },
+      getDraftList(page = 1) {
+        return window.api.get("/articles/drafts", { params: { page } });
+      },
+      getPublicList(page = 1) {
+        return window.api.get("/articles/public", { params: { page } });
       },
       getObject(slug) {
         return window.api.get(`/articles/${slug}`);
@@ -55,6 +61,9 @@ const apiClient = () => {
       },
       store(data) {
         return window.api.post("/images", data);
+      },
+      delete(name) {
+        return window.api.delete(`/images/${name}`);
       },
     },
     verificationEmail: {
