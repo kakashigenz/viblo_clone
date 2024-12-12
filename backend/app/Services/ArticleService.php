@@ -199,7 +199,7 @@ class ArticleService
     public function getMyArticles(int $type, User $user)
     {
         $articles = [];
-        $size = 2;
+        $size = 10;
         if ($type == Article::DRAFT) {
             $articles = Article::with(['tags'])->withoutGlobalScope('public')->where('user_id', data_get($user, 'id'))
                 ->where('status', Article::DRAFT)->select(['id', 'title', 'updated_at'])->paginate($size);

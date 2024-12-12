@@ -24,6 +24,7 @@ import {
   ARTICLE_MANAGEMENT_ROUTE_NAME,
   IMAGE_MANAGEMENT_ROUTE_NAME,
   INFO_MANAGEMENT_ROUTE_NAME,
+  PASSWORD_MANAGEMENT_ROUTE_NAME,
 } from "@/helper/constant";
 import { PanelMenu } from "primevue";
 import { ref } from "vue";
@@ -83,6 +84,11 @@ const items = ref([
       {
         label: "Mật khẩu",
         icon: "pi pi-key",
+        command() {
+          router.push({
+            name: PASSWORD_MANAGEMENT_ROUTE_NAME,
+          });
+        },
       },
     ],
   },

@@ -8,6 +8,7 @@ export const HOME_ROUTE_NAME = "home";
 export const ARTICLE_MANAGEMENT_ROUTE_NAME = "articleManagement";
 export const IMAGE_MANAGEMENT_ROUTE_NAME = "imageManagement";
 export const INFO_MANAGEMENT_ROUTE_NAME = "infoManagement";
+export const PASSWORD_MANAGEMENT_ROUTE_NAME = "passwordManagement";
 export const WATCH_SHORT = 1;
 export const WATCH_DETAIL = 2;
 export const DETAIL_ARTICLE_ROUTE_NAME = "detailArticle";

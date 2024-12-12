@@ -10,6 +10,7 @@ import {
   INFO_MANAGEMENT_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
   NEWEST_ROUTE_NAME,
+  PASSWORD_MANAGEMENT_ROUTE_NAME,
   REGISTER_ROUTE_NAME,
 } from "@/helper/constant";
 import { useUserStore } from "@/stores/user";
@@ -54,6 +55,11 @@ const routes = [
         path: "info",
         component: () => import("@/pages/AccountInfo.vue"),
         name: INFO_MANAGEMENT_ROUTE_NAME,
+      },
+      {
+        path: "password",
+        component: () => import("@/pages/ChangePassword.vue"),
+        name: PASSWORD_MANAGEMENT_ROUTE_NAME,
       },
     ],
     redirect: { name: ARTICLE_MANAGEMENT_ROUTE_NAME, params: { status: "drafts" } },
