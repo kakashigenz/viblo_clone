@@ -88,7 +88,7 @@ code.hljs {
 .md-contents h1,
 .md-contents h2,
 .md-contents h3 {
-  margin: 1.5em 0 0.2em;
+  margin: 1.2em 0 0.2em;
 }
 
 .editor-preview-active h1,
@@ -113,6 +113,7 @@ code.hljs {
 .preview-comment h5 {
   font-weight: 700;
   color: #000;
+  line-height: 1.6;
 }
 
 .editor-preview-active h2,

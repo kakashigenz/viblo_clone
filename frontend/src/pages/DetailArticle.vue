@@ -86,9 +86,9 @@
             </div>
           </div>
           <div class="mt-4">
-            <h3 class="font-bold text-4xl line-clamp-3">
+            <h1 class="font-bold text-4xl line-clamp-3">
               {{ article.title }}
-            </h3>
+            </h1>
             <div
               class="md-contents mt-4 flex gap-y-4 flex-col text-lg"
               @click="copyCode"

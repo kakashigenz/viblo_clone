@@ -131,7 +131,7 @@ class ArticleService
     /**
      * Update an article
      */
-    public function update(array $data, string $slug): bool
+    public function update(array $data, string $slug): Article
     {
         try {
             $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
@@ -173,7 +173,7 @@ class ArticleService
             }
             $article->tags()->sync($tag_ids);
             DB::commit();
-            return true;
+            return $article;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -185,8 +185,8 @@ class ArticleService
      */
     public function delete(string $slug): bool
     {
-        $article = Article::query()->where('slug', $slug)->firstOrFail();
-        Gate::authorize('update', $article);
+        $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
+        Gate::authorize('edit', $article);
         return $article->delete();
     }
 

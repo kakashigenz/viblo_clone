@@ -1,6 +1,7 @@
 <template>
   <div class="px-6">
     <h5 class="text-xl">{{ heading }}</h5>
+
     <ul class="mt-4">
       <li
         v-for="(article, index) in articles"
@@ -10,7 +11,11 @@
         <div class="flex items-center gap-x-3 flex-wrap">
           <div class="flex gap-x-1 items-center">
             <i class="text-green-400" :class="icon"></i>
-            <span class="text-lg line-clamp-3">{{ article.title }}</span>
+            <RouterLink
+              :to="{ name: DETAIL_ARTICLE_ROUTE_NAME, params: { slug: article.slug } }"
+            >
+              <span class="text-lg line-clamp-3">{{ article.title }}</span>
+            </RouterLink>
           </div>
           <Chip
             v-for="tag in article.tags"
@@ -26,10 +31,19 @@
           <span class="text-sm text-gray-400">
             {{ `Sửa đổi lần cuối ${getFormatedTime(article.updated_at)}` }}</span
           >
-          <button @click="toggleOptionMenu($event, index)">
+          <button @click="toggleOptionMenu($event, article.slug)">
             <i class="pi pi-chevron-down" style="font-size: 12px"></i>
           </button>
-          <Menu ref="optionMenus" :model="options(article.slug)" :popup="true" />
+
+          <Menu
+            :model="options(article.slug)"
+            :ref="
+              (el) => {
+                optionMenus.set(article.slug, el);
+              }
+            "
+            :popup="true"
+          />
         </div>
       </li>
     </ul>
@@ -46,14 +60,13 @@
 <script setup>
 import apiClient from "@/api";
 import { getFormatedTime } from "@/helper";
-import { EDIT_ARTICLE_ROUTE_NAME } from "@/helper/constant";
-import { Chip, Menu, Paginator } from "primevue";
-import { ref, watch } from "vue";
+import { DETAIL_ARTICLE_ROUTE_NAME, EDIT_ARTICLE_ROUTE_NAME } from "@/helper/constant";
+import { Chip, Menu, Paginator, Popover, useConfirm, useToast } from "primevue";
+import { nextTick, ref, watch } from "vue";
 import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
-const status = ref(route.params.status);
 const heading = ref("");
 const articles = ref([]);
 const api = apiClient();
@@ -63,48 +76,80 @@ const paginator = ref({
   total: 0,
 });
 const icon = ref("");
-const optionMenus = ref();
+const optionMenus = new Map();
+const toast = useToast();
+const confirm = useConfirm();
+
 const options = (key) => {
   return [
     {
       label: "Sửa",
-      command({ item }) {
-        router.push({ name: EDIT_ARTICLE_ROUTE_NAME, params: { slug: item.key } });
+      command: () => {
+        router.push({ name: EDIT_ARTICLE_ROUTE_NAME, params: { slug: key } });
       },
-      key,
     },
     {
       label: "Xóa",
-      key,
+      command() {
+        confirm.require({
+          header: "Xóa bài viết",
+          message: "Bạn có thực sự muốn xóa bài viết này",
+          rejectProps: {
+            label: "Hủy",
+            severity: "secondary",
+            outlined: true,
+          },
+          acceptProps: {
+            label: "Xóa",
+            severity: "danger",
+          },
+          accept: async () => {
+            const { status: resStatus } = await api.article.delete(key);
+            if (resStatus == 200) {
+              toast.add({
+                severity: "success",
+                summary: "Thông báo",
+                detail: "Xóa thành công",
+                life: 2000,
+              });
+              loadArticles(route.params.status, paginator.value.page);
+            }
+          },
+        });
+      },
     },
   ];
 };
 
 onBeforeRouteUpdate((to, from) => {
-  status.value = to.params.status;
   paginator.value.page = 1;
 });
 
+async function loadArticles(mode, page = 1) {
+  let data = undefined;
+  if (mode == "drafts") {
+    heading.value = "Bản nháp";
+    const res = await api.article.getDraftList(page);
+    data = res.data;
+    icon.value = "pi pi-lock";
+  } else if (mode == "public") {
+    heading.value = "Công khai";
+    const res = await api.article.getPublicList(page);
+    data = res.data;
+    icon.value = "pi pi-globe";
+  }
+  if (data) {
+    articles.value = data.data;
+    paginator.value.size = data.size;
+    paginator.value.total = data.total;
+    console.log(optionMenus);
+  }
+}
+
 watch(
-  status,
+  () => route.params.status,
   async (newValue) => {
-    let data = null;
-    if (newValue == "drafts") {
-      heading.value = "Bản nháp";
-      const res = await api.article.getDraftList();
-      data = res.data;
-      icon.value = "pi pi-lock";
-    } else if (newValue == "public") {
-      heading.value = "Công khai";
-      const res = await api.article.getPublicList();
-      data = res.data;
-      icon.value = "pi pi-globe";
-    }
-    if (data) {
-      articles.value = data.data;
-      paginator.value.size = data.size;
-      paginator.value.total = data.total;
-    }
+    await loadArticles(newValue);
   },
   { immediate: true }
 );
@@ -112,28 +157,12 @@ watch(
 watch(
   () => paginator.value.page,
   async (newPage) => {
-    let data = null;
-    if (status.value == "drafts") {
-      heading.value = "Bản nháp";
-      const res = await api.article.getDraftList(newPage);
-      data = res.data;
-      icon.value = "pi pi-lock";
-    } else if (status.value == "public") {
-      heading.value = "Công khai";
-      const res = await api.article.getPublicList(newPage);
-      data = res.data;
-      icon.value = "pi pi-globe";
-    }
-    if (data) {
-      articles.value = data.data;
-      paginator.value.size = data.size;
-      paginator.value.total = data.total;
-    }
+    await loadArticles(route.params.status, newPage);
   }
 );
 
-const toggleOptionMenu = (e, index) => {
-  optionMenus.value[index].toggle(e);
+const toggleOptionMenu = (e, key) => {
+  optionMenus.get(key).toggle(e);
 };
 
 const changePage = ({ page }) => {

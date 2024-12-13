@@ -83,7 +83,7 @@ import { Popover, RadioButton } from "primevue";
 import Button from "@/components/Button.vue";
 import MDEditor from "@/components/MDEditor.vue";
 import apiClient from "@/api";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import {
   CREATE_ARTICLE_ROUTE_NAME,
   DETAIL_ARTICLE_ROUTE_NAME,
@@ -172,6 +172,7 @@ onMounted(async () => {
     const { data } = await api.article.getObject(route.params.slug);
     data.tags = data.tags.map((item) => item.name);
     article.value = data;
+    editor.value.setValue(article.value.content);
   }
 });
 
@@ -183,13 +184,23 @@ const handleSubmit = async (e) => {
     } else if (route.name == EDIT_ARTICLE_ROUTE_NAME) {
       res = await api.article.update(route.params.slug, article.value);
     }
-    if (res.data) {
+    if (res.status == 200 || res.status == 201) {
       router.push({ name: DETAIL_ARTICLE_ROUTE_NAME, params: { slug: res.data.slug } });
     }
   } catch (error) {
     console.log(error);
   }
 };
+
+onBeforeRouteLeave(() => {
+  article.value = {
+    title: "",
+    tags: [],
+    content: "",
+    status: STATUS.draft,
+  };
+  editor.value.setValue(article.value.content);
+});
 </script>
 
 <style lang="css" scoped></style>

@@ -69,8 +69,8 @@ class ArticleController extends Controller
     {
         $data = $request->validated();
 
-        $this->service->update($data, $slug);
-        return response()->json(['message' => 'success']);
+        $article = $this->service->update($data, $slug);
+        return $article;
     }
 
     /**

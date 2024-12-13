@@ -25,6 +25,9 @@ const apiClient = () => {
       update(slug, article) {
         return window.api.put(`articles/${slug}`, article);
       },
+      delete(slug) {
+        return window.api.delete(`articles/${slug}`);
+      },
     },
     auth: {
       getCSRFToken() {

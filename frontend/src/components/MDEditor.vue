@@ -14,7 +14,7 @@
 
 <script setup>
 import EasyMDE from "easymde";
-import { nextTick, onMounted, onUpdated, ref, watch } from "vue";
+import { nextTick, onBeforeMount, onMounted, onUpdated, ref, watch } from "vue";
 import Dialog from "primevue/dialog";
 import Paginator from "primevue/paginator";
 import Media from "./Media.vue";
@@ -71,10 +71,13 @@ const editor = ref();
 let MDE = null;
 const emit = defineEmits(["update:modelValue"]);
 const visible = ref(false);
-
-onUpdated(() => {
-  MDE.value(props.modelValue);
+defineExpose({
+  setValue,
 });
+
+function setValue(content) {
+  MDE.value(content);
+}
 
 onMounted(() => {
   MDE = new EasyMDE({
