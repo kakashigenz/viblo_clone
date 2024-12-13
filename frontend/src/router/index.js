@@ -4,6 +4,7 @@ import {
   BOOKMARKS_ROUTE_NAME,
   CREATE_ARTICLE_ROUTE_NAME,
   DETAIL_ARTICLE_ROUTE_NAME,
+  EDIT_ARTICLE_ROUTE_NAME,
   FOLLOWINGS_ROUTE_NAME,
   HOME_ROUTE_NAME,
   IMAGE_MANAGEMENT_ROUTE_NAME,
@@ -19,13 +20,18 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/publish/article",
-    component: () => import("@/pages/EditPost.vue"),
+    component: () => import("@/pages/EditArticle.vue"),
     name: CREATE_ARTICLE_ROUTE_NAME,
   },
   {
-    path: "/article/:slug",
+    path: "/articles/:slug",
     component: () => import("@/pages/DetailArticle.vue"),
     name: DETAIL_ARTICLE_ROUTE_NAME,
+  },
+  {
+    path: "/articles/:slug/edit",
+    component: () => import("@/pages/EditArticle.vue"),
+    name: EDIT_ARTICLE_ROUTE_NAME,
   },
   {
     path: "/login",

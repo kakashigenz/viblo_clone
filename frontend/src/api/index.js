@@ -22,6 +22,9 @@ const apiClient = () => {
       downvote(id) {
         return window.api.post(`/articles/${id}/downvote`);
       },
+      update(slug, article) {
+        return window.api.put(`articles/${slug}`, article);
+      },
     },
     auth: {
       getCSRFToken() {

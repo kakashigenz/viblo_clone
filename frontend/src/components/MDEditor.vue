@@ -14,7 +14,7 @@
 
 <script setup>
 import EasyMDE from "easymde";
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, onUpdated, ref, watch } from "vue";
 import Dialog from "primevue/dialog";
 import Paginator from "primevue/paginator";
 import Media from "./Media.vue";
@@ -72,6 +72,10 @@ let MDE = null;
 const emit = defineEmits(["update:modelValue"]);
 const visible = ref(false);
 
+onUpdated(() => {
+  MDE.value(props.modelValue);
+});
+
 onMounted(() => {
   MDE = new EasyMDE({
     element: editor.value,
@@ -80,8 +84,6 @@ onMounted(() => {
     spellChecker: false,
     maxHeight: "calc(100vh - 340px)",
   });
-
-  MDE.value(props.modelValue);
 
   MDE.codemirror.on("change", () => {
     emit("update:modelValue", MDE.value());

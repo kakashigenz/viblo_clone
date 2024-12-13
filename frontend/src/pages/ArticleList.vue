@@ -29,7 +29,7 @@
           <button @click="toggleOptionMenu($event, index)">
             <i class="pi pi-chevron-down" style="font-size: 12px"></i>
           </button>
-          <Menu ref="optionMenus" :model="options" :popup="true" />
+          <Menu ref="optionMenus" :model="options(article.slug)" :popup="true" />
         </div>
       </li>
     </ul>
@@ -46,11 +46,13 @@
 <script setup>
 import apiClient from "@/api";
 import { getFormatedTime } from "@/helper";
+import { EDIT_ARTICLE_ROUTE_NAME } from "@/helper/constant";
 import { Chip, Menu, Paginator } from "primevue";
 import { ref, watch } from "vue";
-import { onBeforeRouteUpdate, useRoute } from "vue-router";
+import { onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 const status = ref(route.params.status);
 const heading = ref("");
 const articles = ref([]);
@@ -62,15 +64,21 @@ const paginator = ref({
 });
 const icon = ref("");
 const optionMenus = ref();
-const options = ref([
-  {
-    label: "Sửa",
-    command() {},
-  },
-  {
-    label: "Xóa",
-  },
-]);
+const options = (key) => {
+  return [
+    {
+      label: "Sửa",
+      command({ item }) {
+        router.push({ name: EDIT_ARTICLE_ROUTE_NAME, params: { slug: item.key } });
+      },
+      key,
+    },
+    {
+      label: "Xóa",
+      key,
+    },
+  ];
+};
 
 onBeforeRouteUpdate((to, from) => {
   status.value = to.params.status;

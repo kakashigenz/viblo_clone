@@ -83,6 +83,12 @@ import { Popover, RadioButton } from "primevue";
 import Button from "@/components/Button.vue";
 import MDEditor from "@/components/MDEditor.vue";
 import apiClient from "@/api";
+import { useRoute, useRouter } from "vue-router";
+import {
+  CREATE_ARTICLE_ROUTE_NAME,
+  DETAIL_ARTICLE_ROUTE_NAME,
+  EDIT_ARTICLE_ROUTE_NAME,
+} from "@/helper/constant";
 
 const STATUS = Object.freeze({
   hidden: 0,
@@ -130,6 +136,8 @@ const searchMessage = computed(() => {
     : "Không có kết quả";
 });
 const api = apiClient();
+const route = useRoute();
+const router = useRouter();
 
 const search = (event) => {
   if (article.value.tags.length >= 5) {
@@ -159,11 +167,25 @@ const toggleSaveMenu = (event) => {
   saveMenu.value.toggle(event);
 };
 
+onMounted(async () => {
+  if (route.name == EDIT_ARTICLE_ROUTE_NAME) {
+    const { data } = await api.article.getObject(route.params.slug);
+    data.tags = data.tags.map((item) => item.name);
+    article.value = data;
+  }
+});
+
 const handleSubmit = async (e) => {
   try {
-    const { data, status } = await api.article.create(article.value);
-    console.log(data);
-    //TODO: redirect sang trang detail
+    let res = undefined;
+    if (route.name == CREATE_ARTICLE_ROUTE_NAME) {
+      res = await api.article.create(article.value);
+    } else if (route.name == EDIT_ARTICLE_ROUTE_NAME) {
+      res = await api.article.update(route.params.slug, article.value);
+    }
+    if (res.data) {
+      router.push({ name: DETAIL_ARTICLE_ROUTE_NAME, params: { slug: res.data.slug } });
+    }
   } catch (error) {
     console.log(error);
   }

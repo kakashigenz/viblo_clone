@@ -12,6 +12,7 @@ export const PASSWORD_MANAGEMENT_ROUTE_NAME = "passwordManagement";
 export const WATCH_SHORT = 1;
 export const WATCH_DETAIL = 2;
 export const DETAIL_ARTICLE_ROUTE_NAME = "detailArticle";
+export const EDIT_ARTICLE_ROUTE_NAME = "editArticle";
 export const UNVOTE_TYPE = 0;
 export const UPVOTE_TYPE = 1;
 export const DOWNVOTE_TYPE = 2;

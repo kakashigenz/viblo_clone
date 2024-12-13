@@ -106,7 +106,7 @@ class ArticleService
      */
     public function find(string $slug): Article
     {
-        $article = Article::with(['tags'])->withCount(['bookmarks', 'comments'])->where('slug', $slug)->firstOrFail();
+        $article = Article::with(['tags'])->withoutGlobalScope('public')->withCount(['bookmarks', 'comments'])->where('slug', $slug)->firstOrFail();
 
         $user = User::query()->where('id', data_get($article, 'user_id'))
             ->select([
@@ -134,14 +134,16 @@ class ArticleService
     public function update(array $data, string $slug): bool
     {
         try {
-            $article = Article::query()->where('slug', $slug)->firstOrFail()($slug);
-            Gate::authorize('update', $article);
+            $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
+            Gate::authorize('edit', $article);
 
             DB::beginTransaction();
 
             $new_slug = Str::slug(data_get($data, 'title'));
             if ($new_slug !== $slug) {
-                if (Article::query()->where('slug', $new_slug)->whereNot('id', data_get($article, 'id'))->first()) {
+                if (Article::query()->withoutGlobalScope('public')
+                    ->where('slug', $new_slug)->whereNot('id', data_get($article, 'id'))->first()
+                ) {
                     $new_slug .= '-' . Str::random(8);
                 }
             }
@@ -202,9 +204,9 @@ class ArticleService
         $size = 10;
         if ($type == Article::DRAFT) {
             $articles = Article::with(['tags'])->withoutGlobalScope('public')->where('user_id', data_get($user, 'id'))
-                ->where('status', Article::DRAFT)->select(['id', 'title', 'updated_at'])->paginate($size);
+                ->where('status', Article::DRAFT)->select(['id', 'title', 'slug', 'updated_at'])->paginate($size);
         } else {
-            $articles = Article::with(['tags'])->where('user_id', data_get($user, 'id'))->select(['id', 'title', 'updated_at'])->paginate($size);
+            $articles = Article::with(['tags'])->where('user_id', data_get($user, 'id'))->select(['id', 'title', 'slug', 'updated_at'])->paginate($size);
         }
         return [
             'data' => $articles->items(),
