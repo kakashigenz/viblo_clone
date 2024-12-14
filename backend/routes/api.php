@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::group(['as' => 'user.', 'prefix' => 'users'], function () {
             Route::put('/update-avatar', [UserController::class, 'updateAvatar']);
             Route::put('/me', [UserController::class, 'update']);
+            Route::put('/me/password', [UserController::class, 'changePassword']);
             Route::get('/{user_name}', [UserController::class, 'show']);
             Route::get('/{user_name}/followings', [FollowingUserController::class, 'index']);
             Route::post('/{user_name}/follow', [FollowingUserController::class, 'follow']);

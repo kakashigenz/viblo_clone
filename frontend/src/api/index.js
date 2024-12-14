@@ -134,6 +134,9 @@ const apiClient = () => {
       update(data) {
         return window.api.put(`/users/me`, data);
       },
+      changePassword(data) {
+        return window.api.put(`/users/me/password`, data);
+      },
     },
   };
 };

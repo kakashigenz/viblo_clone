@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\UserService;
@@ -22,14 +23,6 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
     {
         //
     }
@@ -72,5 +65,13 @@ class UserController extends Controller
         $user = $request->user();
         $new_avatar = $this->service->updateAvatar($user, data_get($data, 'name'));
         return ['new_avatar' => $new_avatar];
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $data = $request->validated();
+        $user = $request->user();
+        $this->service->changePassword($user, data_get($data, 'password'), data_get($data, 'new_password'));
+        return ['message' => 'success'];
     }
 }
