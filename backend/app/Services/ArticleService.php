@@ -104,9 +104,12 @@ class ArticleService
     /**
      * Find an article
      */
-    public function find(string $slug): Article
+    public function find(?User $user, string $slug): Article
     {
         $article = Article::with(['tags'])->withoutGlobalScope('public')->withCount(['bookmarks', 'comments'])->where('slug', $slug)->firstOrFail();
+        if ($article->status == Article::DRAFT && $article->user_id != data_get($user, 'id')) {
+            abort(404, 'Not found');
+        }
 
         $user = User::query()->where('id', data_get($article, 'user_id'))
             ->select([

@@ -7,6 +7,7 @@ use App\Http\Requests\IndexRequest;
 use App\Http\Requests\StoreUpdateArticleRequest;
 use App\Models\Article;
 use App\Services\ArticleService;
+use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class ArticleController extends Controller
@@ -57,9 +58,10 @@ class ArticleController extends Controller
     /**
      * Get the specofied resource in storage
      */
-    public function show(string $slug)
+    public function show(Request $request, string $slug)
     {
-        return $this->service->find($slug);
+        $user = $request->user();
+        return $this->service->find($user, $slug);
     }
 
     /**
