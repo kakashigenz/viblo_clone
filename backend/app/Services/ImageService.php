@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Image;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

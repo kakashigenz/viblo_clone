@@ -127,6 +127,14 @@ const apiClient = () => {
         return window.api.put(`/notifications/${id}/mark-as-read`);
       },
     },
+    user: {
+      updateAvatar(data) {
+        return window.api.put(`/users/update-avatar`, data);
+      },
+      update(data) {
+        return window.api.put(`/users/me`, data);
+      },
+    },
   };
 };
 

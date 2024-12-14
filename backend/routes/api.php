@@ -62,9 +62,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         });
 
         Route::group(['as' => 'user.', 'prefix' => 'users'], function () {
-            Route::get('/me', [UserController::class, 'getCurrentUser']);
+            Route::put('/update-avatar', [UserController::class, 'updateAvatar']);
+            Route::put('/me', [UserController::class, 'update']);
             Route::get('/{user_name}', [UserController::class, 'show']);
-            Route::put('/{user_name}', [UserController::class, 'update']);
             Route::get('/{user_name}/followings', [FollowingUserController::class, 'index']);
             Route::post('/{user_name}/follow', [FollowingUserController::class, 'follow']);
             Route::delete('/{user_name}/unfollow', [FollowingUserController::class, 'unfollow']);

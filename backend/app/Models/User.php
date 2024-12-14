@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -32,6 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'birthday',
+        'gender',
         'email',
         'user_name',
         'password',
@@ -105,10 +108,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->is_banned == false;
     }
 
-    public function getAvatar($avatar)
+    protected function avatar(): Attribute
     {
-        return $avatar
-            ? sprintf("%s/%s/%s", env('AWS_ENDPOINT'), env('AWS_BUCKET'), $avatar)
-            : null;
+        return Attribute::get(fn(?string $avatar) => $avatar ? sprintf("%s/%s/%s", env('AWS_ENDPOINT'), env('AWS_BUCKET'), $avatar) : null);
     }
 }

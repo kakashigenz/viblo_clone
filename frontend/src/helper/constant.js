@@ -18,3 +18,6 @@ export const UPVOTE_TYPE = 1;
 export const DOWNVOTE_TYPE = 2;
 export const CREATED_STATUS = 1;
 export const UPDATED_STATUS = 2;
+export const FEMALE_GENDER = 0;
+export const MALE_GENDER = 1;
+export const OTHER_GENDER = 2;

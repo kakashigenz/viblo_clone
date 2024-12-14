@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UserService
 {
@@ -17,8 +18,21 @@ class UserService
     /**
      * update an user
      */
-    public function update(array $data, string $user_name)
+    public function update(array $data, User $user)
     {
-        return User::query()->where('user_name', $user_name)->update($data);
+        $user->fill($data);
+        $user->save();
+    }
+
+    public function updateAvatar(User $user, string $name)
+    {
+        $path = '';
+        $location = sprintf('%s%s', $path, $user->getRawOriginal('avatar'));
+        if (Storage::exists($location)) {
+            Storage::delete($location);
+        }
+        $user->avatar = $name;
+        $user->save();
+        return data_get($user, 'avatar');
     }
 }

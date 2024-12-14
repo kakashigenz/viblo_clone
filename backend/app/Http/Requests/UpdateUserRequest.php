@@ -25,10 +25,8 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'birthday' => 'date_format:Y-m-d',
-            'gender' => Rule::in(User::GENDER_STRINGS),
-            'phone_number' => 'required|regex:/^0\d{9}$/',
-            'address' => 'required',
+            'birthday' => 'date',
+            'gender' => Rule::in([User::MALE, User::FEMALE, User::OTHER]),
         ];
     }
 }

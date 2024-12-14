@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -44,11 +45,12 @@ class UserController extends Controller
     /**
      * Update the specified user.
      */
-    public function update(UpdateUserRequest $request, string $user_name)
+    public function update(UpdateUserRequest $request)
     {
         $data = $request->validated();
-        $this->service->update($data, $user_name);
-        return response()->json(['message' => 'success']);
+        $user = $request->user();
+        $this->service->update($data, $user);
+        return ['message' => 'success'];
     }
 
     /**
@@ -62,5 +64,13 @@ class UserController extends Controller
     public function getCurrentUser()
     {
         return Auth::user();
+    }
+
+    public function updateAvatar(StoreImageRequest $request)
+    {
+        $data = $request->validated();
+        $user = $request->user();
+        $new_avatar = $this->service->updateAvatar($user, data_get($data, 'name'));
+        return ['new_avatar' => $new_avatar];
     }
 }
