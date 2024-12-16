@@ -11,6 +11,7 @@ import {
   INFO_MANAGEMENT_ROUTE_NAME,
   LOGIN_ROUTE_NAME,
   NEWEST_ROUTE_NAME,
+  NOT_FOUND_ROUTE_NAME,
   PASSWORD_MANAGEMENT_ROUTE_NAME,
   REGISTER_ROUTE_NAME,
 } from "@/helper/constant";
@@ -90,6 +91,11 @@ const routes = [
     redirect: { name: NEWEST_ROUTE_NAME },
     name: HOME_ROUTE_NAME,
   },
+  {
+    path: "/:uri(.*)*",
+    component: () => import("@/pages/NotFound.vue"),
+    name: NOT_FOUND_ROUTE_NAME,
+  },
 ];
 
 const router = createRouter({
@@ -111,6 +117,7 @@ router.beforeEach(async (to, from) => {
   }
 
   const exceptRoute = [
+    NOT_FOUND_ROUTE_NAME,
     LOGIN_ROUTE_NAME,
     REGISTER_ROUTE_NAME,
     NEWEST_ROUTE_NAME,

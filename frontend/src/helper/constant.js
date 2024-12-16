@@ -5,6 +5,7 @@ export const NEWEST_ROUTE_NAME = "newest";
 export const FOLLOWINGS_ROUTE_NAME = "followings";
 export const BOOKMARKS_ROUTE_NAME = "bookmarks";
 export const HOME_ROUTE_NAME = "home";
+export const NOT_FOUND_ROUTE_NAME = "notFound";
 export const ARTICLE_MANAGEMENT_ROUTE_NAME = "articleManagement";
 export const IMAGE_MANAGEMENT_ROUTE_NAME = "imageManagement";
 export const INFO_MANAGEMENT_ROUTE_NAME = "infoManagement";

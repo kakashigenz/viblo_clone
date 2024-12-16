@@ -17,7 +17,7 @@ class CommentService
      */
     public function getList(string $slug, int $size)
     {
-        $article = Article::query()->where('slug', $slug)->firstOrFail();
+        $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
         $comments = Comment::with(['user'])->withCount('subComments')->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->orderByDesc('point')->paginate($size);
 
         $current_user = auth()->guard('sanctum')->user();

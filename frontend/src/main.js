@@ -73,12 +73,22 @@ window.api = axios.create({
 });
 window.api.defaults.withCredentials = true;
 window.api.defaults.withXSRFToken = true;
+window.api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.status == 404) {
+      router.push({ name: NOT_FOUND_ROUTE_NAME });
+    }
+    return Promise.reject(error);
+  }
+);
 
 //laravel-echo
 import Echo from "laravel-echo";
 
 import Pusher from "pusher-js";
 import axios from "axios";
+import { NOT_FOUND_ROUTE_NAME } from "./helper/constant";
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
