@@ -66,10 +66,6 @@ class AuthController extends Controller
 
     public function checkAuthorization(Request $request)
     {
-        $user = $request->user();
-        if ($user) {
-            return $user;
-        }
-        abort(401, 'Unauthorized');
+        return $request->user();
     }
 }

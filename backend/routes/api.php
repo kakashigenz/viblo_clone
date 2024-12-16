@@ -15,15 +15,15 @@ use App\Http\Controllers\Api\VerificationEmailController;
 use App\Http\Controllers\Api\VoteController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/spa-login', [AuthController::class, 'spaLogin']);
-Route::post('/check-authorization', [AuthController::class, 'checkAuthorization']);
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('apiLogin');
+Route::post('/spa-login', [AuthController::class, 'spaLogin'])->name('login');
 
 Route::get('/email/verify/{id}/{hash}', [VerificationEmailController::class, 'verify'])
     ->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::post('/check-authorization', [AuthController::class, 'checkAuthorization'])->name('checkAuthorization');
 
     Route::post('/email/verification-notification', [VerificationEmailController::class, 'resendEmail'])
         ->middleware(['throttle:6,1'])->name('verification.send');
