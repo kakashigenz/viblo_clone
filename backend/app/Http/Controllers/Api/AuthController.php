@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -58,8 +59,8 @@ class AuthController extends Controller
             $request->user()->currentAccessToken()->delete();
         } else {
             Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Session::invalidate();
+            Session::regenerateToken();
         }
         return ['message' => 'success'];
     }

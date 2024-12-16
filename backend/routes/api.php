@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/email/verification-notification', [VerificationEmailController::class, 'resendEmail'])
         ->middleware(['throttle:6,1'])->name('verification.send');
 
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::group(['middleware' => 'verified'], function () {
         Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
