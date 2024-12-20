@@ -26,7 +26,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'user_name' => fake()->userName(),
+            'user_name' => fake()->unique()->userName(),
             'gender' => fake()->randomElement([User::MALE, User::FEMALE, User::OTHER]),
             'birthday' => fake()->unixTime(),
             'phone_number' => fake()->phoneNumber(),
