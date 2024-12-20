@@ -19,7 +19,7 @@ class StoreUpdateArticleRequest extends FormRequest
             'title' => 'required|max:255',
             'content' => 'required',
             'tags' => 'required|array|between:1,5',
-            'status' => Rule::in([Article::VISIBLE, Article::DRAFT, Article::SPAM])
+            'status' => ['required', Rule::in([Article::VISIBLE, Article::DRAFT, Article::SPAM])]
         ];
     }
 }
