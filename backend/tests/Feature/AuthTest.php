@@ -133,7 +133,7 @@ class AuthTest extends TestCase
 
     public function test_login_with_empty_data()
     {
-        $response = $this->postJson(route('apiLogin'), []);
+        $response = $this->postJson(route('login'), []);
 
         $response->assertUnprocessable();
         $response->assertInvalid([
@@ -144,7 +144,7 @@ class AuthTest extends TestCase
 
     public function test_login_with_wrong_data()
     {
-        $response = $this->postJson(route('apiLogin'), Arr::only($this->exam_data, ['user_name', 'password']));
+        $response = $this->postJson(route('login'), Arr::only($this->exam_data, ['user_name', 'password']));
 
         $response->assertUnauthorized();
         $response->assertJson([
@@ -155,7 +155,7 @@ class AuthTest extends TestCase
     public function test_login_with_unverified_user()
     {
         $unverified_user = User::factory()->unverified()->create();
-        $response = $this->postJson(route('apiLogin'), [
+        $response = $this->postJson(route('login'), [
             'user_name' => $unverified_user->user_name,
             'password' => 'password'
         ]);
@@ -168,7 +168,7 @@ class AuthTest extends TestCase
 
     public function test_login_with_correct_data()
     {
-        $response = $this->postJson(route('apiLogin'), [
+        $response = $this->postJson(route('login'), [
             'user_name' => $this->user->user_name,
             'password' => 'password'
         ]);
