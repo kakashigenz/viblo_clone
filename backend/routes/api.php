@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::group(['middleware' => 'verified'], function () {
         Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
-            Route::post('/', [ArticleController::class, 'store']);
+            Route::post('/', [ArticleController::class, 'store'])->name('store');
             Route::get('/drafts', [ArticleController::class, 'getMyArticles'])->name('draft');
             Route::get('/public', [ArticleController::class, 'getMyArticles'])->name('public');
             Route::post('/{article_slug}/bookmark', [BookmarkController::class, 'store']);
@@ -40,8 +40,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::post('/{id}/upvote', [VoteController::class, 'upvote'])->name('upvote');
             Route::post('/{id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
             Route::post('/{slug}/comments', [CommentController::class, 'store']);
-            Route::put('/{slug}', [ArticleController::class, 'update']);
-            Route::delete('/{slug}', [ArticleController::class, 'destroy']);
+            Route::put('/{slug}', [ArticleController::class, 'update'])->name('update');
+            Route::delete('/{slug}', [ArticleController::class, 'destroy'])->name('delete');
         });
 
         Route::group(['as.' => 'tag.', 'prefix' => 'tags'], function () {
