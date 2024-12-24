@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            //change type text to mediumText
-            $table->text('content');
+            $table->mediumText('content');
             $table->string('slug')->unique();
             $table->unsignedBigInteger('user_id');
             $table->integer('point');
