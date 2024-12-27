@@ -1,8 +1,9 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Viblo API",
-        "version": "0.0.1"
+        "title": "Viblo API doc",
+        "description": "Viblo API documentation for blog Viblo",
+        "version": "1.0.0"
     },
     "servers": [
         {
@@ -10,17 +11,66 @@
         }
     ],
     "paths": {
-        "/article": {
+        "/articles": {
             "get": {
                 "tags": [
                     "Article"
                 ],
-                "summary": "Get an article",
-                "description": "**Get an article by id**",
-                "operationId": "c4bc5748febfb2ec37eda312bbda4829",
+                "summary": "Get a list of articles",
+                "description": "Display a listing of the resource.",
+                "operationId": "20f46a4be21edb0179e4df7acaa45c18",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Get successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListArticleResponse"
+                                }
+                            }
+                        }
+                    },
+                    "5XX": {
+                        "description": "Unexpected error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Update an article",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "9df6bd8bd202eed7afab4cf724e19398",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreUpdateArticleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Create successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -28,35 +78,831 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/articles/{slug}": {
+            "get": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Get an article",
+                "description": "**Get an article by slug**",
+                "operationId": "67b7c4852483c91b527c9cb8a345f19d",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "schema": {
+                            "type": "string",
+                            "example": "why-we-should-learn-python"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArticleResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "5XX": {
+                        "description": "Unexpected Error"
                     }
                 }
+            },
+            "put": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Update an article",
+                "description": "Update the specified resource in storage.",
+                "operationId": "a57c9a0a161a2472694953a7756553a6",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "why-we-should-learn-python"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreUpdateArticleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Article"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Delete an article",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "2a3598bef5b84f2ee990d465182538fa",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "why-we-should-learn-python"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "5d4fa5d5607ed675ba93907e1fc94534",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Register successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login a user",
+                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Failed to login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unverified Email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/email/verification-notification": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Resend email verification notification",
+                "operationId": "2b2953e7340c21add4505728e4ee565e",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
     "components": {
         "schemas": {
-            "Article": {
+            "ListArticleRequest": {
                 "properties": {
-                    "title": {
-                        "type": "string"
+                    "page": {
+                        "description": "Page number for pagination",
+                        "type": "integer",
+                        "example": 1
                     },
-                    "content": {
-                        "type": "string"
-                    },
-                    "slug": {
-                        "type": "string"
-                    },
-                    "point": {
-                        "type": "number"
-                    },
-                    "status": {
-                        "type": "string"
-                    },
-                    "view": {
-                        "type": "number"
+                    "size": {
+                        "description": "Number of items per page",
+                        "type": "integer",
+                        "example": 10
                     }
                 },
                 "type": "object"
+            },
+            "LoginRequest": {
+                "properties": {
+                    "user_name": {
+                        "description": "Get the validation rules that apply to the request.",
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "properties": {
+                    "name": {
+                        "description": "Get the validation rules that apply to the request.",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "user_name": {
+                        "type": "string",
+                        "example": "john-doe"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreUpdateArticleRequest": {
+                "properties": {
+                    "title": {
+                        "description": "Get the validation rules that apply to the request.",
+                        "type": "string",
+                        "example": "Why we should learn Python"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Because Python is fun!"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "python",
+                            "programming"
+                        ]
+                    },
+                    "status": {
+                        "type": "integer",
+                        "enum": [
+                            2,
+                            1,
+                            0
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "Article": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Why we should lear Python"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Because Python is fun!"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "why-we-should-learn-python"
+                    },
+                    "point": {
+                        "type": "number",
+                        "example": 100
+                    },
+                    "status": {
+                        "description": "Status: 2is visible, 1 is draff",
+                        "type": "integer",
+                        "enum": [
+                            2,
+                            1
+                        ],
+                        "example": 2
+                    },
+                    "view": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Tag": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Python"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "python"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-09-10T12:34:56"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-09-10T12:34:56"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "birthday": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-10-01T12:00:00Z"
+                    },
+                    "gender": {
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "example": 0
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "user_name": {
+                        "type": "string",
+                        "example": "johndoe"
+                    },
+                    "is_banned": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "https://example.com/avatar.jpg"
+                    }
+                },
+                "type": "object"
+            },
+            "ListArticleResponse": {
+                "properties": {
+                    "data": {
+                        "description": "get list article use pagination",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ListArticleResource"
+                        }
+                    },
+                    "page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "size": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    }
+                },
+                "type": "object"
+            },
+            "ListArticleResource": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Why we should lear Python"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Because Python is fun!"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "why-we-should-learn-python"
+                    },
+                    "point": {
+                        "type": "number",
+                        "example": 100
+                    },
+                    "status": {
+                        "type": "integer",
+                        "enum": [
+                            2,
+                            1
+                        ],
+                        "example": 2
+                    },
+                    "view": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "bookmarks_count": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "comments_count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "votes_count": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                },
+                "type": "object"
+            },
+            "ArticleResponse": {
+                "properties": {
+                    "id": {
+                        "description": "Find an article",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Why we should learn Python"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Because Python is fun!"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "why-we-should-learn-python"
+                    },
+                    "point": {
+                        "type": "number",
+                        "example": 100
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "view": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "bookmarks_count": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "comments_count": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "John Doe"
+                            },
+                            "user_name": {
+                                "type": "string",
+                                "example": "johndoe"
+                            },
+                            "avatar": {
+                                "type": "string",
+                                "example": "avatar.jpg"
+                            },
+                            "is_banned": {
+                                "type": "boolean",
+                                "example": false
+                            },
+                            "followings_count": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "articles_count": {
+                                "type": "integer",
+                                "example": 20
+                            },
+                            "is_following": {
+                                "type": "boolean",
+                                "example": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "vote_type": {
+                        "type": "integer",
+                        "enum": [
+                            1,
+                            2,
+                            null
+                        ],
+                        "example": null
+                    }
+                },
+                "type": "object"
+            },
+            "LoginResponse": {
+                "properties": {
+                    "user": {
+                        "description": "Login and get a token",
+                        "type": "object"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
             }
         }
     },
@@ -64,6 +910,10 @@
         {
             "name": "Article",
             "description": "Article"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
         }
     ]
 }
