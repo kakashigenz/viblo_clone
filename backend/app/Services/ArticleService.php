@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\User;
+use App\Models\Vote;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Parsedown;
+use OpenApi\Attributes as OA;
 
 class ArticleService
 {
@@ -22,6 +24,46 @@ class ArticleService
     /**
      * get list article use pagination
      */
+    #[OA\Schema(
+        schema: "ListArticleResponse",
+        properties: [
+            new OA\Property(
+                property: 'data',
+                type: 'array',
+                items: new OA\Items(ref: "#/components/schemas/ListArticleResource")
+            ),
+            new OA\Property(
+                property: 'page',
+                type: 'integer',
+                example: 1
+            ),
+            new OA\Property(
+                property: 'size',
+                type: 'integer',
+                example: 10
+            ),
+            new OA\Property(
+                property: 'total',
+                type: 'integer',
+                example: 100
+            )
+        ]
+    )]
+    #[OA\Schema(
+        schema: "ListArticleResource",
+        properties: [
+            new OA\Property(property: 'title', type: 'string', example: "Why we should lear Python"),
+            new OA\Property(property: 'content', type: 'string', example: "Because Python is fun!"),
+            new OA\Property(property: 'slug', type: 'string', example: "why-we-should-learn-python"),
+            new OA\Property(property: 'point', type: 'number', example: 100),
+            new OA\Property(property: 'status', type: 'integer', enum: [Article::VISIBLE, Article::DRAFT], example: Article::VISIBLE),
+            new OA\Property(property: 'view', type: 'integer', example: 100),
+            new OA\Property(property: 'user', type: 'object', ref: "#/components/schemas/User"),
+            new OA\Property(property: 'bookmarks_count', type: 'integer', example: 50),
+            new OA\Property(property: 'comments_count', type: 'integer', example: 3),
+            new OA\Property(property: 'votes_count', type: 'integer', example: 10),
+        ]
+    )]
     public function getList(int $size)
     {
         $articles = Article::with(['tags', 'user'])->withCount(['bookmarks', 'comments', 'votes'])->paginate($size);
@@ -104,6 +146,42 @@ class ArticleService
     /**
      * Find an article
      */
+    #[OA\Schema(
+        schema: "ArticleResponse",
+        properties: [
+            new OA\Property(property: "id", type: "integer", example: 1),
+            new OA\Property(property: "title", type: "string", example: "Why we should learn Python"),
+            new OA\Property(property: "content", type: "string", example: "Because Python is fun!"),
+            new OA\Property(property: "slug", type: "string", example: "why-we-should-learn-python"),
+            new OA\Property(property: "point", type: "number", example: 100),
+            new OA\Property(property: "status", type: "integer", example: 2),
+            new OA\Property(property: "view", type: "integer", example: 100),
+            new OA\Property(property: "tags", type: "array", items: new OA\Items(ref: "#/components/schemas/Tag")),
+            new OA\Property(property: "bookmarks_count", type: "integer", example: 10),
+            new OA\Property(property: "comments_count", type: "integer", example: 5),
+            new OA\Property(property: "user_id", type: "integer", example: 1),
+            new OA\Property(
+                property: "user",
+                type: "object",
+                properties: [
+                    new OA\Property(property: "id", type: "integer", example: 1),
+                    new OA\Property(property: "name", type: "string", example: "John Doe"),
+                    new OA\Property(property: "user_name", type: "string", example: "johndoe"),
+                    new OA\Property(property: "avatar", type: "string", example: "avatar.jpg"),
+                    new OA\Property(property: "is_banned", type: "boolean", example: false),
+                    new OA\Property(property: "followings_count", type: "integer", example: 100),
+                    new OA\Property(property: "articles_count", type: "integer", example: 20),
+                    new OA\Property(property: "is_following", type: "boolean", example: true),
+                ]
+            ),
+            new OA\Property(
+                property: "vote_type",
+                type: "integer",
+                enum: [Vote::UPVOTE, Vote::DOWNVOTE, null],
+                example: null
+            )
+        ]
+    )]
     public function find(?User $user, string $slug): Article
     {
         $article = Article::with(['tags'])->withoutGlobalScope('public')->withCount(['bookmarks', 'comments'])->where('slug', $slug)->firstOrFail();

@@ -21,6 +21,40 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/articles',
+        summary: 'Get a list of articles',
+        tags: ['Article'],
+        parameters: [
+            new OA\Parameter(
+                in: 'query',
+                name: 'page',
+                schema: new OA\Schema(
+                    type: 'integer',
+                ),
+            ),
+            new OA\Parameter(
+                in: 'query',
+                name: 'size',
+                schema: new OA\Schema(
+                    type: 'integer',
+                ),
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Get successfully',
+                content: new OA\JsonContent(
+                    ref: '#/components/schemas/ListArticleResponse'
+                )
+            ),
+            new OA\Response(
+                response: "5XX",
+                description: 'Unexpected error',
+            )
+        ]
+    )]
     public function index(IndexRequest $request)
     {
         $data = $request->validated();
@@ -32,6 +66,54 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/articles',
+        summary: 'Store an article',
+        tags: ['Article'],
+        requestBody: new OA\RequestBody(
+            content: new OA\JsonContent(ref: '#/components/schemas/StoreUpdateArticleRequest'),
+            required: true
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Create successfully',
+                content: new OA\JsonContent(
+                    ref: '#/components/schemas/Article',
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthorized",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Unprocessable Data",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        ),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'array',
+                            items: new OA\Items(type: 'string')
+                        )
+                    ]
+                )
+            )
+        ],
+        security: [['bearerAuth' => []]]
+    )]
     public function store(StoreUpdateArticleRequest $request)
     {
         $data = $request->validated();
@@ -41,19 +123,46 @@ class ArticleController extends Controller
     }
 
     #[OA\Get(
-        path: '/article',
+        path: '/articles/{slug}',
         summary: 'Get an article',
         tags: ['Article'],
-        description: '**Get an article by id**',
+        description: '**Get an article by slug**',
+        parameters: [
+            new OA\Parameter(
+                in: 'path',
+                name: 'slug',
+                schema: new OA\Schema(
+                    type: 'string',
+                    example: "why-we-should-learn-python"
+                ),
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
                 description: 'Get successfully',
                 content: new OA\JsonContent(
-                    ref: '#/components/schemas/Article'
+                    ref: '#/components/schemas/ArticleResponse'
                 )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Not found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: "Not found"
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: "5XX",
+                description: 'Unexpected Error',
             )
-        ]
+        ],
     )]
     /**
      * Get the specofied resource in storage
@@ -67,6 +176,90 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/articles/{slug}',
+        summary: 'Update an article',
+        tags: ['Article'],
+        parameters: [
+            new OA\Parameter(
+                in: 'path',
+                name: 'slug',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'string',
+                    example: "why-we-should-learn-python"
+                )
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            content: new OA\JsonContent(ref: '#/components/schemas/StoreUpdateArticleRequest'),
+            required: true
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Update successfully',
+                content: new OA\JsonContent(
+                    ref: '#/components/schemas/Article',
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthorized",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Not found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Forbidden',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Unprocessable Data",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        ),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'array',
+                            items: new OA\Items(type: 'string')
+                        )
+                    ]
+                )
+            )
+
+        ],
+        security: [['bearerAuth' => []]]
+    )]
     public function update(StoreUpdateArticleRequest $request, string $slug)
     {
         $data = $request->validated();
@@ -78,6 +271,73 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/articles/{slug}',
+        summary: 'Delete an article',
+        tags: ['Article'],
+        parameters: [
+            new OA\Parameter(
+                in: 'path',
+                name: 'slug',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'string',
+                    example: "why-we-should-learn-python",
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Delete successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthorized",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Not found',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Forbidden',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                        )
+                    ]
+                )
+            ),
+        ],
+        security: [['bearerAuth' => []]]
+    )]
     public function destroy(string $slug)
     {
         $this->service->delete($slug);

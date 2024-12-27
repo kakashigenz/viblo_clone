@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use OpenApi\Attributes as OA;
 
 class AuthService
 {
@@ -25,6 +26,13 @@ class AuthService
     /**
      * Login and get a token
      */
+    #[OA\Schema(
+        schema: 'LoginResponse',
+        properties: [
+            new OA\Property(property: 'user', type: 'object'),
+            new OA\Property(property: 'token', type: 'string')
+        ]
+    )]
     public function login(array $data): ?array
     {
         $user = User::query()->where('user_name', data_get($data, 'user_name'))

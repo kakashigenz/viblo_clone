@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use OpenApi\Attributes as OA;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,6 +12,19 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
 
+#[
+    OA\Schema(
+        properties: [
+            new OA\Property(property: 'name', type: 'string', example: "John Doe"),
+            new OA\Property(property: 'birthday', type: 'string', format: 'date-time', example: "2023-10-01T12:00:00Z"),
+            new OA\Property(property: 'gender', type: 'integer', enum: [User::FEMALE, User::MALE, User::OTHER], example: User::FEMALE),
+            new OA\Property(property: 'email', type: 'string', example: "john.doe@example.com"),
+            new OA\Property(property: 'user_name', type: 'string', example: "johndoe"),
+            new OA\Property(property: 'is_banned', type: 'boolean', example: false),
+            new OA\Property(property: 'avatar', type: 'string', example: "https://example.com/avatar.jpg"),
+        ]
+    )
+]
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, Searchable;

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use OpenApi\Attributes as OA;
 
 class RegisterRequest extends FormRequest
 {
@@ -11,6 +12,16 @@ class RegisterRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    #[OA\Schema(
+        schema: 'RegisterRequest',
+        properties: [
+            new OA\Property(property: 'name', type: 'string', example: "John Doe"),
+            new OA\Property(property: 'email', type: 'string', example: "john.doe@example.com"),
+            new OA\Property(property: 'user_name', type: 'string', example: "john-doe"),
+            new OA\Property(property: 'password', type: 'string', example: "password123"),
+            new OA\Property(property: 'password_confirmation', type: 'string', example: "password123")
+        ]
+    )]
     public function rules(): array
     {
         return [

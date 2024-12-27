@@ -9,6 +9,7 @@ use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
 {
@@ -19,6 +20,48 @@ class AuthController extends Controller
         $this->service = $service;
     }
 
+    #[OA\Post(
+        path: '/register',
+        summary: 'Register a new user',
+        tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: '#/components/schemas/RegisterRequest'
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Register successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: "success"
+                        ),
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Unprocessable Content",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string'
+                        ),
+                        new OA\Property(
+                            property: 'errors',
+                            type: 'object',
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
@@ -26,6 +69,48 @@ class AuthController extends Controller
         return response()->json(['message' => 'success']);
     }
 
+    #[OA\Post(
+        path: '/login',
+        summary: 'Login a user',
+        tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: '#/components/schemas/LoginRequest'
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Login successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/LoginResponse')
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Failed to login',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Unverified Email',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string'
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
