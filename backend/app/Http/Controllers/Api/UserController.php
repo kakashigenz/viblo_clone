@@ -74,4 +74,12 @@ class UserController extends Controller
         $this->service->changePassword($user, data_get($data, 'password'), data_get($data, 'new_password'));
         return ['message' => 'success'];
     }
+
+    public function getTopUser(Request $request)
+    {
+        return [
+            'status' => 'success',
+            'data' => $this->service->getUsersOrderByFollower()
+        ];
+    }
 }

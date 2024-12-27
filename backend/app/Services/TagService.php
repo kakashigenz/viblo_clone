@@ -34,7 +34,6 @@ class TagService
         return $res;
     }
 
-    //XXX: no action update because user doesn't use feature
 
     /**
      * get a tag by slug
@@ -58,6 +57,11 @@ class TagService
     public function findTagByName(string $name)
     {
         return $this->find($this->generateSlug($name));
+    }
+
+    public function getTopTag()
+    {
+        return Tag::query()->withCount(['articles', 'followers'])->orderBy('followers_count', 'desc')->take(2)->get();
     }
 
     protected function generateSlug(string $text): string

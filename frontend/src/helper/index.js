@@ -58,6 +58,10 @@ export const getURLAvatar = (user) => {
   );
 };
 
+export const getPlaceHoldAvatar = (name) => {
+  return `https://placehold.co/45x45/green/FFF?text=${name.slice(0, 1)}`;
+};
+
 export const getFormatedTime = (timestamp, locate = "vi-VN") => {
   let value;
   const diff = (Date.now() - new Date(timestamp).getTime()) / 1000;

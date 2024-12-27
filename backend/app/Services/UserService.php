@@ -45,4 +45,9 @@ class UserService
         $user->password = Hash::make($new_password);
         $user->save();
     }
+
+    public function getUsersOrderByFollower()
+    {
+        return User::query()->withCount(['followers', 'articles'])->orderBy('followers_count', 'desc')->take(3)->get();
+    }
 }

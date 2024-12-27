@@ -52,12 +52,12 @@ class TagController extends Controller
         return response()->json($res);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $slug)
+    public function getTopTag()
     {
-        //
+        return [
+            'status' => 'success',
+            'data' => $this->service->getTopTag()
+        ];
     }
 
     /**

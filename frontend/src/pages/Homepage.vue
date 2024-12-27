@@ -49,23 +49,23 @@
               <div class="border-b border-gray-300 flex-1"></div>
             </header>
             <div class="flex flex-col gap-y-1 py-2">
-              <div class="py-2 flex flex-col gap-y-2">
+              <div
+                v-for="user in topUsers"
+                :key="user.id"
+                class="py-2 flex flex-col gap-y-2"
+              >
                 <div class="flex gap-x-5">
                   <a href="#">
-                    <Avatar
-                      image="http://images.viblo.test/images/thumb.jpg"
-                      size="xlarge"
-                      shape="circle"
-                    />
+                    <Avatar :image="getURLAvatar(user)" size="xlarge" shape="circle" />
                   </a>
                   <div class="flex flex-col gap-y-2">
                     <div>
                       <a
                         href="#"
                         class="text-sm text-sky-500 hover:underline hover:text-sky-600"
-                        >Minh Mommen</a
+                        >{{ user.name }}</a
                       >
-                      <p class="text-sm">@monmen</p>
+                      <p class="text-sm">{{ `@${user.user_name}` }}</p>
                     </div>
                     <Button variant="secondary" size="small">
                       <i class="pi pi-plus" style="font-size: 12px"></i>
@@ -76,81 +76,11 @@
                 <div class="px-2 flex items-center gap-x-4">
                   <span class="cursor-default" v-tooltip.bottom="'Bài viết'">
                     <i class="pi pi-book mr-1" style="font-size: 12px"></i>
-                    <span>10</span>
+                    <span>{{ user.articles_count }}</span>
                   </span>
                   <span class="cursor-default" v-tooltip.bottom="'Người theo dõi'">
                     <i class="pi pi-user-plus mr-1" style="font-size: 14px"></i>
-                    <span>1</span>
-                  </span>
-                </div>
-              </div>
-              <div class="py-2 flex flex-col gap-y-2">
-                <div class="flex gap-x-5">
-                  <a href="#">
-                    <Avatar
-                      image="http://images.viblo.test/images/thumb.jpg"
-                      size="xlarge"
-                      shape="circle"
-                    />
-                  </a>
-                  <div class="flex flex-col gap-y-2">
-                    <div>
-                      <a
-                        href="#"
-                        class="text-sm text-sky-500 hover:underline hover:text-sky-600"
-                        >Minh Mommen</a
-                      >
-                      <p class="text-sm">@monmen</p>
-                    </div>
-                    <Button variant="secondary" size="small">
-                      <i class="pi pi-plus" style="font-size: 12px"></i>
-                      Theo dõi
-                    </Button>
-                  </div>
-                </div>
-                <div class="px-2 flex items-center gap-x-4">
-                  <span class="cursor-default" v-tooltip.bottom="'Bài viết'">
-                    <i class="pi pi-book mr-1" style="font-size: 12px"></i>
-                    <span>10</span>
-                  </span>
-                  <span class="cursor-default" v-tooltip.bottom="'Người theo dõi'">
-                    <i class="pi pi-user-plus mr-1" style="font-size: 14px"></i>
-                    <span>1</span>
-                  </span>
-                </div>
-              </div>
-              <div class="py-2 flex flex-col gap-y-2">
-                <div class="flex gap-x-5">
-                  <a href="#">
-                    <Avatar
-                      image="http://images.viblo.test/images/thumb.jpg"
-                      size="xlarge"
-                      shape="circle"
-                    />
-                  </a>
-                  <div class="flex flex-col gap-y-2">
-                    <div>
-                      <a
-                        href="#"
-                        class="text-sm text-sky-500 hover:underline hover:text-sky-600"
-                        >Minh Mommen</a
-                      >
-                      <p class="text-sm">@monmen</p>
-                    </div>
-                    <Button variant="secondary" size="small">
-                      <i class="pi pi-plus" style="font-size: 12px"></i>
-                      Theo dõi
-                    </Button>
-                  </div>
-                </div>
-                <div class="px-2 flex items-center gap-x-4">
-                  <span class="cursor-default" v-tooltip.bottom="'Bài viết'">
-                    <i class="pi pi-book mr-1" style="font-size: 12px"></i>
-                    <span>10</span>
-                  </span>
-                  <span class="cursor-default" v-tooltip.bottom="'Người theo dõi'">
-                    <i class="pi pi-user-plus mr-1" style="font-size: 14px"></i>
-                    <span>1</span>
+                    <span>{{ user.followers_count }}</span>
                   </span>
                 </div>
               </div>
@@ -162,17 +92,21 @@
                 <h5
                   class="uppercase text-sky-500 hover:text-sky-700 border-sky-600 hover:border-b leading-4 mr-2"
                 >
-                  Các tác giả hàng đầu
+                  Các chủ đề hàng đầu
                 </h5>
               </a>
               <div class="border-b border-gray-300 flex-1"></div>
             </header>
             <div class="flex flex-col gap-y-1 py-2">
-              <div class="py-2 flex flex-col gap-y-2">
+              <div
+                v-for="tag in topTags"
+                :key="tag.id"
+                class="py-2 flex flex-col gap-y-2"
+              >
                 <div class="flex gap-x-5">
                   <a href="#">
                     <Avatar
-                      image="http://images.viblo.test/images/thumb.jpg"
+                      :image="getPlaceHoldAvatar(tag.name)"
                       size="xlarge"
                       shape="circle"
                     />
@@ -182,9 +116,9 @@
                       <a
                         href="#"
                         class="text-sm text-sky-500 hover:underline hover:text-sky-600"
-                        >Minh Mommen</a
+                        >{{ tag.name }}</a
                       >
-                      <p class="text-sm">@monmen</p>
+                      <p class="text-sm">{{ `@${tag.name}` }}</p>
                     </div>
                     <Button variant="secondary" size="small">
                       <i class="pi pi-plus" style="font-size: 12px"></i>
@@ -195,46 +129,11 @@
                 <div class="px-2 flex items-center gap-x-4">
                   <span class="cursor-default" v-tooltip.bottom="'Bài viết'">
                     <i class="pi pi-book mr-1" style="font-size: 12px"></i>
-                    <span>10</span>
+                    <span>{{ tag.articles_count }}</span>
                   </span>
                   <span class="cursor-default" v-tooltip.bottom="'Người theo dõi'">
                     <i class="pi pi-user-plus mr-1" style="font-size: 14px"></i>
-                    <span>1</span>
-                  </span>
-                </div>
-              </div>
-              <div class="py-2 flex flex-col gap-y-2">
-                <div class="flex gap-x-5">
-                  <a href="#">
-                    <Avatar
-                      image="http://images.viblo.test/images/thumb.jpg"
-                      size="xlarge"
-                      shape="circle"
-                    />
-                  </a>
-                  <div class="flex flex-col gap-y-2">
-                    <div>
-                      <a
-                        href="#"
-                        class="text-sm text-sky-500 hover:underline hover:text-sky-600"
-                        >Minh Mommen</a
-                      >
-                      <p class="text-sm">@monmen</p>
-                    </div>
-                    <Button variant="secondary" size="small">
-                      <i class="pi pi-plus" style="font-size: 12px"></i>
-                      Theo dõi
-                    </Button>
-                  </div>
-                </div>
-                <div class="px-2 flex items-center gap-x-4">
-                  <span class="cursor-default" v-tooltip.bottom="'Bài viết'">
-                    <i class="pi pi-book mr-1" style="font-size: 12px"></i>
-                    <span>10</span>
-                  </span>
-                  <span class="cursor-default" v-tooltip.bottom="'Người theo dõi'">
-                    <i class="pi pi-user-plus mr-1" style="font-size: 14px"></i>
-                    <span>1</span>
+                    <span>{{ tag.followers_count }}</span>
                   </span>
                 </div>
               </div>
@@ -257,9 +156,10 @@ import Header from "@/components/Header.vue";
 import ListArticle from "@/components/ListArticle.vue";
 import NavigationBar from "@/components/NavigationBar.vue";
 import SideBar from "@/components/SideBar.vue";
+import { getPlaceHoldAvatar, getURLAvatar } from "@/helper";
 import { WATCH_DETAIL, WATCH_SHORT } from "@/helper/constant";
 import { Avatar, Paginator, Skeleton } from "primevue";
-import { ref, watch } from "vue";
+import { ref, watch, onBeforeMount } from "vue";
 
 const isFetching = ref(false);
 const paginator = ref({
@@ -270,6 +170,21 @@ const paginator = ref({
 const api = apiClient();
 const articles = ref([]);
 const watchMode = ref(WATCH_DETAIL);
+const topUsers = ref([]);
+const topTags = ref([]);
+
+onBeforeMount(async () => {
+  isFetching.value = true;
+  try {
+    const res = await Promise.all([api.user.getTopUser(), api.tag.getTopTag()]);
+    // const { data } = await api.user.getTopUser();
+    topUsers.value = res[0].data.data;
+    topTags.value = res[1].data.data;
+  } catch (error) {
+    console.log(error);
+  }
+  isFetching.value = false;
+});
 
 watch(
   () => paginator.value.currentPage,

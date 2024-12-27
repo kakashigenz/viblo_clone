@@ -137,6 +137,14 @@ const apiClient = () => {
       changePassword(data) {
         return window.api.put(`/users/me/password`, data);
       },
+      getTopUser() {
+        return window.api.get(`users/get-top-user`);
+      },
+    },
+    tag: {
+      getTopTag() {
+        return window.api.get(`tags/get-top-tag`);
+      },
     },
   };
 };

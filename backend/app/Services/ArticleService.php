@@ -66,7 +66,7 @@ class ArticleService
     )]
     public function getList(int $size)
     {
-        $articles = Article::with(['tags', 'user'])->withCount(['bookmarks', 'comments', 'votes'])->paginate($size);
+        $articles = Article::with(['tags', 'user'])->withCount(['bookmarks', 'comments', 'votes'])->orderByDesc('created_at')->paginate($size);
         $char_limit = 160;
 
         $article_content = array_map(function ($article) use ($char_limit) {

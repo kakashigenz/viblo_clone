@@ -19,6 +19,31 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('apiLogin');
 Route::post('/spa-login', [AuthController::class, 'spaLogin'])->name('login');
 
+
+Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
+    Route::get('/', [ArticleController::class, 'index']);
+    Route::get('/{slug}', [ArticleController::class, 'show']);
+    Route::get('/{slug}/comments', [CommentController::class, 'index']);
+});
+Route::group(['prefix' => 'comments'], function () {
+    Route::get('/{comment_id}/replies', [CommentController::class, 'getSubComments']);
+});
+
+
+Route::group(['as' => 'search.', 'prefix' => 'search'], function () {
+    Route::get('/articles', [SearchController::class, 'searchArticle']);
+    Route::get('/users', [SearchController::class, 'searchUser']);
+    Route::get('/multi', [SearchController::class, 'searchMulti']);
+});
+
+Route::group(['as' => 'user.', 'prefix' => 'users'], function () {
+    Route::get('/get-top-user', [UserController::class, 'getTopUser']);
+});
+
+Route::group(['as' => 'tag.', 'prefix' => 'tags'], function () {
+    Route::get('/get-top-tag', [TagController::class, 'getTopTag']);
+});
+
 Route::get('/email/verify/{id}/{hash}', [VerificationEmailController::class, 'verify'])
     ->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
@@ -87,20 +112,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::put('/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
         });
     });
-});
-
-Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
-    Route::get('/', [ArticleController::class, 'index']);
-    Route::get('/{slug}', [ArticleController::class, 'show']);
-    Route::get('/{slug}/comments', [CommentController::class, 'index']);
-});
-Route::group(['prefix' => 'comments'], function () {
-    Route::get('/{comment_id}/replies', [CommentController::class, 'getSubComments']);
-});
-
-
-Route::group(['as' => 'search.', 'prefix' => 'search'], function () {
-    Route::get('/articles', [SearchController::class, 'searchArticle']);
-    Route::get('/users', [SearchController::class, 'searchUser']);
-    Route::get('/multi', [SearchController::class, 'searchMulti']);
 });
