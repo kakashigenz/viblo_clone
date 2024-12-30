@@ -175,6 +175,18 @@ const toMarkdown = (content) => {
 };
 
 watch(
+  () => props.data.sub_comments_count,
+  async (newCount, prevCount) => {
+    if (newCount > prevCount) {
+      if (!hasMoreReplies.value) {
+        page.value--;
+      }
+      await getReplies();
+    }
+  }
+);
+
+watch(
   () => props.data.content,
   (newContent) => {
     mdContent.value = toMarkdown(newContent);
@@ -200,9 +212,6 @@ const addReply = (reply, status) => {
 };
 
 const getReplies = async () => {
-  if (!hasMoreReplies.value) {
-    return;
-  }
   try {
     const { data } = await api.comment.getReplies(props.data.id, page.value);
     replies.value = [...replies.value, ...data.data];

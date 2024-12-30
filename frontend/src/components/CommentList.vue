@@ -45,7 +45,15 @@ onMounted(async () => {
   window.Echo.channel(`comment.${slug}`).listen("PostComment", (data) => {
     switch (data.type) {
       case "create":
-        comments.value.push(data.comment);
+        if (data.comment.parent_id) {
+          comments.value.forEach((comment, i) => {
+            if (comment.id == data.comment?.parent_id) {
+              comment.sub_comments_count++;
+            }
+          });
+        } else {
+          comments.value.push(data.comment);
+        }
       case "edit":
         comments.value.forEach((comment, i) => {
           if (comment.id == data.comment?.id) {

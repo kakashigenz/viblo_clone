@@ -93,6 +93,7 @@ class CommentService
     {
         $comment = Comment::query()->findOrFail($comment_id);
         $author = $comment->user;
+        $article = $comment->article;
 
         $matches = [];
         preg_match_all("/@(\w+)/", data_get($data, 'content'), $matches);
@@ -104,6 +105,7 @@ class CommentService
         $sub_comment->point = 0;
         $sub_comment->is_visible = true;
         $comment->subComments()->save($sub_comment);
+        broadcast(new PostComment($sub_comment->load('user'), data_get($article, 'slug'), 'create'))->toOthers();
 
         if ($receivers->isEmpty()) {
             if (data_get($user, 'id') !== data_get($author, 'id')) {
