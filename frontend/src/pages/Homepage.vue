@@ -67,10 +67,12 @@
                       >
                       <p class="text-sm">{{ `@${user.user_name}` }}</p>
                     </div>
-                    <Button variant="secondary" size="small">
-                      <i class="pi pi-plus" style="font-size: 12px"></i>
-                      Theo dõi
-                    </Button>
+                    <div>
+                      <Button variant="secondary" size="small">
+                        <i class="pi pi-plus" style="font-size: 12px"></i>
+                        Theo dõi
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <div class="px-2 flex items-center gap-x-4">
@@ -120,10 +122,12 @@
                       >
                       <p class="text-sm">{{ `@${tag.name}` }}</p>
                     </div>
-                    <Button variant="secondary" size="small">
-                      <i class="pi pi-plus" style="font-size: 12px"></i>
-                      Theo dõi
-                    </Button>
+                    <div>
+                      <Button variant="secondary" size="small">
+                        <i class="pi pi-plus" style="font-size: 12px"></i>
+                        Theo dõi
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <div class="px-2 flex items-center gap-x-4">
