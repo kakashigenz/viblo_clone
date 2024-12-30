@@ -9,6 +9,9 @@ class Comment extends Model
 {
     use HasFactory;
 
+    public const HIDDEN = 0;
+    public const VISIBLE = 1;
+
     protected $guarded = ['id', 'user_id', 'created_at', 'updated_at'];
 
     public function user()

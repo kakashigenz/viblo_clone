@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 class TagService
@@ -59,7 +60,7 @@ class TagService
         return $this->find($this->generateSlug($name));
     }
 
-    public function getTopTag(): array
+    public function getTopTag(): Collection
     {
         return Tag::query()->withCount(['articles', 'followers'])->orderBy('followers_count', 'desc')->take(2)->get();
     }
