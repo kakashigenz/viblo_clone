@@ -24,7 +24,7 @@ class ImageService
     /**
      * Create an image
      */
-    public function create(array $data, string $user_id)
+    public function create(array $data, string $user_id): void
     {
         $attribute = [
             'path' => data_get($data, 'name')
@@ -51,7 +51,7 @@ class ImageService
     /**
      * get an url of image
      */
-    public function getUrl(string $name)
+    public function getUrl(string $name): string
     {
         return Storage::url($name);
     }

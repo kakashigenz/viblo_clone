@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +12,7 @@ class UserService
     /**
      * get an user
      */
-    public function find(string $user_name, array $relations = [])
+    public function find(string $user_name, array $relations = []): User
     {
         return User::with($relations)->where('user_name', $user_name)->firstOrFail();
     }
@@ -19,25 +20,24 @@ class UserService
     /**
      * update an user
      */
-    public function update(array $data, User $user)
+    public function update(array $data, User $user): void
     {
         $user->fill($data);
         $user->save();
     }
 
-    public function updateAvatar(User $user, string $name)
+    public function updateAvatar(User $user, string $name): string
     {
         $path = '';
         $location = sprintf('%s%s', $path, $user->getRawOriginal('avatar'));
-        if (Storage::exists($location)) {
+        if (trim($location) && Storage::exists($location)) {
             Storage::delete($location);
         }
         $user->avatar = $name;
         $user->save();
         return data_get($user, 'avatar');
     }
-
-    public function changePassword(User $user, string $password, string $new_password)
+    public function changePassword(User $user, string $password, string $new_password): void
     {
         if (!Hash::check($password, data_get($user, 'password'))) {
             abort(400, 'Mật khẩu cũ không chính xác');
@@ -46,7 +46,7 @@ class UserService
         $user->save();
     }
 
-    public function getUsersOrderByFollower()
+    public function getUsersOrderByFollower(): Collection
     {
         return User::query()->withCount(['followers', 'articles'])->orderBy('followers_count', 'desc')->take(3)->get();
     }

@@ -13,7 +13,7 @@ class AuthService
     /**
      * Register an user
      */
-    public function register(array $data)
+    public function register(array $data): void
     {
         $data['password'] = bcrypt(data_get($data, 'password'));
         $user = new User($data);
@@ -24,7 +24,7 @@ class AuthService
     }
 
     /**
-     * Login and get a token
+     * Login and get a api key
      */
     #[OA\Schema(
         schema: 'LoginResponse',
@@ -50,7 +50,10 @@ class AuthService
         return null;
     }
 
-    public function spaLogin(array $data)
+    /**
+     * Login with session
+     */
+    public function spaLogin(array $data): bool
     {
         $credentials = [
             'password' => data_get($data, 'password')

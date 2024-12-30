@@ -15,7 +15,7 @@ class CommentService
     /**
      * get list comment group by article use pagination
      */
-    public function getList(string $slug, int $size)
+    public function getList(string $slug, int $size): array
     {
         $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
         $comments = Comment::with(['user'])->withCount('subComments')->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->orderByDesc('point')->paginate($size);
@@ -40,7 +40,7 @@ class CommentService
     /**
      * create a comment
      */
-    public function create(array $data, string $slug, User $user)
+    public function create(array $data, string $slug, User $user): Comment
     {
         $article = Article::query()->where('slug', $slug)->firstOrFail();
         $comment = new Comment($data);
@@ -57,7 +57,7 @@ class CommentService
     /**
      * Get a comment
      */
-    public function find(string $id)
+    public function find(string $id): Comment
     {
         return Comment::query()->findOrFail($id);
     }
@@ -65,7 +65,7 @@ class CommentService
     /**
      * update a comment
      */
-    public function update(array $data, string $id)
+    public function update(array $data, string $id): Comment
     {
         $comment = Comment::query()->findOrFail($id);
         Gate::authorize('edit', $comment);
@@ -73,12 +73,13 @@ class CommentService
         $comment->save();
         $article = Article::query()->where('id', data_get($comment, 'article_id'))->first();
         broadcast(new PostComment($comment->load('user'), data_get($article, 'slug'), 'edit'))->toOthers();
+        return $comment;
     }
 
     /**
      * delete a comment
      */
-    public function delete(string $id)
+    public function delete(string $id): void
     {
         $comment = Comment::query()->findOrFail($id);
         Gate::authorize('edit', $comment);
@@ -88,7 +89,7 @@ class CommentService
     /**
      * reply comment
      */
-    public function reply(array $data, string $comment_id, User $user)
+    public function reply(array $data, string $comment_id, User $user): Comment
     {
         $comment = Comment::query()->findOrFail($comment_id);
         $author = $comment->user;
@@ -118,7 +119,7 @@ class CommentService
         return $sub_comment->load('user');
     }
 
-    public function getSubComments(string $comment_id, int $size)
+    public function getSubComments(string $comment_id, int $size): array
     {
         $comments = Comment::with('user')->where('parent_id', $comment_id)->orderByDesc('point')->paginate($size);
 

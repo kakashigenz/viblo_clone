@@ -54,12 +54,12 @@ class TagService
     /**
      * find tag by name
      */
-    public function findTagByName(string $name)
+    public function findTagByName(string $name): Tag
     {
         return $this->find($this->generateSlug($name));
     }
 
-    public function getTopTag()
+    public function getTopTag(): array
     {
         return Tag::query()->withCount(['articles', 'followers'])->orderBy('followers_count', 'desc')->take(2)->get();
     }

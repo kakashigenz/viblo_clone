@@ -7,13 +7,7 @@ use App\Models\User;
 
 class BookmarkService
 {
-    protected UserService $user_service;
-
-
-    public function __construct(UserService $user_service)
-    {
-        $this->user_service = $user_service;
-    }
+    public function __construct(protected UserService $user_service) {}
 
     /**
      * bookmark an article
@@ -33,7 +27,7 @@ class BookmarkService
     /**
      * get bookmark list
      */
-    public function getList(string $user_name, int $size)
+    public function getList(string $user_name, int $size): array
     {
         $user = $this->user_service->find($user_name);
 

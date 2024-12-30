@@ -182,10 +182,12 @@ class ArticleService
             )
         ]
     )]
-    public function find(?User $user, string $slug): Article
+    public function find(?User $current_user, string $slug): Article
     {
-        $article = Article::with(['tags'])->withoutGlobalScope('public')->withCount(['bookmarks', 'comments'])->where('slug', $slug)->firstOrFail();
-        if ($article->status == Article::DRAFT && $article->user_id != data_get($user, 'id')) {
+        $article = Article::with(['tags'])->withoutGlobalScope('public')->withCount(['bookmarks', 'comments'])
+            ->where('slug', $slug)->firstOrFail();
+        #avoid use where in collumn isn't created index
+        if ($article->status == Article::DRAFT && $article->user_id != data_get($current_user, 'id')) {
             abort(404, 'Not found');
         }
 
@@ -199,7 +201,6 @@ class ArticleService
             ])->withCount(['followings', 'articles'])
             ->first();
 
-        $current_user = auth()->guard('sanctum')->user();
         $is_following = !empty($user->followers()->where('follower_id', data_get($current_user, 'id'))->first());
 
         $vote_type = data_get($article->votes()->where('user_id', data_get($current_user, 'id'))->first(), 'type');
@@ -274,12 +275,12 @@ class ArticleService
     /**
      * get an article by id
      */
-    public function findById(string $id)
+    public function findById(string $id): Article
     {
         return Article::query()->findOrFail($id);
     }
 
-    public function getMyArticles(int $type, User $user)
+    public function getMyArticles(int $type, User $user): array
     {
         $articles = [];
         $size = 10;

@@ -35,7 +35,7 @@ class FollowingTagService
     /**
      * get tag following list
      */
-    public function getList(string $user_name, int $size)
+    public function getList(string $user_name, int $size): array
     {
         $follower = $this->user_service->find($user_name);
 

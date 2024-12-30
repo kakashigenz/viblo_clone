@@ -9,7 +9,7 @@ use App\Models\User;
 class SearchService
 {
 
-    public function searchArticle(string $query)
+    public function searchArticle(string $query): array
     {
         $articles = Article::search($query)->query(fn($query) => $query->with('user'))->paginate(10);
         return [
@@ -20,7 +20,7 @@ class SearchService
         ];
     }
 
-    public function searchUser(string $query)
+    public function searchUser(string $query): array
     {
         $users = User::search($query)->paginate(20);
         return [
@@ -31,7 +31,7 @@ class SearchService
         ];
     }
 
-    public function searchMulti(string $query)
+    public function searchMulti(string $query): array
     {
         $articles = Article::search($query, function ($meiliSearch, string $query, array $options) {
             $options['attributesToHighlight'] = ['title', 'content'];

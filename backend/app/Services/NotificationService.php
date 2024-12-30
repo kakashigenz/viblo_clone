@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\URL;
 
 class NotificationService
 {
-    public function getList(User $user, int $size = 5)
+    public function getList(User $user, int $size = 5): array
     {
         $notifications = $user->notifications()->paginate($size);
         $data = array_map(function ($item) {
@@ -25,12 +25,12 @@ class NotificationService
         ];
     }
 
-    public function markAllRead(User $user)
+    public function markAllRead(User $user): void
     {
         $user->unreadNotifications()->update(['read_at' => now()]);
     }
 
-    public function markAsRead(User $user, string $id)
+    public function markAsRead(User $user, string $id): void
     {
         $user->unreadNotifications()->findOrFail($id)->update(['read_at' => now()]);
     }
