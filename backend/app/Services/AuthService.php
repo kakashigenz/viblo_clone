@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\UnverifiedEmailException;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,7 @@ class AuthService
             ->orWhere('email', data_get($data, 'user_name'))->first();
         if ($user && Hash::check(data_get($data, 'password'), data_get($user, 'password'))) {
             if (!$user->hasVerifiedEmail()) {
-                abort(403, 'Vui lòng xác thực email!');
+                throw new UnverifiedEmailException("Email chưa được xác thực");
             }
             return [
                 'user' => $user,

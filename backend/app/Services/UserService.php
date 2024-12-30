@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\IncorrectPasswordException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +41,7 @@ class UserService
     public function changePassword(User $user, string $password, string $new_password): void
     {
         if (!Hash::check($password, data_get($user, 'password'))) {
-            abort(400, 'Mật khẩu cũ không chính xác');
+            throw new IncorrectPasswordException("Mật khẩu không chính xác");
         }
         $user->password = Hash::make($new_password);
         $user->save();

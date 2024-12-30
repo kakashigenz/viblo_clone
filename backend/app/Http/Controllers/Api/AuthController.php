@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\UnverifiedEmailException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -113,14 +114,21 @@ class AuthController extends Controller
     )]
     public function login(LoginRequest $request)
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        $res = $this->service->login($data);
-        if (!$res) {
-            return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
+            $res = $this->service->login($data);
+            if (!$res) {
+                return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
+            }
+
+            return $res;
+        } catch (\Throwable $th) {
+            if ($th instanceof UnverifiedEmailException) {
+                return response()->json(['message' => 'Email chưa được xác thực'], 403);
+            }
+            throw $th;
         }
-
-        return $res;
     }
 
     public function spaLogin(LoginRequest $request)

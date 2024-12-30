@@ -70,10 +70,17 @@ class UserController extends Controller
 
     public function changePassword(ChangePasswordRequest $request)
     {
-        $data = $request->validated();
-        $user = $request->user();
-        $this->service->changePassword($user, data_get($data, 'password'), data_get($data, 'new_password'));
-        return ['message' => 'success'];
+        try {
+            $data = $request->validated();
+            $user = $request->user();
+            $this->service->changePassword($user, data_get($data, 'password'), data_get($data, 'new_password'));
+            return ['message' => 'success'];
+        } catch (\Throwable $th) {
+            if ($th instanceof IncorrectPasswordException) {
+                return response()->json(['message' => 'Mật khẩu không chính xác'], 400);
+            }
+            throw $th;
+        }
     }
 
     public function getTopUser(Request $request)
