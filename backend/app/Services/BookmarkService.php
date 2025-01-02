@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Article;
 use App\Models\User;
 
@@ -14,7 +15,8 @@ class BookmarkService
      */
     public function bookmark(User $user, string $article_slug): bool
     {
-        $article = Article::query()->where('slug', $article_slug)->firstOrFail();
+        $article = Article::query()->where('slug', $article_slug)->first();
+        throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
 
         if ($user->bookmarks()->wherePivot('article_id', data_get($article, 'id'))->first()) {
             return false;
@@ -46,7 +48,8 @@ class BookmarkService
      */
     public function unbookmark(User $user, string $article_slug): bool
     {
-        $article = Article::query()->where('slug', $article_slug)->firstOrFail();
+        $article = Article::query()->where('slug', $article_slug)->first();
+        throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
 
         if (empty($user->bookmarks()->wherePivot('article_id', data_get($article, 'id'))->first())) {
             return false;

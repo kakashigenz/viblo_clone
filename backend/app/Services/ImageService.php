@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -62,7 +63,8 @@ class ImageService
     public function delete(string $name): bool
     {
         $location = "{$name}";
-        $image = Image::query()->where('user_id', Auth::user()->id)->where('path', $location)->firstOrFail();
+        $image = Image::query()->where('user_id', Auth::user()->id)->where('path', $location)->first();
+        throw_if(!$image, new ResourceNotFoundException('Không tìm thấy ảnh'));
         $image->delete();
         if (Storage::exists($location)) {
             Storage::delete($location);

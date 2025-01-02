@@ -114,21 +114,14 @@ class AuthController extends Controller
     )]
     public function login(LoginRequest $request)
     {
-        try {
-            $data = $request->validated();
+        $data = $request->validated();
 
-            $res = $this->service->login($data);
-            if (!$res) {
-                return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
-            }
-
-            return $res;
-        } catch (\Throwable $th) {
-            if ($th instanceof UnverifiedEmailException) {
-                return response()->json(['message' => 'Email chưa được xác thực'], 403);
-            }
-            throw $th;
+        $res = $this->service->login($data);
+        if (!$res) {
+            return response()->json(['message' => 'Tài khoản hoặc mật khẩu không chính xác'], 401);
         }
+
+        return $res;
     }
 
     public function spaLogin(LoginRequest $request)

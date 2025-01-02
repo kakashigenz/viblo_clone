@@ -1,5 +1,8 @@
 <?php
 
+use App\Exceptions\IncorrectPasswordException;
+use App\Exceptions\ResourceNotFoundException;
+use App\Exceptions\UnverifiedEmailException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -22,11 +25,25 @@ return Application::configure(basePath: dirname(__DIR__))
         ['prefix' => 'api', 'middleware' => ['api', 'auth:sanctum']],
     )
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => 'Not found'
-                ], 404);
-            }
-        });
+        $exceptions
+            ->render(function (ResourceNotFoundException $e, Request $request) {
+                if ($request->is('api/*')) {
+                    return response()->json([
+                        'message' => $e->getMessage()
+                    ], 404);
+                }
+            })
+            ->render(function (IncorrectPasswordException $e, Request $request) {
+                if ($request->is('api/*')) {
+                    return response()->json([
+                        'message' => $e->getMessage()
+                    ], 400);
+                }
+            })->render(function (UnverifiedEmailException $e, Request $request) {
+                if ($request->is('api/*')) {
+                    return response()->json([
+                        'message' => $e->getMessage()
+                    ], 403);
+                }
+            });
     })->create();

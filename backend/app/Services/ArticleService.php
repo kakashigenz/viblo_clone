@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Article;
 use App\Models\User;
 use App\Models\Vote;
@@ -185,7 +186,8 @@ class ArticleService
     public function find(?User $current_user, string $slug): Article
     {
         $article = Article::with(['tags'])->withoutGlobalScope('public')->withCount(['bookmarks', 'comments'])
-            ->where('slug', $slug)->firstOrFail();
+            ->where('slug', $slug)->first();
+        throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
         #avoid use where in collumn isn't created index
         if ($article->status == Article::DRAFT && $article->user_id != data_get($current_user, 'id')) {
             abort(404, 'Not found');
@@ -216,7 +218,8 @@ class ArticleService
     public function update(array $data, string $slug): Article
     {
         try {
-            $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
+            $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->first();
+            throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
             Gate::authorize('edit', $article);
 
             DB::beginTransaction();
@@ -267,7 +270,8 @@ class ArticleService
      */
     public function delete(string $slug): bool
     {
-        $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
+        $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->first();
+        throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
         Gate::authorize('edit', $article);
         return $article->delete();
     }

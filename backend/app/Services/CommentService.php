@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\PostComment;
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\User;
@@ -17,7 +18,8 @@ class CommentService
      */
     public function getList(string $slug, int $size): array
     {
-        $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->firstOrFail();
+        $article = Article::query()->withoutGlobalScope('public')->where('slug', $slug)->first();
+        throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
         $comments = Comment::with(['user'])->withCount('subComments')->where('article_id', data_get($article, 'id'))->whereNull('parent_id')->orderByDesc('point')->paginate($size);
 
         $current_user = auth()->guard('sanctum')->user();
@@ -42,7 +44,8 @@ class CommentService
      */
     public function create(array $data, string $slug, User $user): Comment
     {
-        $article = Article::query()->where('slug', $slug)->firstOrFail();
+        $article = Article::query()->where('slug', $slug)->first();
+        throw_if(!$article, new ResourceNotFoundException("Không tìm thấy bài viết"));
         $comment = new Comment($data);
         $comment->user_id = data_get($user, 'id');
         $comment->point = 0;

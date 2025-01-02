@@ -21,14 +21,6 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $user_name)
@@ -47,14 +39,6 @@ class UserController extends Controller
         return ['message' => 'success'];
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
     public function getCurrentUser()
     {
         return Auth::user();
@@ -70,17 +54,10 @@ class UserController extends Controller
 
     public function changePassword(ChangePasswordRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $user = $request->user();
-            $this->service->changePassword($user, data_get($data, 'password'), data_get($data, 'new_password'));
-            return ['message' => 'success'];
-        } catch (\Throwable $th) {
-            if ($th instanceof IncorrectPasswordException) {
-                return response()->json(['message' => 'Mật khẩu không chính xác'], 400);
-            }
-            throw $th;
-        }
+        $data = $request->validated();
+        $user = $request->user();
+        $this->service->changePassword($user, data_get($data, 'password'), data_get($data, 'new_password'));
+        return ['message' => 'success'];
     }
 
     public function getTopUser(Request $request)

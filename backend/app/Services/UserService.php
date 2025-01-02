@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\IncorrectPasswordException;
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,11 @@ class UserService
      */
     public function find(string $user_name, array $relations = []): User
     {
-        return User::with($relations)->where('user_name', $user_name)->firstOrFail();
+        $user = User::with($relations)->where('user_name', $user_name)->first();
+        if (!$user) {
+            throw new ResourceNotFoundException("Không tìm thấy người dùng");
+        }
+        return $user;
     }
 
     /**
@@ -41,7 +46,7 @@ class UserService
     public function changePassword(User $user, string $password, string $new_password): void
     {
         if (!Hash::check($password, data_get($user, 'password'))) {
-            throw new IncorrectPasswordException("Mật khẩu không chính xác");
+            throw new IncorrectPasswordException("Mật khẩu cũ không chính xác");
         }
         $user->password = Hash::make($new_password);
         $user->save();

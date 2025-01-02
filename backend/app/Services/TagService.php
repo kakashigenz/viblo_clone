@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ResourceNotFoundException;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
@@ -41,7 +42,9 @@ class TagService
      */
     public function find(string $slug): Tag
     {
-        return Tag::query()->where('slug', $slug)->firstOrFail();
+        $tag = Tag::query()->where('slug', $slug)->first();
+        throw_if(!$tag, new ResourceNotFoundException("Không tìm thấy thẻ"));
+        return $tag;
     }
 
     /**
@@ -49,7 +52,9 @@ class TagService
      */
     public function delete(string $slug): bool
     {
-        return Tag::query()->where('slug', $slug)->firstOrFail()->delete();
+        $tag = Tag::query()->where('slug', $slug)->first();
+        throw_if(!$tag, new ResourceNotFoundException("Không tìm thấy thẻ"));
+        return $tag->delete();
     }
 
     /**
