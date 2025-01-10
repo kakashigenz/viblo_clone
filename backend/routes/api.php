@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('apiLogin');
-Route::post('/spa-login', [AuthController::class, 'spaLogin'])->name('login');
+Route::post('/spa-login', [AuthController::class, 'spaLogin'])->middleware('throttle:5,1')->name('login');
 
 
 Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::group(['middleware' => 'verified'], function () {
-        Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
+        Route::group(['prefix' => 'articles', 'as' => 'article.'], function () {
             Route::post('/', [ArticleController::class, 'store'])->name('store');
             Route::get('/drafts', [ArticleController::class, 'getMyArticles'])->name('draft');
             Route::get('/public', [ArticleController::class, 'getMyArticles'])->name('public');
@@ -69,7 +69,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::delete('/{slug}', [ArticleController::class, 'destroy'])->name('delete');
         });
 
-        Route::group(['as.' => 'tag.', 'prefix' => 'tags'], function () {
+        Route::group(['prefix' => 'tags', 'as.' => 'tag.'], function () {
             Route::get('/', [TagController::class, 'index']);
             Route::post('/', [TagController::class, 'store']);
             Route::get('/{slug}', [TagController::class, 'show']);
@@ -78,7 +78,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::delete('/{tag_slug}/unfollow', [FollowingTagController::class, 'unfollow']);
         });
 
-        Route::group(['as' => 'image.', 'prefix' => 'images'], function () {
+        Route::group(['prefix' => 'images', 'as' => 'image.'], function () {
             Route::post('/create-presigned-url', [ImageController::class, 'createPresignedURL']);
             Route::get('/', [ImageController::class, 'index']);
             Route::post('/', [ImageController::class, 'store']);
@@ -86,10 +86,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::delete('/{name}', [ImageController::class, 'destroy']);
         });
 
-        Route::group(['as' => 'user.', 'prefix' => 'users'], function () {
+        Route::group(['prefix' => 'users', 'as' => 'user.'], function () {
             Route::put('/update-avatar', [UserController::class, 'updateAvatar']);
-            Route::put('/me', [UserController::class, 'update']);
-            Route::put('/me/password', [UserController::class, 'changePassword'])->name('changePassword');
+            Route::put('/me', [UserController::class, 'update'])->name('updateInfo');
+            Route::put('/me/password', [UserController::class, 'changePassword'])->middleware('throttle:5,1')->name('changePassword');
             Route::get('/{user_name}', [UserController::class, 'show']);
             Route::get('/{user_name}/followings', [FollowingUserController::class, 'index']);
             Route::post('/{user_name}/follow', [FollowingUserController::class, 'follow']);
@@ -98,7 +98,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::get('/{user_name}/bookmarks', [BookmarkController::class, 'index']);
         });
 
-        Route::group(['as' => 'comment.', 'prefix' => 'comments'], function () {
+        Route::group(['prefix' => 'comments', 'as' => 'comment.'], function () {
             Route::put('/{id}', [CommentController::class, 'update']);
             Route::delete('/{id}', [CommentController::class, 'destroy']);
             Route::post('/{comment_id}/replies', [CommentController::class, 'reply']);
@@ -106,7 +106,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::post('/{comment_id}/downvote', [VoteController::class, 'downvote'])->name('downvote');
         });
 
-        Route::group(['as' => 'notification.', 'prefix' => 'notifications'], function () {
+        Route::group(['prefix' => 'notifications', 'as' => 'notification.'], function () {
             Route::get('/', [NotificationController::class, 'index']);
             Route::put('/mark-all-read', [NotificationController::class, 'markAllRead']);
             Route::put('/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
