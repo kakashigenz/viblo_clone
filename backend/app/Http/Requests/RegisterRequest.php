@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use OpenApi\Attributes as OA;
 
 class RegisterRequest extends FormRequest
@@ -29,6 +30,16 @@ class RegisterRequest extends FormRequest
             'email' => 'required|unique:users,email|email',
             'user_name' => 'required|unique:users,user_name|regex:/^[A-Za-z0-9-]+$/',
             'password' => 'required|regex:/^\w{8,}$/|confirmed',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => 'Địa chỉ Email đã được đăng ký.',
+            'user_name.unique' => 'Tên tài khoản đã được sử dụng',
+            'user_name.regex' => 'Tên tài khoản không hợp lệ',
+            'password.regex' => 'Mật khẩu không hợp lệ.',
         ];
     }
 }

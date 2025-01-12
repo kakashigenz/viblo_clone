@@ -176,7 +176,7 @@ const onSubmit = handleSubmit(async (value) => {
       }
     }
   } catch (error) {
-    if (error.status == 400) {
+    if (error.status == 422) {
       errorResponseMessage.value = error?.response?.data?.message;
     } else {
       console.log(error);
