@@ -20,11 +20,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('apiLogin');
 Route::post('/spa-login', [AuthController::class, 'spaLogin'])->middleware('throttle:5,1')->name('login');
 
 
-Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
-    Route::get('/', [ArticleController::class, 'index']);
-    Route::get('/{slug}', [ArticleController::class, 'show']);
-    Route::get('/{slug}/comments', [CommentController::class, 'index']);
-});
+
 Route::group(['prefix' => 'comments'], function () {
     Route::get('/{comment_id}/replies', [CommentController::class, 'getSubComments']);
 });
@@ -112,4 +108,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::put('/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
         });
     });
+});
+Route::group(['as' => 'article.', 'prefix' => 'articles'], function () {
+    Route::get('/', [ArticleController::class, 'index']);
+    Route::get('/{slug}', [ArticleController::class, 'show']);
+    Route::get('/{slug}/comments', [CommentController::class, 'index']);
 });
