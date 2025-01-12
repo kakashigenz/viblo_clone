@@ -132,6 +132,15 @@ router.beforeEach(async (to, from) => {
       query: { redirect: encodeURIComponent(to.fullPath) },
     };
   }
+
+  if (
+    userStore.isAuthenticated &&
+    (to.name == REGISTER_ROUTE_NAME || to.name == LOGIN_ROUTE_NAME)
+  ) {
+    return {
+      name: HOME_ROUTE_NAME,
+    };
+  }
 });
 
 export default router;
