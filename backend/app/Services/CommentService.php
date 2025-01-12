@@ -53,7 +53,9 @@ class CommentService
         $article->comments()->save($comment);
         $author = User::query()->find(data_get($article, 'user_id'));
         broadcast(new PostComment($comment->load('user'), $slug, 'create'))->toOthers();
-        $author->notify(new CommentPosted($user, 'đã bình luận bài viết của bạn'));
+        if (data_get($user, 'id') !== data_get($author, 'id')) {
+            $author->notify(new CommentPosted($user, 'đã bình luận bài viết của bạn'));
+        }
         return $comment->load('user');
     }
 
