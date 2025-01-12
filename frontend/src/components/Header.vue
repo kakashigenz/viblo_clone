@@ -349,6 +349,7 @@ onMounted(async () => {
   if (userStore.isAuthenticated) {
     window.Echo.private(`App.Models.User.${userStore.user.id}`).notification(
       (notification) => {
+        toast.removeAllGroups();
         toast.add({
           severity: "info",
           summary: "Thông báo",
