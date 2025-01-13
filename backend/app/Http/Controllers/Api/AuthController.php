@@ -9,6 +9,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Session;
 use OpenApi\Attributes as OA;
 
@@ -154,5 +155,40 @@ class AuthController extends Controller
     public function checkAuthorization(Request $request)
     {
         return $request->user();
+    }
+
+    public function getResetForm(Request $request, string $token)
+    {
+        if (!$this->service->isValidResetToken($request->input('email'), $token)) {
+            return redirect(sprintf("%s/not-found", env('FRONTEND_URL')));
+        }
+        return redirect(sprintf("%s?token=%s&email=%s", env('FRONTEND_URL') . '/reset-password', $token, $request->input('email')));
+    }
+
+    public function sendLinkResetPassword(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email'
+        ]);
+        $res = $this->service->sendLinkResetPassword($data);
+        $status = $res == Password::RESET_LINK_SENT ? 'success' : 'fail';
+        return ['status' => $status, 'data' => [
+            'message' => __($res)
+        ]];
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $data =  $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $res = $this->service->resetPassword($data);
+        $status = $res == Password::PASSWORD_RESET ? 'success' : 'fail';
+        return ['status' => $status, 'data' => [
+            'message' => __($res)
+        ]];
     }
 }

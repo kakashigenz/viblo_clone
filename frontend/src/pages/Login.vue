@@ -69,7 +69,11 @@
         <Button :is-disable="loading">Đăng nhập</Button>
       </form>
       <div class="flex justify-between p-2">
-        <a href="#" class="text-sm text-blue-500">Quên mật khẩu?</a>
+        <RouterLink
+          :to="{ name: FORGOT_PASSWORD_ROUTE_NAME }"
+          class="text-sm text-blue-500"
+          >Quên mật khẩu?</RouterLink
+        >
         <RouterLink :to="{ name: REGISTER_ROUTE_NAME }" class="text-sm text-blue-500"
           >Tạo tài khoản</RouterLink
         >
@@ -91,7 +95,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useUserStore } from "@/stores/user";
-import { REGISTER_ROUTE_NAME } from "@/helper/constant";
+import { FORGOT_PASSWORD_ROUTE_NAME, REGISTER_ROUTE_NAME } from "@/helper/constant";
 
 const schema = yup.object({
   user_name: yup.string().required("Tên người dùng/email là bắt buộc"),

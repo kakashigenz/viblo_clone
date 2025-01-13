@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
 use OpenApi\Attributes as OA;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -25,7 +26,7 @@ use Laravel\Scout\Searchable;
         ]
     )
 ]
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable, Searchable;
 

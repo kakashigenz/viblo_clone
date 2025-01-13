@@ -19,6 +19,11 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('apiLogin');
 Route::post('/spa-login', [AuthController::class, 'spaLogin'])->middleware('throttle:5,1')->name('login');
 
+Route::group(['as' => 'password.', 'middleware' => 'guest'], function () {
+    Route::post('/forgot-password', [AuthController::class, 'sendLinkResetPassword'])->name('email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'getResetForm'])->name('reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('update');
+});
 
 
 Route::group(['prefix' => 'comments'], function () {

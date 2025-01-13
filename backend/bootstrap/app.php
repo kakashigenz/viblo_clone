@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        $middleware->trustHosts([env('FRONTEND_URL')]);
     })
     ->withBroadcasting(
         __DIR__ . '/../routes/channels.php',

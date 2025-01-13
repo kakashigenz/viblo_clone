@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Exceptions\UnverifiedEmailException;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use OpenApi\Attributes as OA;
 
 class AuthService
@@ -70,5 +72,36 @@ class AuthService
             return false;
         }
         return true;
+    }
+
+    public function sendLinkResetPassword(array $email): string
+    {
+        return Password::sendResetLink($email);
+    }
+
+    public function isValidResetToken(string $email, string $token): bool
+    {
+        $user = User::query()->where('email', $email)->first();
+        if ($user) {
+            return Password::tokenExists($user, $token);
+        }
+        return false;
+    }
+
+    public function resetPassword(array $data): string
+    {
+        $status = Password::reset(
+            $data,
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ]);
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+        return $status;
     }
 }

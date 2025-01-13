@@ -6,6 +6,7 @@ import {
   DETAIL_ARTICLE_ROUTE_NAME,
   EDIT_ARTICLE_ROUTE_NAME,
   FOLLOWINGS_ROUTE_NAME,
+  FORGOT_PASSWORD_ROUTE_NAME,
   HOME_ROUTE_NAME,
   IMAGE_MANAGEMENT_ROUTE_NAME,
   INFO_MANAGEMENT_ROUTE_NAME,
@@ -14,6 +15,7 @@ import {
   NOT_FOUND_ROUTE_NAME,
   PASSWORD_MANAGEMENT_ROUTE_NAME,
   REGISTER_ROUTE_NAME,
+  RESET_PASSWORD_ROUTE_NAME,
 } from "@/helper/constant";
 import { useUserStore } from "@/stores/user";
 import { createRouter, createWebHistory } from "vue-router";
@@ -87,6 +89,16 @@ const routes = [
     name: BOOKMARKS_ROUTE_NAME,
   },
   {
+    path: "/forgot-password",
+    component: () => import("@/pages/ForgotPassword.vue"),
+    name: FORGOT_PASSWORD_ROUTE_NAME,
+  },
+  {
+    path: "/reset-password",
+    component: () => import("@/pages/ResetPassword.vue"),
+    name: RESET_PASSWORD_ROUTE_NAME,
+  },
+  {
     path: "/",
     redirect: { name: NEWEST_ROUTE_NAME },
     name: HOME_ROUTE_NAME,
@@ -124,6 +136,8 @@ router.beforeEach(async (to, from) => {
     FOLLOWINGS_ROUTE_NAME,
     BOOKMARKS_ROUTE_NAME,
     DETAIL_ARTICLE_ROUTE_NAME,
+    FORGOT_PASSWORD_ROUTE_NAME,
+    RESET_PASSWORD_ROUTE_NAME,
   ];
 
   if (!userStore.isAuthenticated && !exceptRoute.includes(to.name)) {

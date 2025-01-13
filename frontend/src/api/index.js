@@ -50,6 +50,12 @@ const apiClient = () => {
       isAuthorized() {
         return window.api.post("/check-authorization");
       },
+      forgotPassword(data) {
+        return window.api.post(`/forgot-password`, data);
+      },
+      resetPassword(data) {
+        return window.api.post(`/reset-password`, data);
+      },
     },
     images: {
       createPresignedURL(data) {
@@ -138,7 +144,7 @@ const apiClient = () => {
         return window.api.put(`/users/me/password`, data);
       },
       getTopUser() {
-        return window.api.get(`users/get-top-user`);
+        return window.api.get(`/users/get-top-user`);
       },
     },
     tag: {
