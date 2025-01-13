@@ -51,11 +51,13 @@
             <InputGroupAddon>
               <i class="pi pi-lock"></i>
             </InputGroupAddon>
-            <InputText
+            <Passsword
               v-model="passwordValue"
               :invalid="!!passwordMessage"
               placeholder="Mật khẩu"
-              type="password"
+              toggle-mask
+              :feedback="false"
+              fluid
             />
           </InputGroup>
           <Message
@@ -88,6 +90,7 @@ import InputGroupAddon from "primevue/inputgroupaddon";
 import InputText from "primevue/inputtext";
 import Button from "@/components/Button.vue";
 import Message from "primevue/message";
+import Passsword from "primevue/password";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
 import apiClient from "@/api";
