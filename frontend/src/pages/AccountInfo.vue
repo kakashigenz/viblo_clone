@@ -122,6 +122,7 @@ const schema = yup.object({
     .typeError("Giá trị không hợp lệ"),
   gender: yup
     .number()
+    .required("Giới tính không được để trống")
     .oneOf([MALE_GENDER, FEMALE_GENDER, OTHER_GENDER], "Giá trị không hợp lệ"),
 });
 
